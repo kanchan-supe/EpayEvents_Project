@@ -21,26 +21,42 @@ export default function QRScannerPage() {
 
     if (!code) return;
 
-    if (code.includes('EPAY-ORD') || code.startsWith('EPAY-')) {
+    if (code.includes('CANCEL') || code.includes('REF-')) {
+      setScanResult({
+        status: 'error',
+        message: 'TICKET CANCELLED - REFUND PROCESSED',
+        attendeeName: 'Ticket Voided',
+        ticketType: 'Refunded Pass',
+        orderId: code,
+      });
+    } else if (code.includes('TRANSFER')) {
       setScanResult({
         status: 'success',
-        message: 'VALID TICKET - ENTRY APPROVED',
+        message: 'TRANSFERRED TICKET VERIFIED - ENTRY APPROVED',
+        attendeeName: 'Rohini Deshmukh (Transferred)',
+        ticketType: 'General Admission (Transferred)',
+        orderId: code,
+      });
+    } else if (code.includes('EPAY-ORD') || code.startsWith('EPAY-')) {
+      setScanResult({
+        status: 'success',
+        message: 'VALID SMART TICKET - ENTRY APPROVED',
         attendeeName: 'Alex Morgan',
-        ticketType: 'General Admission Pass',
+        ticketType: 'Early Bird VIP Developer Pass',
         orderId: code,
       });
     } else if (code === 'USED') {
       setScanResult({
         status: 'already_used',
-        message: 'ALREADY CHECKED IN (Used at 09:45 AM)',
+        message: 'ALREADY CHECKED IN (Scanned at Gate 1 at 09:45 AM)',
         attendeeName: 'Aarav Sharma',
-        ticketType: 'VIP Pass',
+        ticketType: 'VIP Masterclass Pass',
         orderId: 'EPAY-ORD-849204-TKT-1',
       });
     } else {
       setScanResult({
         status: 'error',
-        message: 'INVALID OR UNRECOGNIZED TICKET CODE',
+        message: 'INVALID OR UNRECOGNIZED SMART TICKET ID',
       });
     }
   };
@@ -49,7 +65,7 @@ export default function QRScannerPage() {
     <div className="min-h-screen flex flex-col bg-slate-900 text-white">
       <Navbar />
 
-      <div className="bg-slate-950 py-6 border-b border-slate-800">
+      <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 py-6">
         <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/organizer/dashboard" className="text-slate-400 hover:text-white transition">
@@ -131,4 +147,3 @@ export default function QRScannerPage() {
     </div>
   );
 }
-

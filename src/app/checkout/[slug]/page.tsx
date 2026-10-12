@@ -35,7 +35,7 @@ export default async function EventCheckoutPage({ params, searchParams }: Checko
     <div className="min-h-screen flex flex-col bg-slate-50">
       <Navbar />
 
-      <div className="bg-slate-900 text-white py-8 border-b border-slate-800">
+      <div className="bg-gradient-to-b from-slate-900 via-blue-950 to-slate-900 text-white py-8">
         <div className="container mx-auto px-4 md:px-8 max-w-4xl">
           <h1 className="text-2xl font-bold">Checkout & Registration</h1>
           <p className="text-slate-400 text-xs mt-1">Complete your order for {event.title}</p>
@@ -50,4 +50,3 @@ export default async function EventCheckoutPage({ params, searchParams }: Checko
     </div>
   );
 }
-

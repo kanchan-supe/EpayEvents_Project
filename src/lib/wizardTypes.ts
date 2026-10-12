@@ -11,9 +11,74 @@ export interface TicketTypeForm {
   name: string;
   description: string;
   price: number;
+  originalPrice?: number;
   quantity: number;
   minPerOrder: number;
   maxPerOrder: number;
+  category?: 'General' | 'VIP' | 'Workshop' | 'Virtual' | 'Student' | 'Corporate' | 'Speaker';
+  isEarlyBird?: boolean;
+  earlyBirdDeadline?: string;
+  isDynamicPricing?: boolean;
+  dynamicSurgePercent?: number;
+  isGroupDiscount?: boolean;
+  groupMinQty?: number;
+  groupDiscountPercent?: number;
+  isHidden?: boolean;
+  accessPasscode?: string;
+  isApprovalRequired?: boolean;
+  isWaitlist?: boolean;
+  isComplimentary?: boolean;
+  isTransferrable?: boolean;
+  isRefundable?: boolean;
+  refundPolicyDays?: number;
+}
+
+export interface SpeakerForm {
+  id: string;
+  name: string;
+  role: string;
+  company: string;
+  avatar: string;
+  bio?: string;
+  linkedinUrl?: string;
+}
+
+export interface AgendaForm {
+  id: string;
+  time: string;
+  title: string;
+  description: string;
+  speaker?: string;
+}
+
+export interface SponsorForm {
+  id: string;
+  name: string;
+  logoUrl: string;
+  tier: 'Title' | 'Platinum' | 'Gold' | 'Silver' | 'Community Partner';
+  websiteUrl?: string;
+}
+
+export interface ExhibitorForm {
+  id: string;
+  name: string;
+  logoUrl: string;
+  category: string;
+  boothNumber: string;
+  description: string;
+}
+
+export interface FaqForm {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+export interface CouponForm {
+  id: string;
+  code: string;
+  discountPercent: number;
+  description: string;
 }
 
 export interface EventWizardData {
@@ -23,7 +88,13 @@ export interface EventWizardData {
   shortDescription: string;
   description: string;
   bannerUrl: string;
+  
+  // Organizer Info
+  organizerName: string;
   organizerEmail: string;
+  organizerPhone: string;
+  organizerAvatar: string;
+  organizerBio: string;
 
   // Step 2: Date & Time
   startDate: string;
@@ -39,16 +110,29 @@ export interface EventWizardData {
   city: string;
   onlineUrl: string;
 
-  // Step 4: Tickets
-  ticketTypes: TicketTypeForm[];
+  // Step 4: Speakers & Agenda
+  speakers: SpeakerForm[];
+  agenda: AgendaForm[];
 
-  // Step 5: Custom Registration Form
+  // Step 5: Sponsors & Exhibitors
+  sponsors: SponsorForm[];
+  exhibitors: ExhibitorForm[];
+
+  // Step 6: Tickets & Offers
+  ticketTypes: TicketTypeForm[];
+  couponCodes: CouponForm[];
+
+  // Step 7: FAQs, Terms & Policies
+  faqs: FaqForm[];
+  termsAndPolicy: string;
+
+  // Step 8: Custom Registration Form
   registrationFields: RegistrationField[];
 
-  // Step 6: Payment Settings
+  // Step 9: Payment Settings
   taxPercentage: number;
   platformFeePercentage: number;
 
-  // Step 7: Status
+  // Status
   status: 'draft' | 'published' | 'scheduled';
 }

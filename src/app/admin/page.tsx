@@ -46,7 +46,7 @@ export default function SuperAdminPage() {
     <div className="min-h-screen flex flex-col bg-slate-900 text-white">
       <Navbar />
 
-      <div className="bg-slate-950 py-8 border-b border-slate-800">
+      <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 py-8">
         <div className="container mx-auto px-4 md:px-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <div className="flex items-center gap-2">
@@ -218,4 +218,3 @@ export default function SuperAdminPage() {
     </div>
   );
 }
-

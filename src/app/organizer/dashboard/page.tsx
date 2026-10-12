@@ -9,11 +9,12 @@ import { Navbar, Footer } from '@/components/NavbarFooter';
 import { mockEvents } from '@/lib/data';
 
 const mockRegistrations = [
-  { id: 'REG-101', name: 'Alex Morgan', email: 'alex@example.com', ticket: 'General Admission', status: 'Checked In', checkinTime: '10:14 AM', price: 2499, date: '2026-10-07' },
-  { id: 'REG-102', name: 'Sarah Jenkins', email: 'sarah@stripe.com', ticket: 'VIP Developer Pass', status: 'Pending', checkinTime: '-', price: 5999, date: '2026-10-07' },
-  { id: 'REG-103', name: 'Aarav Sharma', email: 'aarav@finpulse.io', ticket: 'General Admission', status: 'Checked In', checkinTime: '09:45 AM', price: 2499, date: '2026-10-07' },
-  { id: 'REG-104', name: 'Priya Nambiar', email: 'priya@neural.ai', ticket: 'VIP Developer Pass', status: 'Checked In', checkinTime: '09:30 AM', price: 5999, date: '2026-10-06' },
-  { id: 'REG-105', name: 'David Miller', email: 'david@cloud.com', ticket: 'Virtual Pass', status: 'Pending', checkinTime: '-', price: 0, date: '2026-10-06' },
+  { id: 'TKT-EPAY-849201', name: 'Alex Morgan', email: 'alex@example.com', ticket: 'Early Bird Pass (General)', status: 'Checked In', checkinTime: '10:14 AM', price: 1499, date: '2026-10-07' },
+  { id: 'TKT-EPAY-849202', name: 'Rohini Deshmukh', email: 'rohini@tech.in', ticket: 'VIP Masterclass (Transferred)', status: 'Transferred', checkinTime: '-', price: 5999, date: '2026-10-07' },
+  { id: 'TKT-EPAY-849203', name: 'Aarav Sharma', email: 'aarav@finpulse.io', ticket: 'General Admission (Group 4+)', status: 'Checked In', checkinTime: '09:45 AM', price: 2124, date: '2026-10-07' },
+  { id: 'TKT-EPAY-849204', name: 'Priya Nambiar', email: 'priya@neural.ai', ticket: 'Founder Grant (Complimentary)', status: 'Approved', checkinTime: '-', price: 0, date: '2026-10-06' },
+  { id: 'TKT-EPAY-849205', name: 'David Miller', email: 'david@cloud.com', ticket: 'AI Workshop Lab (Waitlisted)', status: 'Waitlist', checkinTime: '-', price: 3499, date: '2026-10-06' },
+  { id: 'TKT-EPAY-849206', name: 'Vikram Joshi', email: 'vikram@media.in', ticket: 'General Pass (Cancelled)', status: 'Refunded', checkinTime: '-', price: 2499, date: '2026-10-06' },
 ];
 
 
@@ -29,7 +30,7 @@ export default function OrganizerDashboardPage() {
     <div className="min-h-screen flex flex-col bg-slate-50">
       <Navbar />
 
-      <div className="bg-slate-900 text-white py-8 border-b border-slate-800">
+      <div className="bg-gradient-to-b from-slate-900 via-blue-950 to-slate-900 text-white py-8">
         <div className="container mx-auto px-4 md:px-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <span className="text-xs uppercase tracking-widest text-blue-400 font-bold">Organizer Portal</span>

@@ -107,6 +107,7 @@ export default function HomePage() {
   }, []);
 
   const [eventsList, setEventsList] = useState(mockEvents);
+  const [apiEvents, setApiEvents] = useState<any[]>([]);
 
   useEffect(() => {
     // Fetch live published events from API
@@ -115,8 +116,8 @@ export default function HomePage() {
         const res = await fetch('/api/events');
         const json = await res.json();
         if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-          // If returned data from API, map or sync
           console.log(`[HomePage] Loaded ${json.data.length} published events from /api/events`);
+          setApiEvents(json.data);
         }
       } catch (err) {
         console.error('[HomePage] Failed fetching /api/events:', err);
@@ -439,11 +440,33 @@ export default function HomePage() {
             viewport={{ once: true, margin: '-50px' }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {upcomingEvents.map(evt => (
-              <motion.div key={evt.id} variants={itemVariants}>
-                <EventCard event={evt} />
-              </motion.div>
-            ))}
+            {apiEvents.length > 0 ? (
+              apiEvents.map((evt: any) => (
+                <motion.div key={evt.id} variants={itemVariants}>
+                  <EventCard
+                    id={evt.id}
+                    title={evt.title}
+                    slug={evt.slug}
+                    coverImage={evt.coverImage}
+                    date={evt.date}
+                    startTime={evt.startTime}
+                    venue={evt.venue}
+                    city={evt.city}
+                    isOnline={evt.isOnline}
+                    startingPrice={evt.startingPrice}
+                    availableSeats={evt.availableSeats}
+                    category={evt.category}
+                    organizerName={evt.organizer?.name}
+                  />
+                </motion.div>
+              ))
+            ) : (
+              upcomingEvents.map(evt => (
+                <motion.div key={evt.id} variants={itemVariants}>
+                  <EventCard event={evt} />
+                </motion.div>
+              ))
+            )}
           </motion.div>
         </div>
       </section>

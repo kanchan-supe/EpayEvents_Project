@@ -150,7 +150,9 @@ export interface EventItem {
   faqs?: { question: string; answer: string }[];
   termsAndPolicy?: string[];
   couponCodes?: { code: string; discountPercent: number; description: string }[];
+  registrationFields?: any[];
 }
+
 
 export interface EventFilterParams {
   query?: string;

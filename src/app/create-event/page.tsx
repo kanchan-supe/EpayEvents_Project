@@ -3,9 +3,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
-  Check, ChevronRight, ChevronLeft, Plus, Trash2, Image as ImageIcon, 
-  Calendar, MapPin, Ticket as TicketIcon, FileText, CreditCard, Send, Sparkles, AlertCircle,
-  Users, Award, HelpCircle, ShieldCheck, Tag, UserCheck, MessageSquare, Phone
+  Check, ChevronRight, ChevronLeft, Plus, 
+  MapPin, Ticket as TicketIcon, FileText, Send, Sparkles,
+  Users, Award, HelpCircle, UserCheck
 } from 'lucide-react';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { 
@@ -111,7 +111,7 @@ export default function CreateEventWizard() {
   const [formData, setFormData] = useState<EventWizardData>(initialFormData);
   const [isPublished, setIsPublished] = useState(false);
 
-  const updateField = (field: keyof EventWizardData, value: any) => {
+  const updateField = <K extends keyof EventWizardData>(field: K, value: EventWizardData[K]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -252,8 +252,67 @@ export default function CreateEventWizard() {
     setFormData(prev => ({ ...prev, registrationFields: prev.registrationFields.filter(f => f.id !== id) }));
   };
 
-  const handlePublish = (status: 'draft' | 'published') => {
+  const handlePublish = async (status: 'draft' | 'published') => {
     updateField('status', status);
+    
+    // Automatically persist to Supabase if client is ready
+    try {
+      const { insertEventToSupabase } = await import('@/lib/supabase/dbService');
+      const slug = (formData.title || 'new-event')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)+/g, '') + '-' + Date.now().toString().slice(-4);
+
+      const eventItemToSave: any = {
+        id: `evt-${Date.now()}`,
+        title: formData.title || 'Untitled Event',
+        slug: slug,
+        shortDescription: formData.shortDescription || '',
+        description: formData.description || '',
+        bannerUrl: formData.bannerUrl || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1400&q=80',
+        eventType: formData.eventType,
+        status: status,
+        startDate: formData.startDate ? `${formData.startDate}T${formData.startTime}:00Z` : new Date().toISOString(),
+        endDate: formData.endDate ? `${formData.endDate}T${formData.endTime}:00Z` : new Date().toISOString(),
+        timezone: formData.timezone || 'IST',
+        featured: false,
+        category: {
+          id: `cat-${formData.categorySlug}`,
+          name: formData.categorySlug.replace('-', ' '),
+          slug: formData.categorySlug,
+          icon: 'Cpu',
+          description: '',
+        },
+        organization: {
+          id: `org-${Date.now()}`,
+          name: formData.organizerName || 'ePay Organizer',
+          slug: (formData.organizerName || 'org').toLowerCase().replace(/\s+/g, '-'),
+          verified: true,
+          contactEmail: formData.organizerEmail || 'organizer@epayevents.com',
+          avatar: formData.organizerAvatar,
+          bio: formData.organizerBio,
+        },
+        venue: {
+          name: formData.venueName || 'Main Convention Hall',
+          address: formData.address || '',
+          city: formData.city || 'Mumbai',
+          country: 'India',
+          onlineUrl: formData.onlineUrl || '',
+        },
+        speakers: formData.speakers,
+        agenda: formData.agenda,
+        sponsors: formData.sponsors,
+        exhibitors: formData.exhibitors,
+        ticketTypes: formData.ticketTypes,
+        faqs: formData.faqs,
+        registrationFields: formData.registrationFields,
+      };
+
+      await insertEventToSupabase(eventItemToSave);
+    } catch (err) {
+      console.warn('Could not save to Supabase:', err);
+    }
+
     setIsPublished(true);
   };
 
@@ -518,15 +577,17 @@ export default function CreateEventWizard() {
                 <div>
                   <label className="block text-sm font-bold text-[#1C1917] mb-2">Event Format</label>
                   <div className="grid grid-cols-3 gap-4">
-                    {[
-                      { id: 'physical', label: 'In-Person Venue' },
-                      { id: 'online', label: 'Online / Zoom' },
-                      { id: 'hybrid', label: 'Hybrid Event' }
-                    ].map(fmt => (
+                    {(
+                      [
+                        { id: 'physical', label: 'In-Person Venue' },
+                        { id: 'online', label: 'Online / Zoom' },
+                        { id: 'hybrid', label: 'Hybrid Event' }
+                      ] as const
+                    ).map(fmt => (
                       <button
                         key={fmt.id}
                         type="button"
-                        onClick={() => updateField('eventType', fmt.id as any)}
+                        onClick={() => updateField('eventType', fmt.id)}
                         className={`p-3 rounded-xl border font-bold text-xs transition ${
                           formData.eventType === fmt.id ? 'border-[#0F766E] bg-[#CCFBF1]/30 text-[#0F766E]' : 'border-[#E7E5E4] text-[#78716C]'
                         }`}
@@ -729,7 +790,7 @@ export default function CreateEventWizard() {
                         value={sp.tier}
                         onChange={e => {
                           const updated = [...formData.sponsors];
-                          updated[idx].tier = e.target.value as any;
+                          updated[idx].tier = e.target.value as SponsorForm['tier'];
                           updateField('sponsors', updated);
                         }}
                         className="rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs font-bold bg-white"
@@ -860,7 +921,7 @@ export default function CreateEventWizard() {
                             value={tkt.category || 'General'}
                             onChange={e => {
                               const updated = [...formData.ticketTypes];
-                              updated[idx].category = e.target.value as any;
+                              updated[idx].category = e.target.value as TicketTypeForm['category'];
                               updateField('ticketTypes', updated);
                             }}
                             className="w-full rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs font-bold bg-white text-[#1C1917]"
@@ -1212,7 +1273,7 @@ export default function CreateEventWizard() {
                           value={rf.fieldType}
                           onChange={e => {
                             const updated = [...formData.registrationFields];
-                            updated[idx].fieldType = e.target.value as any;
+                            updated[idx].fieldType = e.target.value as RegistrationField['fieldType'];
                             updateField('registrationFields', updated);
                           }}
                           className="w-full rounded-xl border border-[#E7E5E4] px-2 py-2 text-xs font-bold bg-white"

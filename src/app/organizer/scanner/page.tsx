@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { QrCode, CheckCircle2, XCircle, Search, RefreshCw, Camera, ArrowLeft, User, ShieldCheck } from 'lucide-react';
+import { QrCode, CheckCircle2, XCircle, Camera, ArrowLeft } from 'lucide-react';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 
 export default function QRScannerPage() {

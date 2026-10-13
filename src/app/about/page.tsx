@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { motion, Variants } from 'framer-motion';
 import { 
   Calendar, Ticket, Headphones, Target, Users, Cpu, Briefcase, Music, BookOpen, HeartPulse, Palette, 
-  ArrowRight, CheckCircle2, QrCode, LayoutDashboard, FileSpreadsheet, Zap, ShieldCheck, Eye,
-  Gamepad2, Flame, Trophy, Crosshair, Sparkles, Shield, Cpu as ChipIcon, Compass, Award
+  ArrowRight, QrCode, LayoutDashboard, FileSpreadsheet, Zap, ShieldCheck, Eye,
+  Gamepad2, Flame, Trophy, Crosshair, Shield
 } from 'lucide-react';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { mockCategories } from '@/lib/data';

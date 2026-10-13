@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Search, Filter, X } from 'lucide-react';
+import { Search, Filter } from 'lucide-react';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { EventCard } from '@/components/EventCard';
 import { getEvents, mockCategories } from '@/lib/data';

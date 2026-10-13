@@ -1,10 +1,30 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Calendar, MapPin, ArrowRight, Eye, Ticket, Clock, User, Sparkles, Users } from 'lucide-react';
 import { EventItem } from '@/lib/types';
+
+function formatEventDate(isoString: string) {
+  try {
+    const d = new Date(isoString);
+    if (isNaN(d.getTime())) return { date: isoString, time: '' };
+    return {
+      date: d.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+      time: d.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    };
+  } catch {
+    return { date: isoString, time: '' };
+  }
+}
 
 export function EventCard({ event }: { event: EventItem }) {
   const isEnded = event.status === 'ended';
@@ -18,23 +38,7 @@ export function EventCard({ event }: { event: EventItem }) {
     0
   );
 
-  const [dateInfo, setDateInfo] = useState({ date: '', time: '' });
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setDateInfo({
-        date: new Date(event.startDate).toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-        }),
-        time: new Date(event.startDate).toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-      });
-    }
-  }, [event.startDate]);
+  const dateInfo = formatEventDate(event.startDate);
 
   return (
     <motion.div

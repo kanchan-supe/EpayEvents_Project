@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { motion, useScroll, useTransform, useInView, AnimatePresence, Variants } from 'framer-motion';
+import { motion, useScroll, useTransform, useInView, Variants } from 'framer-motion';
 import { 
   Search, MapPin, Sparkles, Cpu, Briefcase, Music, BookOpen, HeartPulse, Palette, ArrowRight, 
-  ChevronLeft, ChevronRight, Calendar, CheckCircle2, ShieldCheck, Zap, BarChart2, Star, Quote, 
-  ChevronDown, HelpCircle, User, Globe, Laptop, Award, Video, Ticket, CreditCard, QrCode, Clock, ExternalLink, Mail, Bell, Percent, FileSpreadsheet, Lock, Activity
+  Calendar, ShieldCheck, Zap, BarChart2, Quote, 
+  ChevronDown, CreditCard, QrCode, Clock, Mail, Percent, FileSpreadsheet, Lock, Activity
 } from 'lucide-react';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { EventCard } from '@/components/EventCard';
@@ -167,12 +167,13 @@ export default function HomePage() {
               </p>
 
               {/* SEARCH EVENTS BAR */}
-              <form action="/events" method="GET" className="bg-white p-2.5 rounded-2xl shadow-2xl flex flex-col sm:flex-row gap-2 border border-[#E7E5E4]">
+              <form action="/events" method="GET" suppressHydrationWarning className="bg-white p-2.5 rounded-2xl shadow-2xl flex flex-col sm:flex-row gap-2 border border-[#E7E5E4]">
                 <div className="flex-1 flex items-center gap-3 px-3 py-2 border-b sm:border-b-0 sm:border-r border-[#E7E5E4]">
                   <Search className="h-5 w-5 text-[#0F766E]" />
                   <input
                     type="text"
                     name="query"
+                    suppressHydrationWarning
                     placeholder="Search event name, topic, or keyword..."
                     className="w-full bg-transparent text-[#1C1917] placeholder-[#78716C] text-sm focus:outline-none"
                   />
@@ -183,6 +184,7 @@ export default function HomePage() {
                   <input
                     type="text"
                     name="location"
+                    suppressHydrationWarning
                     placeholder="City or location..."
                     className="w-full bg-transparent text-[#1C1917] placeholder-[#78716C] text-sm focus:outline-none"
                   />
@@ -190,6 +192,7 @@ export default function HomePage() {
 
                 <button
                   type="submit"
+                  suppressHydrationWarning
                   className="rounded-xl bg-[#0F766E] px-6 py-3 text-sm font-semibold text-white hover:bg-[#115E59] transition shadow-md"
                 >
                   Search Events
@@ -535,6 +538,8 @@ export default function HomePage() {
               {[1, 2, 3, 4, 5, 6].map(num => (
                 <button
                   key={num}
+                  type="button"
+                  suppressHydrationWarning
                   onClick={() => setActiveStep(num)}
                   className={`w-10 h-10 rounded-full font-black text-xs transition-all flex items-center justify-center ${
                     activeStep === num
@@ -1085,6 +1090,8 @@ export default function HomePage() {
             {homeFaqs.map((faq, idx) => (
               <div key={idx} className="bg-white rounded-xl border border-[#E7E5E4] overflow-hidden shadow-sm">
                 <button
+                  type="button"
+                  suppressHydrationWarning
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                   className="w-full text-left p-4 font-bold text-sm text-[#1C1917] flex justify-between items-center"
                 >

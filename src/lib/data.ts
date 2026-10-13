@@ -1,4 +1,5 @@
 import { EventCategory, EventItem } from './types';
+import { supabase, isSupabaseConfigured } from './supabase/client';
 
 export const mockCategories: EventCategory[] = [
   { id: 'cat-1', name: 'Technology & AI', slug: 'tech-ai', icon: 'Cpu', description: 'Tech conferences, AI hackathons, software meetups', count: 18 },
@@ -691,38 +692,18 @@ We built the ePay Global FinTech Summit to bring together developers, founders, 
   },
 ];
 
-export async function getEvents(filters?: { query?: string; category?: string; location?: string; eventType?: string; price?: string }) {
-  let list = [...mockEvents];
-
-  if (filters?.query) {
-    const q = filters.query.toLowerCase();
-    list = list.filter(e => e.title.toLowerCase().includes(q) || e.shortDescription.toLowerCase().includes(q) || e.venue.city.toLowerCase().includes(q));
-  }
-
-  if (filters?.category && filters.category !== 'all') {
-    list = list.filter(e => e.category.slug === filters.category);
-  }
-
-  if (filters?.location && filters.location !== 'all') {
-    const loc = filters.location.toLowerCase();
-    list = list.filter(e => e.venue.city.toLowerCase() === loc);
-  }
-
-  if (filters?.eventType && filters.eventType !== 'all') {
-    list = list.filter(e => e.eventType === filters.eventType);
-  }
-
-  if (filters?.price) {
-    if (filters.price === 'free') {
-      list = list.filter(e => e.ticketTypes.some(t => t.price === 0));
-    } else if (filters.price === 'paid') {
-      list = list.filter(e => e.ticketTypes.some(t => t.price > 0));
-    }
-  }
-
-  return list;
+export async function getEvents(filters?: { query?: string; category?: string; location?: string; eventType?: string; price?: string }): Promise<EventItem[]> {
+  const { getEventsFromSupabase } = await import('./supabase/dbService');
+  return getEventsFromSupabase(filters);
 }
 
-export async function getEventBySlug(slug: string) {
-  return mockEvents.find(e => e.slug === slug) || mockEvents[0];
+export async function getEventBySlug(slug: string): Promise<EventItem | null> {
+  const { getEventBySlugFromSupabase } = await import('./supabase/dbService');
+  return getEventBySlugFromSupabase(slug);
 }
+
+export async function createEventInSupabase(eventData: Partial<EventItem>) {
+  const { insertEventToSupabase } = await import('./supabase/dbService');
+  return insertEventToSupabase(eventData as EventItem);
+}
+

@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { 
-  ShieldCheck, Users, Calendar, DollarSign, Settings, CheckCircle2, XCircle, AlertTriangle, Lock, Search, Filter, RefreshCw, FileText
+  Users, DollarSign, Lock, Search, FileText
 } from 'lucide-react';
 import { Navbar, Footer } from '@/components/NavbarFooter';
-import { mockEvents } from '@/lib/data';
+
+type AdminTab = 'organizers' | 'settlements' | 'logs' | 'security';
 
 const initialOrganizers = [
   { id: 'ORG-101', name: 'ePay Global Tech', owner: 'Rajesh Malhotra', email: 'rajesh@epay.com', eventsCount: 4, status: 'approved', joined: '2026-08-12' },
@@ -23,7 +23,7 @@ const mockAuditLogs = [
 
 export default function SuperAdminPage() {
   const [organizers, setOrganizers] = useState(initialOrganizers);
-  const [activeTab, setActiveTab] = useState<'organizers' | 'settlements' | 'logs' | 'security'>('organizers');
+  const [activeTab, setActiveTab] = useState<AdminTab>('organizers');
   const [searchQuery, setSearchQuery] = useState('');
 
   const toggleOrganizerStatus = (id: string) => {
@@ -62,17 +62,19 @@ export default function SuperAdminPage() {
       <main className="container mx-auto px-4 md:px-8 py-10 flex-1 space-y-8">
         {/* Navigation Tabs */}
         <div className="flex gap-2 border-b border-slate-800 pb-4 overflow-x-auto">
-          {[
-            { id: 'organizers', label: 'Organizer Approval & Management', icon: Users },
-            { id: 'settlements', label: 'Platform Settlements & Refunds', icon: DollarSign },
-            { id: 'logs', label: 'Security Audit Logs', icon: FileText },
-            { id: 'security', label: 'Rate Limiting & Security Settings', icon: Lock },
-          ].map(tab => {
+          {(
+            [
+              { id: 'organizers', label: 'Organizer Approval & Management', icon: Users },
+              { id: 'settlements', label: 'Platform Settlements & Refunds', icon: DollarSign },
+              { id: 'logs', label: 'Security Audit Logs', icon: FileText },
+              { id: 'security', label: 'Rate Limiting & Security Settings', icon: Lock },
+            ] as const
+          ).map(tab => {
             const Icon = tab.icon;
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition ${
                   activeTab === tab.id
                     ? 'bg-blue-600 text-white shadow'

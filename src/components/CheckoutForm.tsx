@@ -1,13 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { 
-  Ticket, ShieldCheck, Tag, CreditCard, CheckCircle2, User, Mail, Phone, Lock, Sparkles, 
-  Percent, Users, Clock, Key, AlertCircle, ArrowRightLeft, Undo2, Award, Info
+  Ticket, ShieldCheck, Tag, CreditCard, CheckCircle2, User, Lock, Sparkles, 
+  Users, Clock, Key, AlertCircle, ArrowRightLeft, Undo2, Award
 } from 'lucide-react';
-import { EventItem, TicketType } from '@/lib/types';
+import { EventItem } from '@/lib/types';
 
 export function CheckoutForm({ event, initialTicketId }: { event: EventItem; initialTicketId?: string }) {
   const router = useRouter();
@@ -62,7 +61,7 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
   event.ticketTypes.forEach(t => {
     const qty = ticketQuantities[t.id] || 0;
     if (qty > 0) {
-      let baseTierPrice = t.price;
+      const baseTierPrice = t.price;
       const tierSubtotal = baseTierPrice * qty;
       subtotal += tierSubtotal;
 
@@ -133,7 +132,7 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
     setTimeout(() => setWaitlistSuccess(null), 5000);
   };
 
-  const handleCompletePayment = (e: React.FormEvent) => {
+  const handleCompletePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (totalTicketsSelected === 0) {
       alert('Please select at least 1 ticket to proceed.');
@@ -141,8 +140,55 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
     }
     setIsProcessing(true);
 
+    const orderId = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+    const ticketId = `EPAY-${orderId}-TKT-1`;
+    const ticketTier = activeSelectedTier || event.ticketTypes[0];
+
+    try {
+      const { createOrderInSupabase } = await import('@/lib/supabase/dbService');
+      await createOrderInSupabase(
+        {
+          id: orderId,
+          event_id: event.id,
+          buyer_name: buyerName,
+          buyer_email: buyerEmail,
+          buyer_phone: buyerPhone,
+          subtotal: subtotal,
+          discount_amount: groupDiscountAmount + (subtotal * appliedDiscount) / 100,
+          coupon_code: couponCode || undefined,
+          total: total,
+          status: 'completed',
+          payment_method: paymentMethod,
+          tickets_count: totalTicketsSelected,
+          approval_required: Boolean(ticketTier?.isApprovalRequired),
+        },
+        {
+          id: ticketId,
+          order_id: orderId,
+          event_id: event.id,
+          event_title: event.title,
+          ticket_type_id: ticketTier?.id || 'tkt-1',
+          ticket_name: ticketTier?.name || 'Event Pass',
+          category: ticketTier?.category || 'General',
+          buyer_name: buyerName,
+          buyer_email: buyerEmail,
+          buyer_phone: buyerPhone,
+          price_paid: total,
+          qr_payload: JSON.stringify({
+            ticketId,
+            orderId,
+            eventId: event.id,
+            buyerEmail,
+            eventTitle: event.title,
+          }),
+          status: ticketTier?.isApprovalRequired ? 'pending_approval' : 'valid',
+        }
+      );
+    } catch (err) {
+      console.warn('Could not save order to Supabase:', err);
+    }
+
     setTimeout(() => {
-      const orderId = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
       const queryParams = new URLSearchParams({
         orderId,
         buyerName,
@@ -161,8 +207,9 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
       });
 
       router.push(`/order-success?${queryParams.toString()}`);
-    }, 1500);
+    }, 1200);
   };
+
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -474,11 +521,13 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {[
-                { id: 'epay_upi', label: 'ePay / UPI Instant', desc: 'GPay, PhonePe, Paytm, QR' },
-                { id: 'card', label: 'Credit / Debit Card', desc: 'Visa, MasterCard, RuPay' },
-                { id: 'netbanking', label: 'Net Banking', desc: 'All Major Indian Banks' },
-              ].map(pm => (
+              {(
+                [
+                  { id: 'epay_upi', label: 'ePay / UPI Instant', desc: 'GPay, PhonePe, Paytm, QR' },
+                  { id: 'card', label: 'Credit / Debit Card', desc: 'Visa, MasterCard, RuPay' },
+                  { id: 'netbanking', label: 'Net Banking', desc: 'All Major Indian Banks' },
+                ] as const
+              ).map(pm => (
                 <label
                   key={pm.id}
                   className={`p-3.5 rounded-xl border cursor-pointer flex flex-col justify-between transition ${
@@ -491,7 +540,7 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
                       type="radio"
                       name="paymentMethod"
                       checked={paymentMethod === pm.id}
-                      onChange={() => setPaymentMethod(pm.id as any)}
+                      onChange={() => setPaymentMethod(pm.id)}
                       className="sr-only"
                     />
                   </div>

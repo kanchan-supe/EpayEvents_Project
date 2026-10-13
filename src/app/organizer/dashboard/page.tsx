@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { 
-  BarChart3, Calendar, Users, DollarSign, QrCode, PlusCircle, Download, CheckCircle2, Search, ArrowUpRight, TrendingUp, Settings, Wallet
+  Calendar, Users, QrCode, PlusCircle, CheckCircle2, TrendingUp, Wallet
 } from 'lucide-react';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { mockEvents } from '@/lib/data';

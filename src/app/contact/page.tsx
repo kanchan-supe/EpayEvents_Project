@@ -1,29 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { 
-  Mail, Phone, MapPin, Send, CheckCircle2, MessageSquare, Clock, 
-  Gamepad2, Flame, Shield, Radio, Terminal, Sparkles, Zap, Crosshair
+  Mail, Phone, MapPin, Send, CheckCircle2, Clock, 
+  Radio, Terminal, Zap
 } from 'lucide-react';
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
-  },
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5 },
-  },
-};
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);

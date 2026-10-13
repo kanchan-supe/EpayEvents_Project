@@ -47,9 +47,11 @@ const itemVariants: Variants = {
   },
 };
 
+type AdminTab = 'organizers' | 'settlements' | 'logs' | 'security';
+
 export default function SuperAdminPage() {
   const [organizers, setOrganizers] = useState(initialOrganizers);
-  const [activeTab, setActiveTab] = useState<'organizers' | 'settlements' | 'logs' | 'security'>('organizers');
+  const [activeTab, setActiveTab] = useState<AdminTab>('organizers');
   const [searchQuery, setSearchQuery] = useState('');
   const [serverStatus, setServerStatus] = useState<'OPERATIONAL' | 'SHIELD_ACTIVE'>('OPERATIONAL');
 

@@ -1,4 +1,5 @@
 import { EventCategory, EventItem } from './types';
+import { supabase, isSupabaseConfigured } from './supabase/client';
 
 export const mockCategories: EventCategory[] = [
   { id: 'cat-1', name: 'Technology & AI', slug: 'tech-ai', icon: 'Cpu', description: 'Tech conferences, AI hackathons, software meetups', count: 18 },
@@ -833,7 +834,17 @@ export function addPublishedEvent(event: EventItem): EventItem {
   return event;
 }
 
-export async function getEvents(filters?: { query?: string; category?: string; location?: string; eventType?: string; price?: string }) {
+export async function getEvents(filters?: { query?: string; category?: string; location?: string; eventType?: string; price?: string }): Promise<EventItem[]> {
+  try {
+    const { getEventsFromSupabase } = await import('./supabase/dbService');
+    const supaEvents = await getEventsFromSupabase(filters);
+    if (supaEvents && supaEvents.length > 0) {
+      return supaEvents;
+    }
+  } catch (err) {
+    console.warn('Supabase getEvents fallback to local store:', err);
+  }
+
   let list = [...getAllEvents()];
 
   if (filters?.query) {
@@ -865,7 +876,22 @@ export async function getEvents(filters?: { query?: string; category?: string; l
   return list;
 }
 
-export async function getEventBySlug(slug: string) {
+export async function getEventBySlug(slug: string): Promise<EventItem | null> {
+  try {
+    const { getEventBySlugFromSupabase } = await import('./supabase/dbService');
+    const supaEvent = await getEventBySlugFromSupabase(slug);
+    if (supaEvent) {
+      return supaEvent;
+    }
+  } catch (err) {
+    console.warn('Supabase getEventBySlug fallback to local store:', err);
+  }
+
   const all = getAllEvents();
-  return all.find(e => e.slug === slug) || all[0];
+  return all.find(e => e.slug === slug) || all[0] || null;
+}
+
+export async function createEventInSupabase(eventData: Partial<EventItem>) {
+  const { insertEventToSupabase } = await import('./supabase/dbService');
+  return insertEventToSupabase(eventData as EventItem);
 }

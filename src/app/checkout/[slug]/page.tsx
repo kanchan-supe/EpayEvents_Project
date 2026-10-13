@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { CheckoutForm } from '@/components/CheckoutForm';

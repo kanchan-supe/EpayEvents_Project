@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion, Variants } from 'framer-motion';
 import { 
-  Calendar, MapPin, Ticket, ShieldCheck, Share2, Clock, Globe, ArrowLeft, CheckCircle2, 
-  Building2, Mail, Wifi, Utensils, QrCode, Video, Car, Coffee, Award, Music, Sun, Sparkles, 
-  AlertCircle, ChevronDown, Copy, Check, Send, ExternalLink, HelpCircle, FileText, UserCheck, Tag, MessageSquare
+  Calendar, MapPin, Ticket, ShieldCheck, Share2, Clock, Globe, CheckCircle2, 
+  Building2, Mail, Sparkles, QrCode, 
+  ChevronDown, Copy, Check, Send, ExternalLink, FileText, Tag
 } from 'lucide-react';
 import { EventItem } from '@/lib/types';
 import { ContactOrganizerButton } from '@/components/ContactOrganizerButton';
@@ -14,19 +14,6 @@ import { ContactOrganizerButton } from '@/components/ContactOrganizerButton';
 interface EventDetailClientProps {
   event: EventItem;
 }
-
-const facilityIconMap: Record<string, React.ReactNode> = {
-  Wifi: <Wifi className="h-5 w-5 text-[#0F766E]" />,
-  Utensils: <Utensils className="h-5 w-5 text-[#F97316]" />,
-  QrCode: <QrCode className="h-5 w-5 text-[#059669]" />,
-  Video: <Video className="h-5 w-5 text-purple-600" />,
-  Parking: <Car className="h-5 w-5 text-amber-600" />,
-  ShieldCheck: <ShieldCheck className="h-5 w-5 text-[#059669]" />,
-  Coffee: <Coffee className="h-5 w-5 text-amber-700" />,
-  Award: <Award className="h-5 w-5 text-yellow-600" />,
-  Music: <Music className="h-5 w-5 text-pink-600" />,
-  Sun: <Sun className="h-5 w-5 text-amber-500" />,
-};
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -45,6 +32,27 @@ const itemVariants: Variants = {
   },
 };
 
+function formatDetailDate(isoString: string) {
+  try {
+    const d = new Date(isoString);
+    if (isNaN(d.getTime())) return { date: isoString, time: '' };
+    return {
+      date: d.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+      time: d.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    };
+  } catch {
+    return { date: isoString, time: '' };
+  }
+}
+
 export function EventDetailClient({ event }: EventDetailClientProps) {
   const [copied, setCopied] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -53,26 +61,8 @@ export function EventDetailClient({ event }: EventDetailClientProps) {
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountPercent: number } | null>(null);
   const [couponError, setCouponError] = useState('');
   const [contactSubmitted, setContactSubmitted] = useState(false);
-  const [shareUrl, setShareUrl] = useState('');
-  const [formattedDate, setFormattedDate] = useState({ date: '', time: '' });
 
-  React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setShareUrl(window.location.href);
-      setFormattedDate({
-        date: new Date(event.startDate).toLocaleDateString('en-US', {
-          weekday: 'long',
-          month: 'long',
-          day: 'numeric',
-          year: 'numeric',
-        }),
-        time: new Date(event.startDate).toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-      });
-    }
-  }, [event.startDate]);
+  const formattedDate = formatDetailDate(event.startDate);
 
   const isEnded = event.status === 'ended';
   const startDateFormatted = formattedDate.date || event.startDate;
@@ -876,37 +866,43 @@ export function EventDetailClient({ event }: EventDetailClientProps) {
                   <span>{copied ? 'Copied!' : 'Copy Link'}</span>
                 </button>
 
-                <a
-                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out ${event.title}: ${shareUrl}`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+                    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out ${event.title}: ${currentUrl}`)}`, '_blank');
+                  }}
                   className="p-3 bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white rounded-xl transition"
                   aria-label="Share on WhatsApp"
                 >
                   <Send className="h-4 w-4" />
-                </a>
+                </button>
 
-                <a
-                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(event.title)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+                    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(event.title)}&url=${encodeURIComponent(currentUrl)}`, '_blank');
+                  }}
                   className="p-3 bg-sky-50 text-sky-700 hover:bg-sky-600 hover:text-white rounded-xl transition flex items-center gap-1 text-xs font-bold"
                   aria-label="Share on X"
                 >
                   <Globe className="h-4 w-4" />
                   <span>X / Twitter</span>
-                </a>
+                </button>
 
-                <a
-                  href={`https://www.linkedin.com/sharing/share-offsite/`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+                    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`, '_blank');
+                  }}
                   className="p-3 bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white rounded-xl transition flex items-center gap-1 text-xs font-bold"
                   aria-label="Share on LinkedIn"
                 >
                   <Share2 className="h-4 w-4" />
                   <span>LinkedIn</span>
-                </a>
+                </button>
               </div>
             </motion.section>
 

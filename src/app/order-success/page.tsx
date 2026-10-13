@@ -4,9 +4,9 @@ import React, { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { 
-  CheckCircle2, Download, QrCode, Mail, Phone, Calendar, MapPin, 
-  Ticket as TicketIcon, ArrowRight, ShieldCheck, ArrowRightLeft, Undo2, 
-  Share2, AlertCircle, Copy, Check
+  CheckCircle2, Download, Mail, MapPin, 
+  ArrowRight, ArrowRightLeft, Undo2, 
+  Copy, Check
 } from 'lucide-react';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { Logo } from '@/components/Logo';
@@ -141,7 +141,7 @@ function OrderSuccessContent() {
           {/* Ticket Body: Unique ID, Attendee, and QR Payload */}
           <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-6">
             <div className="space-y-2.5 text-xs text-slate-300 w-full sm:w-auto">
-              <p><strong>Primary Attendee:</strong> {buyerName}</p>
+              <p><strong>Primary Attendee:</strong> {buyerName} ({buyerPhone})</p>
               <p><strong>Unique Ticket ID:</strong> <span className="font-mono text-cyan-300 font-bold">{ticketCode}</span></p>
               <p><strong>Pass Count:</strong> {qty} Pass</p>
               <p><strong>Amount Paid:</strong> ₹{total}</p>

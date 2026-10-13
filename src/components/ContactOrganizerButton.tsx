@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { 
-  Building2, Mail, CheckCircle2
+  Building2, Mail
 } from 'lucide-react';
 
 export function ContactOrganizerButton({ orgName, email }: { orgName: string; email?: string }) {

@@ -20,6 +20,8 @@ export const metadata = {
   description: 'Search and filter tech conferences, hackathons, workshops, and concerts.',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function EventsPage({ searchParams }: SearchParamsProps) {
   const resolvedParams = searchParams ? await searchParams : {};
   const query = resolvedParams.query || '';
@@ -29,6 +31,8 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
   const price = resolvedParams.price || 'all';
 
   const events = await getEvents({ query, category, location, eventType, price });
+  // Ensure only events with status = 'published' are displayed
+  const publishedEvents = events.filter(e => e.status === 'published');
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
@@ -131,10 +135,10 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
             </form>
 
             <div className="flex items-center justify-between text-sm text-[#78716C]">
-              <span>Showing <strong className="text-[#1C1917]">{events.length}</strong> events</span>
+              <span>Showing <strong className="text-[#1C1917]">{publishedEvents.length}</strong> published events</span>
             </div>
 
-            {events.length === 0 ? (
+            {publishedEvents.length === 0 ? (
               <div className="bg-white border border-[#E7E5E4] rounded-xl p-12 text-center">
                 <p className="text-[#78716C]">No events matched your search criteria.</p>
                 <Link href="/events" className="mt-4 inline-block text-sm font-semibold text-[#0F766E] hover:underline">
@@ -142,8 +146,8 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
                 </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {events.map(evt => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {publishedEvents.map(evt => (
                   <EventCard key={evt.id} event={evt} />
                 ))}
               </div>

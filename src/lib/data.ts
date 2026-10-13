@@ -11,6 +11,120 @@ export const mockCategories: EventCategory[] = [
 
 export const mockEvents: EventItem[] = [
   {
+    id: 'evt_9f3k2',
+    title: 'AI Business Summit 2026',
+    slug: 'ai-business-summit-2026',
+    shortDescription: 'Discover enterprise generative AI applications, agentic workflows, and executive leadership strategies shaping Indian and global business.',
+    description: `
+Welcome to the flagship AI Business Summit 2026 at the Bombay Exhibition Centre, Mumbai.
+
+Join over 3,000 executive leaders, founders, AI researchers, and solution architects discussing the real-world deployment of generative AI, automated business pipelines, and agentic systems.
+
+### Key Highlights
+- **Executive Keynotes**: Insights from visionary tech leaders scaling enterprise AI.
+- **Hands-on Masterclasses**: Deep dives into LLM fine-tuning, security guardrails, and automated agents.
+- **Networking Lounges**: Connect with VCs, industry peers, and enterprise partners.
+- **Expo Floor**: Live demos of cutting-edge AI software and robotics.
+    `,
+    bannerUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1400&q=80',
+    eventType: 'physical',
+    status: 'published',
+    startDate: '2026-11-15T10:00:00Z',
+    endDate: '2026-11-16T18:00:00Z',
+    timezone: 'IST',
+    featured: true,
+    category: mockCategories[0],
+    organization: {
+      id: 'org-techforward',
+      name: 'TechForward India',
+      slug: 'techforward-india',
+      verified: true,
+      contactEmail: 'contact@techforward.in',
+      avatar: '/team/rahul.jpg',
+      bio: 'TechForward India hosts world-class technology, AI, and leadership summits across Asia.',
+    },
+    venue: {
+      name: 'Bombay Exhibition Centre',
+      address: 'NESCO, Western Express Highway, Goregaon East',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      latitude: 19.1551,
+      longitude: 72.8541,
+    },
+    facilities: [
+      { icon: 'Wifi', title: 'Gigabit Event Wi-Fi', description: 'Enterprise mesh Wi-Fi across all exhibition halls.' },
+      { icon: 'Utensils', title: 'Executive Lunch Buffet', description: 'Gourmet lunch and networking beverages included.' },
+      { icon: 'QrCode', title: 'Rapid QR Check-in', description: 'Scan your mobile pass at entry in under a second.' },
+      { icon: 'Video', title: 'Keynote Replays', description: 'Access on-demand recordings of all presentations.' },
+    ],
+    ticketTypes: [
+      {
+        id: 'tkt-ai-early',
+        name: 'Early Bird Conference Pass',
+        description: 'Complete 2-day summit access, keynote tracks, lunch buffet, and developer swag.',
+        price: 1499,
+        originalPrice: 2499,
+        quantity: 500,
+        remainingQuantity: 342,
+        minPerOrder: 1,
+        maxPerOrder: 5,
+        category: 'General',
+        isEarlyBird: true,
+        earlyBirdDeadline: 'Ends Soon (342 Seats Available)',
+        isTransferrable: true,
+        isRefundable: true,
+        refundPolicyDays: 7,
+        features: ['Access to all Keynotes & AI Tracks', 'Full Lunch & Networking Buffet', 'Digital Swag Bag & Certificate', 'Instant QR Pass with Gate Scanner'],
+        isPopular: true,
+      },
+      {
+        id: 'tkt-ai-vip',
+        name: 'VIP Executive Pass',
+        description: 'VIP lounge access, priority front-row seating, and private dinner with keynote speakers.',
+        price: 4999,
+        originalPrice: 5999,
+        quantity: 100,
+        remainingQuantity: 48,
+        minPerOrder: 1,
+        maxPerOrder: 4,
+        category: 'VIP',
+        features: ['VIP Front Row Seating', 'Exclusive Speaker Dinner Access', 'Priority Fast-Track Entry', 'All Session Video Replays'],
+        isPopular: false,
+      },
+    ],
+    speakers: [
+      {
+        name: 'Dr. Rajesh Verma',
+        role: 'Head of AI Engineering',
+        company: 'TechCorp India',
+        avatar: '/speakers/speaker1.jpg',
+        bio: 'Leading enterprise LLM adoption and autonomous agent architectures.',
+      },
+      {
+        name: 'Priya Sharma',
+        role: 'VP of Product',
+        company: 'CognitiveLabs',
+        avatar: '/speakers/speaker2.jpg',
+        bio: 'Designing human-centric agentic AI workflows and tools.',
+      },
+    ],
+    agenda: [
+      {
+        time: '10:00 AM - 11:30 AM',
+        title: 'Opening Keynote: The Enterprise AI Landscape 2026',
+        description: 'Executive briefing on modern multimodal models and agentic automation.',
+        speaker: 'Dr. Rajesh Verma',
+      },
+      {
+        time: '11:45 AM - 01:00 PM',
+        title: 'Autonomous Agents in Production',
+        description: 'Case studies of deploying robust agentic loops in real business applications.',
+        speaker: 'Priya Sharma',
+      },
+    ],
+  },
+  {
     id: 'evt-101',
     title: 'ePay Global FinTech & Payments Summit 2026',
     slug: 'epay-global-fintech-summit-2026',
@@ -691,8 +805,36 @@ We built the ePay Global FinTech Summit to bring together developers, founders, 
   },
 ];
 
+// In-memory global store to keep newly published events across requests
+const globalDataStore = globalThis as unknown as {
+  __epay_events__?: EventItem[];
+};
+
+if (!globalDataStore.__epay_events__) {
+  globalDataStore.__epay_events__ = [...mockEvents];
+}
+
+export function getAllEvents(): EventItem[] {
+  if (!globalDataStore.__epay_events__) {
+    globalDataStore.__epay_events__ = [...mockEvents];
+  }
+  return globalDataStore.__epay_events__;
+}
+
+export function addPublishedEvent(event: EventItem): EventItem {
+  const current = getAllEvents();
+  const idx = current.findIndex(e => e.id === event.id || e.slug === event.slug);
+  if (idx >= 0) {
+    current[idx] = event;
+  } else {
+    current.unshift(event);
+  }
+  globalDataStore.__epay_events__ = current;
+  return event;
+}
+
 export async function getEvents(filters?: { query?: string; category?: string; location?: string; eventType?: string; price?: string }) {
-  let list = [...mockEvents];
+  let list = [...getAllEvents()];
 
   if (filters?.query) {
     const q = filters.query.toLowerCase();
@@ -724,5 +866,6 @@ export async function getEvents(filters?: { query?: string; category?: string; l
 }
 
 export async function getEventBySlug(slug: string) {
-  return mockEvents.find(e => e.slug === slug) || mockEvents[0];
+  const all = getAllEvents();
+  return all.find(e => e.slug === slug) || all[0];
 }

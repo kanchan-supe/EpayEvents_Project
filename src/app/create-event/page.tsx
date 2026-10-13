@@ -106,10 +106,16 @@ const STEPS = [
   { id: 9, title: 'Publish', icon: Send },
 ];
 
+import { useRouter } from 'next/navigation';
+
 export default function CreateEventWizard() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<EventWizardData>(initialFormData);
   const [isPublished, setIsPublished] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [publishError, setPublishError] = useState<string | null>(null);
+  const [publishedSlug, setPublishedSlug] = useState<string>('');
 
   const updateField = (field: keyof EventWizardData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -252,9 +258,44 @@ export default function CreateEventWizard() {
     setFormData(prev => ({ ...prev, registrationFields: prev.registrationFields.filter(f => f.id !== id) }));
   };
 
-  const handlePublish = (status: 'draft' | 'published') => {
-    updateField('status', status);
-    setIsPublished(true);
+  const handlePublish = async (status: 'draft' | 'published') => {
+    setIsSubmitting(true);
+    setPublishError(null);
+
+    const payload = {
+      ...formData,
+      status,
+    };
+
+    console.log('[CreateEvent] Submitting event payload to /api/events:', payload);
+
+    try {
+      const response = await fetch('/api/events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+      console.log('[CreateEvent] Server response:', result);
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'Failed to publish event. Please verify all required fields.');
+      }
+
+      const createdEvent = result.data;
+      setPublishedSlug(createdEvent?.slug || '');
+      updateField('status', status);
+      setIsPublished(true);
+      console.log(`[CreateEvent] Event successfully saved with slug: "${createdEvent?.slug}" and status: "${status}"`);
+    } catch (err: any) {
+      console.error('[CreateEvent] Submission failed:', err);
+      setPublishError(err.message || 'An unexpected error occurred while publishing the event.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -333,12 +374,23 @@ export default function CreateEventWizard() {
               <p><strong>Ticket Tiers:</strong> {formData.ticketTypes.length} tiers configured</p>
             </div>
 
-            <div className="mt-8 flex justify-center gap-4">
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              {publishedSlug && (
+                <Link
+                  href={`/events/${publishedSlug}`}
+                  className="rounded-xl bg-[#F97316] px-6 py-3 text-sm font-bold text-white hover:bg-[#ea580c] transition shadow-md flex items-center gap-2"
+                >
+                  <span>🎉 View Event Live</span>
+                </Link>
+              )}
               <Link href="/events" className="rounded-xl bg-[#0F766E] px-6 py-3 text-sm font-bold text-white hover:bg-[#115E59] transition shadow">
-                View All Events
+                Browse /events
+              </Link>
+              <Link href="/organizer/dashboard" className="rounded-xl border border-[#0F766E] text-[#0F766E] bg-white px-6 py-3 text-sm font-bold hover:bg-[#CCFBF1]/20 transition">
+                Organizer Dashboard
               </Link>
               <button 
-                onClick={() => { setIsPublished(false); setCurrentStep(1); setFormData(initialFormData); }}
+                onClick={() => { setIsPublished(false); setCurrentStep(1); setFormData(initialFormData); setPublishedSlug(''); }}
                 className="rounded-xl border border-[#E7E5E4] px-6 py-3 text-sm font-bold text-[#1C1917] hover:bg-slate-100 transition"
               >
                 Create Another Event
@@ -1256,18 +1308,36 @@ export default function CreateEventWizard() {
                   <p><strong>FAQs:</strong> {formData.faqs.length} answered questions</p>
                 </div>
 
+                {publishError && (
+                  <div className="rounded-xl bg-rose-50 border border-rose-200 p-4 text-xs font-semibold text-rose-700 flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4 shrink-0" />
+                    <span>{publishError}</span>
+                  </div>
+                )}
+
                 <div className="flex gap-4 pt-4">
                   <button
                     type="button"
+                    disabled={isSubmitting}
                     onClick={() => handlePublish('published')}
-                    className="flex-1 rounded-xl bg-[#0F766E] py-3.5 text-sm font-bold text-white hover:bg-[#115E59] transition shadow-lg"
+                    className={`flex-1 rounded-xl bg-[#0F766E] py-3.5 text-sm font-bold text-white transition shadow-lg flex items-center justify-center gap-2 ${
+                      isSubmitting ? 'opacity-60 cursor-not-allowed' : 'hover:bg-[#115E59]'
+                    }`}
                   >
-                    🚀 Publish Event Live Now
+                    {isSubmitting ? (
+                      <>
+                        <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Publishing to Platform...</span>
+                      </>
+                    ) : (
+                      <span>🚀 Publish Event Live Now</span>
+                    )}
                   </button>
                   <button
                     type="button"
+                    disabled={isSubmitting}
                     onClick={() => handlePublish('draft')}
-                    className="rounded-xl border border-[#E7E5E4] bg-white px-6 py-3.5 text-sm font-bold text-[#1C1917] hover:bg-slate-100 transition"
+                    className="rounded-xl border border-[#E7E5E4] bg-white px-6 py-3.5 text-sm font-bold text-[#1C1917] hover:bg-slate-100 transition disabled:opacity-60"
                   >
                     Save as Draft
                   </button>

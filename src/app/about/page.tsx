@@ -6,7 +6,8 @@ import { motion, Variants } from 'framer-motion';
 import { 
   Calendar, Ticket, Headphones, Target, Users, Cpu, Briefcase, Music, BookOpen, HeartPulse, Palette, 
   ArrowRight, CheckCircle2, QrCode, LayoutDashboard, FileSpreadsheet, Zap, ShieldCheck, Eye,
-  Gamepad2, Flame, Trophy, Crosshair, Sparkles, Shield, Cpu as ChipIcon, Compass, Award
+  Gamepad2, Flame, Trophy, Crosshair, Sparkles, Shield, Cpu as ChipIcon, Compass, Award,
+  XCircle, FileX, MessageSquare, AlertTriangle, Layers, Smartphone, RefreshCw, BarChart3, TrendingUp, Check
 } from 'lucide-react';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { mockCategories } from '@/lib/data';
@@ -297,6 +298,167 @@ export default function AboutUsPage() {
             </motion.div>
 
           </div>
+        </div>
+      </section>
+
+      {/* 2.5 COMPARISON SECTION: FROM CHAOS TO CONTROL (Compact Gaming-Style "VS" Battle Matrix) */}
+      <section className="py-12 sm:py-16 bg-gradient-to-b from-[#0B0F19] via-[#0F172A] to-[#0B0F19] text-white relative overflow-hidden font-sans">
+        {/* Compact Glow Ambient Orbs */}
+        <div className="absolute top-1/2 left-10 -translate-y-1/2 w-64 h-64 bg-rose-900/15 rounded-full blur-[90px] pointer-events-none" />
+        <div className="absolute top-1/2 right-10 -translate-y-1/2 w-72 h-72 bg-[#0F766E]/20 rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="container mx-auto px-4 md:px-8 max-w-5xl relative z-10">
+          {/* Header (Compact) */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-30px' }}
+            transition={{ duration: 0.5 }}
+            className="text-center max-w-xl mx-auto mb-10 space-y-2"
+          >
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-mono font-bold tracking-wider uppercase text-[#FFEDD5]">
+              <Flame className="h-3.5 w-3.5 text-[#F97316]" />
+              <span>HEAD-TO-HEAD SHOWDOWN</span>
+            </div>
+            <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-white">
+              From <span className="text-rose-400">Chaos</span> to <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-emerald-300 to-[#F97316]">Control</span>
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300">
+              See the difference between the old way of managing events and the ePayEvents way.
+            </p>
+          </motion.div>
+
+          {/* Compact VS Row Comparison Matrix */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-30px' }}
+            transition={{ duration: 0.5 }}
+            className="rounded-3xl border border-slate-800 bg-[#0F131F]/90 backdrop-blur-xl shadow-2xl overflow-hidden"
+          >
+            {/* Column Headers with Center VS Emblem */}
+            <div className="grid grid-cols-1 md:grid-cols-2 relative border-b border-slate-800">
+              {/* Left Column Header */}
+              <div className="p-4 sm:p-5 bg-rose-950/20 border-b md:border-b-0 md:border-r border-slate-800 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse" />
+                  <div>
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-rose-400 font-bold block">OLD WAY</span>
+                    <h3 className="text-base font-extrabold text-slate-200">Before ePayEvents</h3>
+                  </div>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-bold">
+                  Legacy Friction
+                </span>
+              </div>
+
+              {/* Center VS Badge */}
+              <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-[#0F172A] border-2 border-[#0F766E] text-white font-mono font-black text-xs items-center justify-center shadow-lg z-20">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-[#F97316]">VS</span>
+              </div>
+
+              {/* Right Column Header */}
+              <div className="p-4 sm:p-5 bg-gradient-to-r from-[#0F766E]/15 to-[#F97316]/10 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+                  <div>
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold block">NEXT-GEN OPS</span>
+                    <h3 className="text-base font-extrabold text-white flex items-center gap-1.5">
+                      <span>With ePayEvents</span>
+                      <Trophy className="h-4 w-4 text-[#F97316]" />
+                    </h3>
+                  </div>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#0F766E] to-emerald-600 text-white text-[10px] font-extrabold uppercase tracking-wide shadow-sm">
+                  Powered Win
+                </span>
+              </div>
+            </div>
+
+            {/* Comparison Rows */}
+            <div className="divide-y divide-slate-800/80 text-xs">
+              {[
+                {
+                  before: { text: 'Google Forms + Excel sheets', icon: FileSpreadsheet },
+                  after: { text: 'Simple online registration', icon: Smartphone }
+                },
+                {
+                  before: { text: 'Manual payment screenshots', icon: FileX },
+                  after: { text: 'Instant ticket booking & payments', icon: Zap }
+                },
+                {
+                  before: { text: 'WhatsApp groups for registration', icon: MessageSquare },
+                  after: { text: 'Automatic QR tickets', icon: QrCode }
+                },
+                {
+                  before: { text: 'No real-time data', icon: AlertTriangle },
+                  after: { text: 'Live dashboard & reports', icon: BarChart3 }
+                },
+                {
+                  before: { text: 'Long queues at check-in', icon: Users },
+                  after: { text: 'Fast QR check-in (0.5s)', icon: CheckCircle2 }
+                },
+                {
+                  before: { text: 'Difficult to track attendance', icon: XCircle },
+                  after: { text: 'Everything in one place', icon: Layers }
+                },
+              ].map((row, idx) => {
+                const BeforeIcon = row.before.icon;
+                const AfterIcon = row.after.icon;
+
+                return (
+                  <motion.div 
+                    key={idx}
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: idx * 0.05 }}
+                    className="grid grid-cols-1 md:grid-cols-2 group hover:bg-white/[0.02] transition-colors"
+                  >
+                    {/* Before Item */}
+                    <div className="p-3.5 sm:px-6 flex items-center gap-3 bg-rose-950/5 md:border-r border-slate-800">
+                      <div className="p-1.5 rounded-lg bg-rose-500/10 text-rose-400 shrink-0 border border-rose-500/20">
+                        <BeforeIcon className="h-3.5 w-3.5" />
+                      </div>
+                      <span className="text-slate-300 font-medium group-hover:text-rose-200 transition-colors">
+                        {row.before.text}
+                      </span>
+                    </div>
+
+                    {/* After Item */}
+                    <div className="p-3.5 sm:px-6 flex items-center justify-between gap-3 bg-[#0F766E]/5 group-hover:bg-[#0F766E]/10 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="p-1.5 rounded-lg bg-gradient-to-br from-[#0F766E] to-teal-500 text-white shrink-0 shadow-sm">
+                          <AfterIcon className="h-3.5 w-3.5" />
+                        </div>
+                        <span className="text-white font-bold group-hover:text-cyan-300 transition-colors">
+                          {row.after.text}
+                        </span>
+                      </div>
+                      <span className="text-emerald-400 shrink-0 text-xs font-bold flex items-center gap-1">
+                        <Check className="h-3.5 w-3.5" />
+                      </span>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Bottom Compact Action Bar */}
+            <div className="p-4 sm:p-5 bg-[#0B0F19] border-t border-slate-800 flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-2 text-xs text-slate-400">
+                <span className="inline-block w-2 h-2 rounded-full bg-emerald-400" />
+                <span>Zero manual intervention • 100% automated lifecycle</span>
+              </div>
+              <Link
+                href="/create-event"
+                className="inline-flex items-center gap-1.5 text-xs font-bold bg-[#F97316] hover:bg-[#ea580c] text-white px-4 py-2 rounded-xl transition shadow-md"
+              >
+                <span>Switch to ePayEvents</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
 

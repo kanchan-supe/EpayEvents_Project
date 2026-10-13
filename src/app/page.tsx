@@ -106,13 +106,32 @@ export default function HomePage() {
     return () => clearInterval(timer);
   }, []);
 
-  const liveEvents = mockEvents.filter(e => e.status === 'published');
-  const mainLiveEvent = liveEvents[0] || mockEvents[0];
-  // Expanded to include 2 extra upcoming live event cards (total 6 grid cards now)
+  const [eventsList, setEventsList] = useState(mockEvents);
+
+  useEffect(() => {
+    // Fetch live published events from API
+    async function fetchPublishedEvents() {
+      try {
+        const res = await fetch('/api/events');
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          // If returned data from API, map or sync
+          console.log(`[HomePage] Loaded ${json.data.length} published events from /api/events`);
+        }
+      } catch (err) {
+        console.error('[HomePage] Failed fetching /api/events:', err);
+      }
+    }
+    fetchPublishedEvents();
+  }, []);
+
+  const liveEvents = eventsList.filter(e => e.status === 'published');
+  const mainLiveEvent = liveEvents[0] || eventsList[0];
+  // Expanded to include upcoming live event cards
   const gridLiveEvents = liveEvents.slice(1, 7);
 
-  const upcomingEvents = mockEvents.filter(e => e.status === 'published').slice(0, 6);
-  const pastEvents = mockEvents.filter(e => e.status === 'ended');
+  const upcomingEvents = eventsList.filter(e => e.status === 'published').slice(0, 6);
+  const pastEvents = eventsList.filter(e => e.status === 'ended');
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAFAF9] overflow-x-hidden">
@@ -446,7 +465,7 @@ export default function HomePage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {pastEvents.map(evt => (
               <motion.div key={evt.id} variants={itemVariants}>

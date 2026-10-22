@@ -7,18 +7,31 @@ import {
   Calendar, Ticket, Headphones, Target, Users, Cpu, Briefcase, Music, BookOpen, HeartPulse, Palette, 
   ArrowRight, CheckCircle2, QrCode, LayoutDashboard, FileSpreadsheet, Zap, ShieldCheck, Eye,
   Gamepad2, Flame, Trophy, Crosshair, Sparkles, Shield, Cpu as ChipIcon, Compass, Award,
-  XCircle, FileX, MessageSquare, AlertTriangle, Layers, Smartphone, RefreshCw, BarChart3, TrendingUp, Check
+  XCircle, FileX, MessageSquare, AlertTriangle, Layers, Smartphone, RefreshCw, BarChart3, TrendingUp, Check,
+  PartyPopper, Heart, Mic2, Sun, UtensilsCrossed, HandHeart, ShoppingBag, Smile, Gem
 } from 'lucide-react';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { mockCategories } from '@/lib/data';
 
 const categoryIconMap: Record<string, React.ReactNode> = {
-  Cpu: <Cpu className="h-5 w-5 text-cyan-400" />,
-  Briefcase: <Briefcase className="h-5 w-5 text-amber-400" />,
-  Music: <Music className="h-5 w-5 text-fuchsia-400" />,
-  BookOpen: <BookOpen className="h-5 w-5 text-emerald-400" />,
-  HeartPulse: <HeartPulse className="h-5 w-5 text-rose-400" />,
-  Palette: <Palette className="h-5 w-5 text-orange-400" />,
+  Cpu: <Cpu className="h-5 w-5 text-cyan-600" />,
+  Briefcase: <Briefcase className="h-5 w-5 text-amber-500" />,
+  Music: <Music className="h-5 w-5 text-pink-500" />,
+  BookOpen: <BookOpen className="h-5 w-5 text-emerald-600" />,
+  HeartPulse: <HeartPulse className="h-5 w-5 text-rose-500" />,
+  Palette: <Palette className="h-5 w-5 text-purple-600" />,
+  Users: <Users className="h-5 w-5 text-indigo-600" />,
+  PartyPopper: <PartyPopper className="h-5 w-5 text-purple-500" />,
+  Sparkles: <Sparkles className="h-5 w-5 text-fuchsia-500" />,
+  Heart: <Heart className="h-5 w-5 text-rose-500" />,
+  Mic2: <Mic2 className="h-5 w-5 text-amber-500" />,
+  Sun: <Sun className="h-5 w-5 text-orange-500" />,
+  Trophy: <Trophy className="h-5 w-5 text-yellow-600" />,
+  UtensilsCrossed: <UtensilsCrossed className="h-5 w-5 text-emerald-600" />,
+  HandHeart: <HandHeart className="h-5 w-5 text-teal-600" />,
+  ShoppingBag: <ShoppingBag className="h-5 w-5 text-blue-600" />,
+  Smile: <Smile className="h-5 w-5 text-cyan-600" />,
+  Gem: <Gem className="h-5 w-5 text-pink-500" />,
 };
 
 // Framer Motion Animation Variants
@@ -249,49 +262,47 @@ export default function AboutUsPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="lg:col-span-5 bg-[#FAFAF9] p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-6"
+              className="lg:col-span-5 bg-[#FAFAF9] p-5 sm:p-6 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-4"
             >
-              <div>
-                <h3 className="text-2xl font-extrabold text-[#1C1917]">What We Offer</h3>
-                <p className="text-xs text-[#78716C] mt-1">Explore all categories available on ePayEvents</p>
+              <div className="flex items-center justify-between pb-2 border-b border-[#E7E5E4]">
+                <div>
+                  <h3 className="text-xl font-extrabold text-[#1C1917]">What We Offer</h3>
+                  <p className="text-[11px] text-[#78716C]">Explore all categories on ePayEvents</p>
+                </div>
+                <span className="text-[11px] font-bold text-[#0F766E] bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200">
+                  {mockCategories.length} Categories
+                </span>
               </div>
 
-              <motion.div 
-                variants={containerVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="space-y-3"
-              >
+              {/* 2-Column Compact Category Grid in Scrollable Container */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-300">
                 {mockCategories.map((cat) => (
-                  <motion.div 
+                  <Link
                     key={cat.id}
-                    variants={itemVariants}
-                    whileHover={{ scale: 1.02, x: 4 }}
-                    className="p-3.5 rounded-xl bg-white border border-[#E7E5E4] flex items-center justify-between hover:border-[#0F766E] transition shadow-2xs group"
+                    href={`/events?category=${cat.slug}`}
+                    className="p-2.5 rounded-xl bg-white border border-[#E7E5E4] flex items-center gap-2.5 hover:border-[#0F766E] hover:shadow-xs transition group"
                   >
-                    <Link href={`/events?category=${cat.slug}`} className="flex items-center gap-3.5 flex-1">
-                      <div className="p-2 rounded-lg bg-[#0F766E]/10 shrink-0">
-                        {categoryIconMap[cat.icon] || <Calendar className="h-4 w-4 text-[#0F766E]" />}
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-[#1C1917] text-sm group-hover:text-[#0F766E] transition">{cat.name}</h4>
-                        <p className="text-[11px] text-[#78716C] line-clamp-1">{cat.description}</p>
-                      </div>
-                    </Link>
-                    <span className="text-xs font-semibold bg-[#FAFAF9] text-[#0F766E] px-2.5 py-1 rounded-full border border-[#E7E5E4] shrink-0">
-                      {cat.count} events
-                    </span>
-                  </motion.div>
+                    <div className="p-2 rounded-lg bg-[#FAFAF9] group-hover:bg-[#0F766E]/10 shrink-0 transition">
+                      {categoryIconMap[cat.icon] || <Calendar className="h-4 w-4 text-[#0F766E]" />}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-bold text-[#1C1917] text-xs group-hover:text-[#0F766E] truncate transition">
+                        {cat.name}
+                      </h4>
+                      <span className="text-[10px] text-[#78716C] font-medium block">
+                        {cat.count} events
+                      </span>
+                    </div>
+                  </Link>
                 ))}
-              </motion.div>
+              </div>
 
-              <div className="pt-2 text-center">
+              <div className="pt-2 text-center border-t border-[#E7E5E4]">
                 <Link 
                   href="/events" 
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0F766E] hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0F766E] hover:text-[#115E59] hover:underline"
                 >
-                  <span>Browse All Categories</span>
+                  <span>Explore Live Events Catalog</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>

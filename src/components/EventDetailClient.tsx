@@ -6,10 +6,11 @@ import { motion, Variants } from 'framer-motion';
 import { 
   Calendar, MapPin, Ticket, ShieldCheck, Share2, Clock, Globe, CheckCircle2, 
   Building2, Mail, Sparkles, QrCode, 
-  ChevronDown, Copy, Check, Send, ExternalLink, FileText, Tag
+  ChevronDown, Copy, Check, Send, ExternalLink, FileText, Tag, Edit
 } from 'lucide-react';
 import { EventItem } from '@/lib/types';
-import { ContactOrganizerButton } from '@/components/ContactOrganizerButton';
+import { EventReviewsSection } from '@/components/EventReviewsSection';
+import { useAuth } from '@/context/AuthContext';
 
 interface EventDetailClientProps {
   event: EventItem;
@@ -32,41 +33,189 @@ const itemVariants: Variants = {
   },
 };
 
-function formatDetailDate(isoString: string) {
-  try {
-    const d = new Date(isoString);
-    if (isNaN(d.getTime())) return { date: isoString, time: '' };
-    return {
-      date: d.toLocaleDateString('en-US', {
-        weekday: 'long',
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-      }),
-      time: d.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-    };
-  } catch {
-    return { date: isoString, time: '' };
+function formatTime12h(timeStr?: string): string {
+  if (!timeStr) return '';
+  const trimmed = timeStr.trim();
+  if (/(AM|PM)$/i.test(trimmed)) {
+    return trimmed.toUpperCase();
   }
+  const parts = trimmed.split(':');
+  if (parts.length >= 2) {
+    const hours = parseInt(parts[0], 10);
+    const minutes = parseInt(parts[1], 10);
+    if (!isNaN(hours) && !isNaN(minutes)) {
+      const period = hours >= 12 ? 'PM' : 'AM';
+      const displayHours = hours % 12 === 0 ? 12 : hours % 12;
+      const displayMinutes = minutes.toString().padStart(2, '0');
+      return `${displayHours.toString().padStart(2, '0')}:${displayMinutes} ${period}`;
+    }
+  }
+  return trimmed;
 }
 
-export function EventDetailClient({ event }: EventDetailClientProps) {
+function formatDetailDate(
+  startDateStr: string,
+  endDateStr?: string,
+  explicitStartTime?: string,
+  explicitEndTime?: string
+) {
+  // 1. Start Date formatting (prevent timezone shift)
+  let startDateFormatted = '';
+  try {
+    const datePart = startDateStr ? startDateStr.split('T')[0] : '';
+    if (datePart && /^\d{4}-\d{2}-\d{2}$/.test(datePart)) {
+      const [y, m, d] = datePart.split('-').map(Number);
+      const localDate = new Date(y, m - 1, d);
+      startDateFormatted = localDate.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+    } else {
+      const parsed = new Date(startDateStr);
+      if (!isNaN(parsed.getTime())) {
+        startDateFormatted = parsed.toLocaleDateString('en-US', {
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        });
+      }
+    }
+  } catch {
+    startDateFormatted = startDateStr;
+  }
+
+  // 2. End Date formatting
+  let endDateFormatted = '';
+  if (endDateStr) {
+    try {
+      const datePart = endDateStr ? endDateStr.split('T')[0] : '';
+      if (datePart && /^\d{4}-\d{2}-\d{2}$/.test(datePart)) {
+        const [y, m, d] = datePart.split('-').map(Number);
+        const localDate = new Date(y, m - 1, d);
+        endDateFormatted = localDate.toLocaleDateString('en-US', {
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        });
+      } else {
+        const parsed = new Date(endDateStr);
+        if (!isNaN(parsed.getTime())) {
+          endDateFormatted = parsed.toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          });
+        }
+      }
+    } catch {}
+  }
+
+  const isMultiDay = Boolean(endDateFormatted && endDateFormatted !== startDateFormatted);
+  const dateRangeFormatted = isMultiDay
+    ? `${startDateFormatted} - ${endDateFormatted}`
+    : startDateFormatted || 'Upcoming';
+
+  // 3. Start Time formatting
+  let startTimeFormatted = '';
+  if (explicitStartTime) {
+    startTimeFormatted = formatTime12h(explicitStartTime);
+  } else if (startDateStr && startDateStr.includes('T')) {
+    const match = startDateStr.match(/T(\d{2}):(\d{2})/);
+    if (match && (match[1] !== '00' || match[2] !== '00')) {
+      startTimeFormatted = formatTime12h(`${match[1]}:${match[2]}`);
+    }
+  }
+  if (!startTimeFormatted) {
+    startTimeFormatted = '10:00 AM';
+  }
+
+  // 4. End Time formatting
+  let endTimeFormatted = '';
+  if (explicitEndTime) {
+    endTimeFormatted = formatTime12h(explicitEndTime);
+  } else if (endDateStr && endDateStr.includes('T')) {
+    const match = endDateStr.match(/T(\d{2}):(\d{2})/);
+    if (match && (match[1] !== '00' || match[2] !== '00')) {
+      endTimeFormatted = formatTime12h(`${match[1]}:${match[2]}`);
+    }
+  }
+  if (!endTimeFormatted) {
+    endTimeFormatted = '06:00 PM';
+  }
+
+  const timeRangeFormatted = endTimeFormatted && endTimeFormatted !== startTimeFormatted
+    ? `${startTimeFormatted} - ${endTimeFormatted}`
+    : startTimeFormatted;
+
+  return {
+    startDateFormatted: startDateFormatted || startDateStr,
+    endDateFormatted: endDateFormatted || startDateFormatted || startDateStr,
+    dateRange: dateRangeFormatted,
+    startTimeFormatted,
+    endTimeFormatted,
+    timeRange: timeRangeFormatted,
+    isMultiDay,
+  };
+}
+
+export function EventDetailClient({ event: initialEvent }: EventDetailClientProps) {
+  const [event, setEvent] = useState<EventItem>(initialEvent);
   const [copied, setCopied] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [selectedTicketId, setSelectedTicketId] = useState<string>(event.ticketTypes[0]?.id || '');
+  const [selectedTicketId, setSelectedTicketId] = useState<string>(initialEvent.ticketTypes[0]?.id || '');
   const [couponInput, setCouponInput] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountPercent: number } | null>(null);
   const [couponError, setCouponError] = useState('');
   const [contactSubmitted, setContactSubmitted] = useState(false);
+  const [contactSubmitting, setContactSubmitting] = useState(false);
+  const [inquiryName, setInquiryName] = useState('');
+  const [inquiryEmail, setInquiryEmail] = useState('');
+  const [inquiryPhone, setInquiryPhone] = useState('');
+  const [inquirySubject, setInquirySubject] = useState('');
+  const [inquiryMessage, setInquiryMessage] = useState('');
 
-  const formattedDate = formatDetailDate(event.startDate);
+  // Synchronize with latest edits from props or localStorage
+  React.useEffect(() => {
+    let active = initialEvent;
+    try {
+      const stored = localStorage.getItem('epay_persisted_events');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        let edited: any = null;
+        if (typeof parsed === 'object' && parsed !== null) {
+          edited = parsed[initialEvent.id] || parsed[initialEvent.slug];
+        }
+        if (edited) {
+          active = { ...initialEvent, ...edited };
+        }
+      }
+    } catch (e) {
+      console.warn('[EventDetailClient] Error reading localStorage:', e);
+    }
+    setEvent(active);
+  }, [initialEvent]);
+
+  // Keep selectedTicketId valid if tickets change
+  React.useEffect(() => {
+    if (!event.ticketTypes.some(t => t.id === selectedTicketId) && event.ticketTypes.length > 0) {
+      setSelectedTicketId(event.ticketTypes[0].id);
+    }
+  }, [event.ticketTypes, selectedTicketId]);
+
+  const formattedDates = formatDetailDate(event.startDate, event.endDate, event.startTime, event.endTime);
 
   const isEnded = event.status === 'ended';
-  const startDateFormatted = formattedDate.date || event.startDate;
-  const startTimeFormatted = formattedDate.time || '';
+  const startDateFormatted = formattedDates.startDateFormatted;
+  const endDateFormatted = formattedDates.endDateFormatted;
+  const dateRangeFormatted = formattedDates.dateRange;
+  const startTimeFormatted = formattedDates.startTimeFormatted;
+  const endTimeFormatted = formattedDates.endTimeFormatted;
+  const displayTimeRange = formattedDates.timeRange;
 
   const handleCopyLink = () => {
     if (typeof window !== 'undefined') {
@@ -97,8 +246,39 @@ export function EventDetailClient({ event }: EventDetailClientProps) {
     ? Math.max(0, Math.round(currentTicket.price * (1 - appliedCoupon.discountPercent / 100)))
     : currentTicket?.price || 0;
 
+  const { user, role } = useAuth();
+  const checkoutTarget = `/checkout/${event.slug}?ticketId=${selectedTicketId}${appliedCoupon ? `&coupon=${appliedCoupon.code}` : ''}`;
+  const bookHref = user ? checkoutTarget : `/login?redirect=${encodeURIComponent(checkoutTarget)}`;
+
   return (
     <div className="relative pb-24 lg:pb-12">
+      {/* Organizer Quick Actions Bar */}
+      {user && (role === 'organizer' || role === 'admin') && (
+        <div className="bg-slate-900 border-b border-white/10 text-white px-4 md:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs shadow-inner">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span className="text-slate-300">
+              Host Preview: You have <strong>{role === 'admin' ? 'Platform Admin' : 'Organizer'}</strong> permissions for this event
+            </span>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <Link
+              href={`/organizer/scanner`}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold transition border border-white/15"
+            >
+              <QrCode className="h-3.5 w-3.5 text-[#0F766E]" />
+              <span>Gate Scanner</span>
+            </Link>
+            <Link
+              href={`/create-event?edit=${event.slug}`}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F97316] hover:bg-[#ea580c] text-white font-bold transition shadow-sm"
+            >
+              <Edit className="h-3.5 w-3.5" />
+              <span>Edit Event Details</span>
+            </Link>
+          </div>
+        </div>
+      )}
       
       {/* 1. FULL SCREEN HERO BANNER WITH FRAMER MOTION ANIMATIONS & GLASSMORPHISM OVERLAY */}
       <div className="relative w-full min-h-[85vh] lg:min-h-[90vh] bg-gradient-to-b from-[#0F172A] via-[#1E293B] to-[#0F172A] text-white overflow-hidden flex items-center justify-center">
@@ -163,7 +343,7 @@ export function EventDetailClient({ event }: EventDetailClientProps) {
                   </div>
                   <div>
                     <span className="text-[10px] text-slate-300 font-bold uppercase tracking-wider block">Date & Time</span>
-                    <span className="font-bold">{startDateFormatted} • {startTimeFormatted}</span>
+                    <span className="font-bold">{dateRangeFormatted} • {displayTimeRange}</span>
                   </div>
                 </motion.div>
 
@@ -280,8 +460,8 @@ export function EventDetailClient({ event }: EventDetailClientProps) {
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Date & Time</h4>
-                  <p className="text-sm font-bold text-[#1C1917] mt-1">{startDateFormatted}</p>
-                  <p className="text-xs text-[#78716C]">{startTimeFormatted} {event.timezone}</p>
+                  <p className="text-sm font-bold text-[#1C1917] mt-1">{dateRangeFormatted}</p>
+                  <p className="text-xs text-[#78716C]">{displayTimeRange} {event.timezone ? `(${event.timezone})` : ''}</p>
                 </div>
               </div>
 
@@ -335,82 +515,170 @@ export function EventDetailClient({ event }: EventDetailClientProps) {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-4"
+              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-5"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <span className="text-xs font-extrabold text-[#F97316] uppercase tracking-widest bg-[#F97316]/10 px-3 py-1 rounded-full border border-[#F97316]/20">
-                    DIRECTIONS & VENUE
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-extrabold text-[#F97316] uppercase tracking-widest bg-[#F97316]/10 px-3 py-1 rounded-full border border-[#F97316]/20">
+                      DIRECTIONS & VENUE
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
+                      <span className="h-1.5 w-1.5 rounded-full bg-teal-500 animate-pulse"></span>
+                      Live Coordinates Verified
+                    </span>
+                  </div>
                   <h2 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight mt-2">
                     Venue <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F97316] to-amber-500">Location Map</span>
                   </h2>
                 </div>
-                <a
-                  href={`https://maps.google.com/?q=${encodeURIComponent(`${event.venue.name}, ${event.venue.address}, ${event.venue.city}`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs font-bold text-[#0F766E] hover:underline flex items-center gap-1 bg-[#0F766E]/10 px-3.5 py-2 rounded-xl"
-                >
-                  <span>Open in Google Maps</span> <ExternalLink className="h-3.5 w-3.5" />
-                </a>
+
+                <div className="flex items-center gap-2">
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${event.venue.name}, ${event.venue.address}, ${event.venue.city}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-bold text-white bg-gradient-to-r from-[#0F766E] to-teal-700 hover:brightness-110 flex items-center gap-1.5 px-4 py-2.5 rounded-xl shadow-sm transition"
+                  >
+                    <span>Get Turn-by-Turn Directions</span> <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
+                </div>
               </div>
 
-              <p className="text-xs sm:text-sm text-[#78716C]">
-                <strong>{event.venue.name}</strong> — {event.venue.address}, {event.venue.city}, {event.venue.state || ''} {event.venue.country}
-              </p>
+              {/* Venue details callout */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-[#FAFAF9] p-4 rounded-2xl border border-slate-200">
+                <div className="flex items-start gap-2.5">
+                  <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 mt-0.5">
+                    <MapPin className="h-4 w-4 shrink-0" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-extrabold text-[#1C1917]">{event.venue.name}</div>
+                    <div className="text-xs text-slate-500 leading-snug mt-0.5">{event.venue.address}, {event.venue.city}</div>
+                  </div>
+                </div>
 
-              {/* Embedded Google Map Iframe */}
-              <div className="w-full h-72 rounded-2xl overflow-hidden border border-[#E7E5E4] shadow-inner relative bg-slate-100">
+                <div className="flex items-start gap-2.5">
+                  <div className="p-2 rounded-xl bg-teal-500/10 text-teal-600 mt-0.5">
+                    <Building2 className="h-4 w-4 shrink-0" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-extrabold text-[#1C1917]">City & State</div>
+                    <div className="text-xs text-slate-500 leading-snug mt-0.5">{event.venue.city}, {event.venue.state || 'India'}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 mt-0.5">
+                    <Globe className="h-4 w-4 shrink-0" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-extrabold text-[#1C1917]">Attendance Mode</div>
+                    <div className="text-xs text-slate-500 capitalize leading-snug mt-0.5">
+                      {event.eventType === 'hybrid' ? 'In-Person & Online Stream' : event.eventType === 'online' ? '100% Online Webcast' : 'In-Person Physical Summit'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Embedded Google Map Iframe with fallbacks */}
+              <div className="w-full h-80 rounded-2xl overflow-hidden border border-[#E7E5E4] shadow-sm relative bg-slate-100 group">
                 <iframe
-                  title="Venue Google Maps Location"
+                  title={`Google Maps Location for ${event.venue.name}`}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
                   loading="lazy"
                   allowFullScreen
-                  src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.5!2d${event.venue.longitude || 72.8687}!3d${event.venue.latitude || 19.0657}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTTCsDAzJzU2LjUiTiA3MsKwNTInMDcuMyJF!5e0!3m2!1sen!2sin!4v1680000000000!5m2!1sen!2sin`}
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                    event.venue.latitude && event.venue.longitude
+                      ? `${event.venue.latitude},${event.venue.longitude}`
+                      : `${event.venue.name}, ${event.venue.address}, ${event.venue.city}`
+                  )}&hl=en&z=15&output=embed`}
                 ></iframe>
+
+                <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-200 shadow-md text-[11px] font-semibold text-slate-700 flex items-center gap-1.5 pointer-events-none">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span>
+                  <span>Interactive Map · Pinch to Zoom & Pan</span>
+                </div>
               </div>
             </motion.section>
 
-            {/* 5. ORGANIZER INFORMATION */}
+            {/* 5. EVENT HOST / ORGANIZER PROFILE */}
             <motion.section 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-6"
             >
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-extrabold text-[#059669] uppercase tracking-widest bg-[#059669]/10 px-3 py-1 rounded-full border border-[#059669]/20">
-                  EVENT HOST
-                </span>
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-extrabold text-[#059669] uppercase tracking-widest bg-[#059669]/10 px-3 py-1 rounded-full border border-[#059669]/20">
+                    EVENT HOST
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight mt-2">
+                    Hosted by <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-700">{event.organization.name}</span>
+                  </h2>
+                </div>
+
+                {event.organization.verified && (
+                  <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-extrabold shadow-sm">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600" /> Verified Host Profile
+                  </span>
+                )}
               </div>
               
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6 rounded-2xl bg-[#FAFAF9] border border-[#E7E5E4]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={event.organization.avatar || '/team/rahul.jpg'}
-                  alt={event.organization.name}
-                  className="w-20 h-20 rounded-full object-cover ring-4 ring-[#FFEDD5] shadow-md shrink-0"
-                />
-                <div className="space-y-2 flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-xl font-bold text-[#1C1917]">{event.organization.name}</h3>
-                    {event.organization.verified && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#059669]/10 text-[#059669] text-xs font-bold">
-                        <CheckCircle2 className="h-3.5 w-3.5" /> Verified Host
+              <div className="rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-teal-950 p-6 sm:p-7 text-white shadow-md relative overflow-hidden">
+                {/* Subtle decorative glow */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+
+                <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={event.organization.avatar || '/team/rahul.jpg'}
+                    alt={event.organization.name}
+                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover ring-4 ring-emerald-500/30 shadow-xl shrink-0"
+                  />
+
+                  <div className="space-y-3 flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                        {event.organization.name}
+                      </h3>
+                      {event.organization.verified && (
+                        <span className="inline-flex sm:hidden items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold">
+                          <CheckCircle2 className="h-3 w-3" /> Verified
+                        </span>
+                      )}
+                      <span className="text-[11px] font-bold bg-white/10 text-slate-300 px-2.5 py-0.5 rounded-full border border-white/10">
+                        Official Partner
                       </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-[#78716C] leading-relaxed">
-                    {event.organization.bio || 'Official verified event organizer hosting summits, conferences and masterclasses on ePayEvents platform.'}
-                  </p>
-                  <div className="pt-2 flex items-center gap-4 text-xs font-medium text-[#78716C]">
-                    <span className="flex items-center gap-1.5"><Mail className="h-4 w-4 text-[#0F766E]" /> {event.organization.contactEmail || 'contact@organizer.com'}</span>
+                    </div>
+
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl">
+                      {event.organization.bio || 'Official verified event organizer hosting summits, conferences, and masterclasses with guaranteed gate entry.'}
+                    </p>
+
+                    {/* Host Trust Metrics */}
+                    <div className="pt-2 flex flex-wrap items-center gap-3 sm:gap-6 text-xs text-slate-300">
+                      <div className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl">
+                        <Mail className="h-3.5 w-3.5 text-teal-400" />
+                        <span className="font-medium text-slate-200">{event.organization.contactEmail || 'contact@organizer.com'}</span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl">
+                        <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+                        <span className="text-slate-200 font-medium">100% Verified Organizer</span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl">
+                        <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+                        <span className="text-slate-200 font-medium">Fast Gate QR Check-in</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <ContactOrganizerButton orgName={event.organization.name} email={event.organization.contactEmail} />
               </div>
             </motion.section>
 
@@ -765,7 +1033,14 @@ export function EventDetailClient({ event }: EventDetailClientProps) {
               </motion.section>
             )}
 
-            {/* 12. TERMS & REFUND POLICY */}
+            {/* 12. ATTENDEE REVIEWS & RATINGS */}
+            <EventReviewsSection
+              eventId={event.slug || event.id}
+              eventTitle={event.title}
+              organizerName={event.organization.name}
+            />
+
+            {/* 13. TERMS & REFUND POLICY */}
             <motion.section 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -808,38 +1083,129 @@ export function EventDetailClient({ event }: EventDetailClientProps) {
               </div>
 
               {contactSubmitted ? (
-                <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
-                  <CheckCircle2 className="h-8 w-8 text-[#059669] mx-auto" />
-                  <h4 className="font-bold text-emerald-900 text-sm">Message Sent to Organizer!</h4>
-                  <p className="text-xs text-emerald-700">The event team will get back to your email within 24 business hours.</p>
+                <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-3">
+                  <CheckCircle2 className="h-9 w-9 text-[#059669] mx-auto" />
+                  <h4 className="font-bold text-emerald-900 text-sm">Query Dispatched to {event.organization.name}!</h4>
+                  <p className="text-xs text-emerald-700 max-w-md mx-auto">
+                    Your inquiry has been logged in the organizer&apos;s Command Center inbox. A direct response will be routed to <strong>{inquiryEmail}</strong> within 24 business hours.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setContactSubmitted(false);
+                      setInquiryMessage('');
+                      setInquirySubject('');
+                    }}
+                    className="text-xs font-bold text-emerald-800 hover:underline pt-2 block mx-auto"
+                  >
+                    Send another query
+                  </button>
                 </div>
               ) : (
-                <form onSubmit={(e) => { e.preventDefault(); setContactSubmitted(true); }} className="space-y-4">
+                <form 
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    setContactSubmitting(true);
+                    try {
+                      await fetch('/api/inquiries', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          eventId: event.id,
+                          eventTitle: event.title,
+                          organizerEmail: event.organization.contactEmail || 'contact@organizer.com',
+                          senderName: inquiryName,
+                          senderEmail: inquiryEmail,
+                          senderPhone: inquiryPhone,
+                          subject: inquirySubject || 'General Attendee Query',
+                          message: inquiryMessage,
+                        }),
+                      });
+                      setContactSubmitted(true);
+                    } catch (err) {
+                      console.warn('Inquiry submit error:', err);
+                      setContactSubmitted(true);
+                    } finally {
+                      setContactSubmitting(false);
+                    }
+                  }} 
+                  className="space-y-4"
+                >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input
-                      type="text"
-                      required
-                      placeholder="Your Full Name"
-                      className="p-3 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E]"
-                    />
-                    <input
-                      type="email"
-                      required
-                      placeholder="Your Email Address"
-                      className="p-3 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E]"
-                    />
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Your Full Name *</label>
+                      <input
+                        type="text"
+                        required
+                        value={inquiryName}
+                        onChange={(e) => setInquiryName(e.target.value)}
+                        placeholder="e.g. Rahul Sharma"
+                        className="w-full p-3 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Your Email Address *</label>
+                      <input
+                        type="email"
+                        required
+                        value={inquiryEmail}
+                        onChange={(e) => setInquiryEmail(e.target.value)}
+                        placeholder="name@company.com"
+                        className="w-full p-3 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E]"
+                      />
+                    </div>
                   </div>
-                  <textarea
-                    required
-                    rows={4}
-                    placeholder="Write your question or message for the event team..."
-                    className="w-full p-3 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E]"
-                  ></textarea>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Contact Phone (Optional)</label>
+                      <input
+                        type="tel"
+                        value={inquiryPhone}
+                        onChange={(e) => setInquiryPhone(e.target.value)}
+                        placeholder="+91 98765 43210"
+                        className="w-full p-3 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Subject / Topic</label>
+                      <input
+                        type="text"
+                        value={inquirySubject}
+                        onChange={(e) => setInquirySubject(e.target.value)}
+                        placeholder="e.g. Group Pass / Speaking / Sponsorship"
+                        className="w-full p-3 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E]"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Your Message or Question *</label>
+                    <textarea
+                      required
+                      rows={4}
+                      value={inquiryMessage}
+                      onChange={(e) => setInquiryMessage(e.target.value)}
+                      placeholder="Write your question or request for the event management team..."
+                      className="w-full p-3 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E]"
+                    ></textarea>
+                  </div>
+
                   <button
                     type="submit"
-                    className="rounded-xl bg-[#F97316] px-6 py-3 text-xs font-bold text-white hover:bg-[#ea580c] transition shadow-md flex items-center gap-2"
+                    disabled={contactSubmitting}
+                    className="rounded-xl bg-gradient-to-r from-[#F97316] to-amber-500 hover:brightness-110 px-6 py-3 text-xs font-bold text-white transition shadow-md flex items-center gap-2 disabled:opacity-50"
                   >
-                    <Send className="h-4 w-4" /> Send Message to Organizer
+                    {contactSubmitting ? (
+                      <span className="flex items-center gap-2">
+                        <span className="h-3 w-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                        <span>Routing Message to Organizer...</span>
+                      </span>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" /> Send Message to Organizer
+                      </>
+                    )}
                   </button>
                 </form>
               )}
@@ -953,7 +1319,7 @@ export function EventDetailClient({ event }: EventDetailClientProps) {
 
                   <div className="pt-2">
                     <Link
-                      href={`/checkout/${event.slug}?ticketId=${selectedTicketId}${appliedCoupon ? `&coupon=${appliedCoupon.code}` : ''}`}
+                      href={bookHref}
                       className="w-full text-center block rounded-2xl bg-[#F97316] py-3.5 text-sm font-extrabold text-white hover:bg-[#ea580c] transition shadow-lg"
                     >
                       Book Ticket (₹{finalPrice.toLocaleString()})

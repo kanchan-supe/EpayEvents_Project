@@ -136,6 +136,9 @@ export interface EventItem {
   status: 'draft' | 'published' | 'cancelled' | 'ended';
   startDate: string;
   endDate: string;
+  startTime?: string;
+  endTime?: string;
+  date?: string;
   timezone: string;
   featured: boolean;
   category: EventCategory;

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import { 
   Ticket, ShieldCheck, Tag, CreditCard, CheckCircle2, User, Lock, Sparkles, 
   Users, Clock, Key, AlertCircle, ArrowRightLeft, Undo2, Award
@@ -10,6 +11,7 @@ import { EventItem } from '@/lib/types';
 
 export function CheckoutForm({ event, initialTicketId }: { event: EventItem; initialTicketId?: string }) {
   const router = useRouter();
+  const { user, profile } = useAuth();
 
   // Passcode unlock state for hidden passes
   const [unlockedPasscode, setUnlockedPasscode] = useState('');
@@ -49,6 +51,21 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
   const [approvalNote, setApprovalNote] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'epay_upi' | 'card' | 'netbanking'>('epay_upi');
   const [isProcessing, setIsProcessing] = useState(false);
+  // Pre-fill user details if logged in
+  React.useEffect(() => {
+    if (user) {
+      if (!buyerName) {
+        setBuyerName(profile?.full_name || (user.user_metadata as any)?.full_name || (user.user_metadata as any)?.name || '');
+      }
+      if (!buyerEmail && user.email) {
+        setBuyerEmail(user.email);
+      }
+      if (!buyerPhone && (profile?.phone || (user.user_metadata as any)?.phone)) {
+        setBuyerPhone(profile?.phone || (user.user_metadata as any)?.phone || '');
+      }
+    }
+  }, [user, profile]);
+
 
   // Group discount calculation & Dynamic surge
   const totalTicketsSelected = Object.values(ticketQuantities).reduce((a, b) => a + b, 0);
@@ -143,49 +160,64 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
     const orderId = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
     const ticketId = `EPAY-${orderId}-TKT-1`;
     const ticketTier = activeSelectedTier || event.ticketTypes[0];
+    const ticketTierName = ticketTier?.name || 'General Admission Pass';
+    const categoryName = ticketTier?.category || 'General';
+
+    let secureQrPayload = '';
 
     try {
-      const { createOrderInSupabase } = await import('@/lib/supabase/dbService');
-      await createOrderInSupabase(
+      const { generateEncryptedQRPayload, saveOrderAndRegistration } = await import('@/lib/repositories/orderRepository');
+      secureQrPayload = generateEncryptedQRPayload({
+        ticketCode: ticketId,
+        orderId,
+        eventId: event.id,
+        eventTitle: event.title,
+        attendeeName: buyerName,
+        attendeeEmail: buyerEmail,
+        ticketTierName,
+        pricePaid: total,
+      });
+
+      await saveOrderAndRegistration(
         {
           id: orderId,
-          event_id: event.id,
-          buyer_name: buyerName,
-          buyer_email: buyerEmail,
-          buyer_phone: buyerPhone,
-          subtotal: subtotal,
-          discount_amount: groupDiscountAmount + (subtotal * appliedDiscount) / 100,
-          coupon_code: couponCode || undefined,
-          total: total,
+          eventId: event.id,
+          userId: user?.id,
+          eventTitle: event.title,
+          buyerName,
+          buyerEmail,
+          buyerPhone,
+          ticketTypeId: ticketTier?.id || 'tkt-1',
+          ticketName: ticketTierName,
+          category: categoryName,
+          qty: totalTicketsSelected,
+          subtotal,
+          discountAmount: groupDiscountAmount + (subtotal * appliedDiscount) / 100,
+          couponCode: couponCode || undefined,
+          tax,
+          platformFee,
+          total,
           status: 'completed',
-          payment_method: paymentMethod,
-          tickets_count: totalTicketsSelected,
-          approval_required: Boolean(ticketTier?.isApprovalRequired),
+          paymentMethod,
         },
         {
-          id: ticketId,
-          order_id: orderId,
-          event_id: event.id,
-          event_title: event.title,
-          ticket_type_id: ticketTier?.id || 'tkt-1',
-          ticket_name: ticketTier?.name || 'Event Pass',
-          category: ticketTier?.category || 'General',
-          buyer_name: buyerName,
-          buyer_email: buyerEmail,
-          buyer_phone: buyerPhone,
-          price_paid: total,
-          qr_payload: JSON.stringify({
-            ticketId,
-            orderId,
-            eventId: event.id,
-            buyerEmail,
-            eventTitle: event.title,
-          }),
-          status: ticketTier?.isApprovalRequired ? 'pending_approval' : 'valid',
+          id: `REG-${orderId}-1`,
+          orderId,
+          ticketCode: ticketId,
+          eventId: event.id,
+          eventTitle: event.title,
+          attendeeName: buyerName,
+          attendeeEmail: buyerEmail,
+          attendeePhone: buyerPhone,
+          ticketTierId: ticketTier?.id || 'tkt-1',
+          ticketTierName,
+          pricePaid: total,
+          status: ticketTier?.isApprovalRequired ? 'pending_approval' as any : 'valid',
+          qrPayload: secureQrPayload,
         }
       );
     } catch (err) {
-      console.warn('Could not save order to Supabase:', err);
+      console.warn('Could not save order:', err);
     }
 
     setTimeout(() => {
@@ -194,13 +226,15 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
         buyerName,
         buyerEmail,
         buyerPhone,
-        ticketName: activeSelectedTier?.name || 'Event Pass',
-        category: activeSelectedTier?.category || 'General',
+        ticketName: ticketTierName,
+        category: categoryName,
         qty: totalTicketsSelected.toString(),
         total: total.toString(),
         eventTitle: event.title,
+        eventId: event.id,
         venue: event.venue.name,
         date: event.startDate,
+        qrPayload: secureQrPayload,
         transferrable: enableTransferProtection ? 'yes' : 'no',
         refundable: enableRefundGuarantee ? 'yes' : 'no',
         approvalRequired: activeSelectedTier?.isApprovalRequired ? 'yes' : 'no',

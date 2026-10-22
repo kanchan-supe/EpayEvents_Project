@@ -2,7 +2,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { CheckoutForm } from '@/components/CheckoutForm';
-import { getEventBySlug } from '@/lib/data';
+import { getEventBySlug } from '@/lib/repositories/eventRepository';
 
 interface CheckoutPageProps {
   params: Promise<{

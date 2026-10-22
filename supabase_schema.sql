@@ -49,6 +49,9 @@ CREATE TABLE IF NOT EXISTS public.events (
   status TEXT NOT NULL DEFAULT 'published' CHECK (status IN ('draft', 'published', 'cancelled', 'ended')),
   start_date TIMESTAMPTZ NOT NULL,
   end_date TIMESTAMPTZ NOT NULL,
+  start_time TEXT DEFAULT '10:00 AM',
+  end_time TEXT DEFAULT '06:00 PM',
+  date TEXT,
   timezone TEXT DEFAULT 'IST',
   featured BOOLEAN DEFAULT false,
   

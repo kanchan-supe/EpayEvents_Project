@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { EventItem } from '@/lib/types';
-import { mockCategories, getAllEvents, addPublishedEvent } from '@/lib/data';
-import { slugify } from '@/lib/eventsStore';
+import { getPublishedEvents, createEvent, updateEvent, getEventStatus } from '@/lib/repositories/eventRepository';
 
 export interface EventApiResponseItem {
   id: string;
@@ -9,7 +8,11 @@ export interface EventApiResponseItem {
   slug: string;
   coverImage: string;
   date: string;
+  startDate: string;
+  endDate: string;
   startTime: string;
+  endTime: string;
+  timezone?: string;
   venue: string;
   city: string;
   isOnline: boolean;
@@ -17,9 +20,30 @@ export interface EventApiResponseItem {
   availableSeats: number;
   category: string;
   status: 'published';
+  eventStatus: 'live' | 'upcoming' | 'past';
   organizer: {
     name: string;
   };
+}
+
+export function formatDisplayTime(timeStr?: string): string {
+  if (!timeStr) return '10:00 AM';
+  const trimmed = timeStr.trim();
+  if (/(AM|PM)$/i.test(trimmed)) {
+    return trimmed.toUpperCase();
+  }
+  const parts = trimmed.split(':');
+  if (parts.length >= 2) {
+    const hours = parseInt(parts[0], 10);
+    const minutes = parseInt(parts[1], 10);
+    if (!isNaN(hours) && !isNaN(minutes)) {
+      const period = hours >= 12 ? 'PM' : 'AM';
+      const displayHours = hours % 12 === 0 ? 12 : hours % 12;
+      const displayMinutes = minutes.toString().padStart(2, '0');
+      return `${displayHours.toString().padStart(2, '0')}:${displayMinutes} ${period}`;
+    }
+  }
+  return trimmed;
 }
 
 export function transformEventToApiResponse(event: EventItem): EventApiResponseItem {
@@ -31,23 +55,65 @@ export function transformEventToApiResponse(event: EventItem): EventApiResponseI
     ? event.ticketTypes.reduce((acc, t) => acc + (t.remainingQuantity ?? t.quantity), 0)
     : 0;
 
-  // Extract date and time in clean formats
-  const startDateObj = new Date(event.startDate);
-  const dateFormatted = !isNaN(startDateObj.getTime())
-    ? startDateObj.toISOString().split('T')[0]
-    : '2026-11-15';
-  
-  const hours = startDateObj.getHours().toString().padStart(2, '0');
-  const minutes = startDateObj.getMinutes().toString().padStart(2, '0');
-  const startTimeFormatted = !isNaN(startDateObj.getTime()) ? `${hours}:${minutes}` : '10:00';
+  // Extract clean start date without timezone offset shifts
+  let startDateFormatted = event.date || '2026-11-15';
+  if (event.startDate) {
+    const dateMatch = event.startDate.match(/^(\d{4}-\d{2}-\d{2})/);
+    if (dateMatch) {
+      startDateFormatted = dateMatch[1];
+    }
+  }
+
+  // Extract clean end date
+  let endDateFormatted = startDateFormatted;
+  if (event.endDate) {
+    const dateMatch = event.endDate.match(/^(\d{4}-\d{2}-\d{2})/);
+    if (dateMatch) {
+      endDateFormatted = dateMatch[1];
+    }
+  }
+
+  // Extract clean start time without timezone offset shifts (preserves exact 10:00 AM)
+  let startTimeFormatted = '10:00 AM';
+  if (event.startTime) {
+    startTimeFormatted = formatDisplayTime(event.startTime);
+  } else if (event.startDate) {
+    const timeMatch = event.startDate.match(/T(\d{2}):(\d{2})/);
+    if (timeMatch && (timeMatch[1] !== '00' || timeMatch[2] !== '00')) {
+      const h = parseInt(timeMatch[1], 10);
+      const m = parseInt(timeMatch[2], 10);
+      const period = h >= 12 ? 'PM' : 'AM';
+      const displayH = h % 12 === 0 ? 12 : h % 12;
+      startTimeFormatted = `${displayH.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} ${period}`;
+    }
+  }
+
+  // Extract clean end time
+  let endTimeFormatted = '06:00 PM';
+  if (event.endTime) {
+    endTimeFormatted = formatDisplayTime(event.endTime);
+  } else if (event.endDate) {
+    const timeMatch = event.endDate.match(/T(\d{2}):(\d{2})/);
+    if (timeMatch && (timeMatch[1] !== '00' || timeMatch[2] !== '00')) {
+      const h = parseInt(timeMatch[1], 10);
+      const m = parseInt(timeMatch[2], 10);
+      const period = h >= 12 ? 'PM' : 'AM';
+      const displayH = h % 12 === 0 ? 12 : h % 12;
+      endTimeFormatted = `${displayH.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} ${period}`;
+    }
+  }
 
   return {
     id: event.id,
     title: event.title,
     slug: event.slug,
     coverImage: event.bannerUrl,
-    date: dateFormatted,
+    date: startDateFormatted,
+    startDate: startDateFormatted,
+    endDate: endDateFormatted,
     startTime: startTimeFormatted,
+    endTime: endTimeFormatted,
+    timezone: event.timezone || 'IST',
     venue: event.venue?.name || (event.eventType === 'online' ? 'Online Event' : 'Main Venue'),
     city: event.venue?.city || (event.eventType === 'online' ? 'Virtual' : 'India'),
     isOnline: event.eventType === 'online',
@@ -55,190 +121,80 @@ export function transformEventToApiResponse(event: EventItem): EventApiResponseI
     availableSeats: totalAvailableSeats,
     category: event.category?.name || 'Event',
     status: 'published',
+    eventStatus: getEventStatus(startDateFormatted),
     organizer: {
       name: event.organization?.name || 'ePayEvents Organizer',
     },
   };
 }
 
+/**
+ * GET /api/events
+ * Returns only events where status = 'published' using eventRepository.getPublishedEvents()
+ */
 export async function GET() {
   try {
-    const allEvents = getAllEvents();
-    // Return only events with status = "published"
-    const publishedEvents = allEvents
-      .filter(event => event.status === 'published')
-      .map(transformEventToApiResponse);
+    const publishedEvents = await getPublishedEvents();
+    const formatted = publishedEvents.map(transformEventToApiResponse);
 
-    console.log(`[API /api/events GET] Returned ${publishedEvents.length} published events`);
+    console.log(`[API /api/events GET] Returned ${formatted.length} published events via eventRepository`);
 
     return NextResponse.json({
       success: true,
-      data: publishedEvents,
+      data: formatted,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('[API /api/events GET] Failed to fetch events:', error);
     return NextResponse.json(
-      { success: false, error: 'Internal Server Error' },
+      { success: false, error: error.message || 'Internal Server Error' },
       { status: 500 }
     );
   }
 }
 
+/**
+ * POST /api/events
+ * Creates and publishes an event using eventRepository.createEvent()
+ * When publishing, sets status = 'published'
+ */
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     console.log('[API /api/events POST] Received event data:', JSON.stringify(body, null, 2));
 
-    const {
-      title,
-      slug: customSlug,
-      categorySlug,
-      shortDescription,
-      description,
-      bannerUrl,
-      organizerName,
-      organizerEmail,
-      organizerPhone,
-      organizerBio,
-      startDate,
-      startTime,
-      endDate,
-      endTime,
-      timezone,
-      eventType,
-      venueName,
-      address,
-      city,
-      onlineUrl,
-      ticketTypes,
-      couponCodes,
-      registrationFields,
-      speakers,
-      agenda,
-      sponsors,
-      exhibitors,
-      faqs,
-      status: requestedStatus,
-    } = body;
-
-    if (!title || !title.trim()) {
+    if (!body.title || !body.title.trim()) {
       return NextResponse.json(
         { success: false, error: 'Event title is required.' },
         { status: 400 }
       );
     }
 
-    // 1. Generate slug
-    const baseSlug = customSlug && customSlug.trim() ? slugify(customSlug) : slugify(title);
-    const uniqueSlug = baseSlug || `event-${Date.now()}`;
-    const eventId = body.id || `evt_${Math.random().toString(36).substring(2, 9)}`;
-
-    // 2. Resolve Category
-    const category = mockCategories.find(c => c.slug === categorySlug) || mockCategories[0];
-
-    // 3. Format Date / Time into ISO string
-    let parsedStartDate = startDate;
-    if (startDate && startTime) {
-      parsedStartDate = `${startDate}T${startTime}:00Z`;
-    } else if (!startDate) {
-      parsedStartDate = new Date().toISOString();
-    }
-
-    let parsedEndDate = endDate;
-    if (endDate && endTime) {
-      parsedEndDate = `${endDate}T${endTime}:00Z`;
-    } else if (!endDate) {
-      parsedEndDate = parsedStartDate;
-    }
-
-    // 4. Map ticketTypes
-    const mappedTicketTypes: any[] = Array.isArray(ticketTypes) && ticketTypes.length > 0
-      ? ticketTypes.map((t: any, idx: number) => ({
-          id: t.id || `tkt-${Date.now()}-${idx}`,
-          name: t.name || 'General Admission',
-          description: t.description || 'Standard entry pass',
-          price: Number(t.price) || 0,
-          originalPrice: t.originalPrice ? Number(t.originalPrice) : undefined,
-          quantity: Number(t.quantity) || 100,
-          remainingQuantity: t.remainingQuantity !== undefined ? Number(t.remainingQuantity) : (Number(t.quantity) || 100),
-          minPerOrder: Number(t.minPerOrder) || 1,
-          maxPerOrder: Number(t.maxPerOrder) || 10,
-          category: (t.category as any) || 'General',
-          features: t.features || ['Full Event Access', 'Instant QR Pass'],
-          isEarlyBird: Boolean(t.isEarlyBird),
-          isPopular: Boolean(t.isPopular),
-        }))
-      : [
-          {
-            id: `tkt-${Date.now()}-0`,
-            name: 'General Admission',
-            description: 'Standard event pass',
-            price: 499,
-            quantity: 200,
-            remainingQuantity: 200,
-            minPerOrder: 1,
-            maxPerOrder: 5,
-            category: 'General' as const,
-            features: ['Full Event Access', 'Instant QR Ticket'],
-            isPopular: true,
-          },
-        ];
-
-    // 5. Build full event item
-    const newEvent: EventItem = {
-      id: eventId,
-      title: title.trim(),
-      slug: uniqueSlug,
-      shortDescription: shortDescription?.trim() || `${title.trim()} - Organized on ePayEvents platform.`,
-      description: description?.trim() || `Welcome to ${title.trim()}. Book tickets now on ePayEvents!`,
-      bannerUrl: bannerUrl?.trim() || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1400&q=80',
-      eventType: eventType === 'online' ? 'online' : eventType === 'hybrid' ? 'hybrid' : 'physical',
-      status: requestedStatus === 'draft' ? 'draft' : 'published', // defaults to published as requested
-      startDate: parsedStartDate,
-      endDate: parsedEndDate,
-      timezone: timezone || 'IST',
-      featured: true,
-      category,
-      organization: {
-        id: `org-${Date.now()}`,
-        name: organizerName?.trim() || 'ePayEvents Organizer',
-        slug: slugify(organizerName || 'organizer'),
-        verified: true,
-        contactEmail: organizerEmail?.trim() || 'organizer@epayevents.com',
-        avatar: '/team/rahul.jpg',
-        bio: organizerBio || 'Event host on ePayEvents platform',
-      },
-      venue: {
-        name: venueName?.trim() || (eventType === 'online' ? 'Online Event' : 'Main Venue'),
-        address: address?.trim() || (eventType === 'online' ? 'Virtual' : 'Event Center'),
-        city: city?.trim() || (eventType === 'online' ? 'Virtual' : 'Mumbai'),
-        country: 'India',
-        onlineUrl: onlineUrl?.trim() || undefined,
-      },
-      ticketTypes: mappedTicketTypes,
-      speakers: Array.isArray(speakers) ? speakers : [],
-      agenda: Array.isArray(agenda) ? agenda : [],
-      sponsors: Array.isArray(sponsors) ? sponsors : [],
-      exhibitors: Array.isArray(exhibitors) ? exhibitors : [],
-      faqs: Array.isArray(faqs) ? faqs : [],
-      couponCodes: Array.isArray(couponCodes) ? couponCodes : [],
+    // Force status: 'published' on publishing
+    const payload = {
+      ...body,
+      status: 'published',
     };
 
-    // 6. Save in persistent store
-    const savedEvent = addPublishedEvent(newEvent);
-    console.log(`[API /api/events POST] Successfully created and saved event "${savedEvent.title}" (slug: ${savedEvent.slug}, status: ${savedEvent.status})`);
+    const savedEvent = await createEvent(payload);
+    console.log(`[API /api/events POST] Successfully published event: "${savedEvent.title}" (${savedEvent.slug})`);
 
-    // 7. Format matching the specified response format
     const minPrice = Math.min(...savedEvent.ticketTypes.map(t => t.price));
-    const totalAvailableSeats = savedEvent.ticketTypes.reduce((acc, t) => acc + (t.remainingQuantity ?? t.quantity), 0);
+    const totalAvailableSeats = savedEvent.ticketTypes.reduce(
+      (acc, t) => acc + (t.remainingQuantity ?? t.quantity),
+      0
+    );
 
-    const responseFormat = {
+    const responseData = {
       id: savedEvent.id,
       title: savedEvent.title,
       slug: savedEvent.slug,
       coverImage: savedEvent.bannerUrl,
-      date: startDate || savedEvent.startDate.split('T')[0],
-      startTime: startTime || '10:00',
+      date: body.startDate || savedEvent.date || (savedEvent.startDate ? savedEvent.startDate.split('T')[0] : '2026-11-15'),
+      startDate: body.startDate || (savedEvent.startDate ? savedEvent.startDate.split('T')[0] : savedEvent.date || '2026-11-15'),
+      endDate: body.endDate || (savedEvent.endDate ? savedEvent.endDate.split('T')[0] : body.startDate || savedEvent.date || '2026-11-16'),
+      startTime: formatDisplayTime(savedEvent.startTime || body.startTime || '10:00 AM'),
+      endTime: formatDisplayTime(savedEvent.endTime || body.endTime || '06:00 PM'),
+      timezone: savedEvent.timezone || body.timezone || 'IST',
       venue: savedEvent.venue.name,
       city: savedEvent.venue.city,
       isOnline: savedEvent.eventType === 'online',
@@ -247,23 +203,65 @@ export async function POST(req: NextRequest) {
       category: savedEvent.category.name,
       status: savedEvent.status,
       tickets: savedEvent.ticketTypes,
-      registrationFields: registrationFields || [],
+      registrationFields: body.registrationFields || savedEvent.registrationFields || [],
       organizer: {
         name: savedEvent.organization.name,
         email: savedEvent.organization.contactEmail,
-        phone: organizerPhone || '',
+        phone: body.organizerPhone || '',
       },
     };
 
-    return NextResponse.json({
-      success: true,
-      message: 'Event published successfully!',
-      data: responseFormat,
-    }, { status: 201 });
+    return NextResponse.json(
+      {
+        success: true,
+        message: 'Event published successfully!',
+        data: responseData,
+      },
+      { status: 201 }
+    );
   } catch (error: any) {
     console.error('[API /api/events POST] Error saving event:', error);
     return NextResponse.json(
       { success: false, error: error.message || 'Failed to publish event' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * PUT /api/events
+ * Updates an existing event when id or slug is provided in request body
+ */
+export async function PUT(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const identifier = body.id || body.slug;
+
+    if (!identifier) {
+      return NextResponse.json(
+        { success: false, error: 'Event id or slug is required for updating.' },
+        { status: 400 }
+      );
+    }
+
+    const updated = await updateEvent(identifier, body);
+
+    if (!updated) {
+      return NextResponse.json(
+        { success: false, error: `Event "${identifier}" not found.` },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Event updated successfully!',
+      data: updated,
+    });
+  } catch (error: any) {
+    console.error('[API /api/events PUT] Error updating event:', error);
+    return NextResponse.json(
+      { success: false, error: error.message || 'Failed to update event' },
       { status: 500 }
     );
   }

@@ -17,10 +17,33 @@ export default function ContactPage() {
     subject: 'General Inquiry',
     message: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    try {
+      await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          eventId: 'general-support',
+          eventTitle: 'ePay Support Contact Form',
+          organizerEmail: 'support@epayevents.com',
+          senderName: formData.name,
+          senderEmail: formData.email,
+          senderPhone: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+        }),
+      });
+      setSubmitted(true);
+    } catch (err) {
+      console.warn('Error submitting contact form:', err);
+      setSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

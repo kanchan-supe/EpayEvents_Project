@@ -1,7 +1,7 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import { Navbar, Footer } from '@/components/NavbarFooter';
-import { getEventBySlug } from '@/lib/data';
+import { getEventBySlug } from '@/lib/repositories/eventRepository';
 import { EventDetailClient } from '@/components/EventDetailClient';
 
 interface PageProps {
@@ -11,6 +11,7 @@ interface PageProps {
 }
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
@@ -29,8 +30,14 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function EventDetailPage({ params }: PageProps) {
-  const { slug } = await params;
-  const event = await getEventBySlug(slug);
+  const resolvedParams = await params;
+  const rawSlug = resolvedParams?.slug || '';
+  const decodedSlug = decodeURIComponent(rawSlug).trim();
+
+  let event = await getEventBySlug(decodedSlug);
+  if (!event && rawSlug !== decodedSlug) {
+    event = await getEventBySlug(rawSlug);
+  }
 
   if (!event) {
     notFound();

@@ -6,12 +6,16 @@ import { motion, useScroll, useTransform, useInView, Variants } from 'framer-mot
 import { 
   Search, MapPin, Sparkles, Cpu, Briefcase, Music, BookOpen, HeartPulse, Palette, ArrowRight, 
   Calendar, ShieldCheck, Zap, BarChart2, Quote, 
-  ChevronDown, CreditCard, QrCode, Clock, Mail, Percent, FileSpreadsheet, Lock, Activity
+  ChevronDown, CreditCard, QrCode, Clock, Mail, Percent, FileSpreadsheet, Lock, Activity,
+  Star, CheckCircle2, ThumbsUp, TrendingUp, Users, DollarSign, Award, ChevronRight, ChevronLeft,
+  PartyPopper, Heart, Mic2, Sun, Trophy, UtensilsCrossed, HandHeart, ShoppingBag, Smile, Gem,
+  Pause, Play
 } from 'lucide-react';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { EventCard } from '@/components/EventCard';
 import { Logo } from '@/components/Logo';
 import { mockCategories, mockEvents } from '@/lib/data';
+import { useAuth } from '@/context/AuthContext';
 
 const heroBackgroundImages = [
   'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1600&q=80',
@@ -26,6 +30,18 @@ const categoryIconMap: Record<string, React.ReactNode> = {
   BookOpen: <BookOpen className="h-6 w-6 text-[#059669]" />,
   HeartPulse: <HeartPulse className="h-6 w-6 text-red-500" />,
   Palette: <Palette className="h-6 w-6 text-amber-600" />,
+  Users: <Users className="h-6 w-6 text-indigo-600" />,
+  PartyPopper: <PartyPopper className="h-6 w-6 text-purple-600" />,
+  Sparkles: <Sparkles className="h-6 w-6 text-fuchsia-600" />,
+  Heart: <Heart className="h-6 w-6 text-rose-500" />,
+  Mic2: <Mic2 className="h-6 w-6 text-amber-500" />,
+  Sun: <Sun className="h-6 w-6 text-orange-500" />,
+  Trophy: <Trophy className="h-6 w-6 text-yellow-600" />,
+  UtensilsCrossed: <UtensilsCrossed className="h-6 w-6 text-emerald-600" />,
+  HandHeart: <HandHeart className="h-6 w-6 text-teal-600" />,
+  ShoppingBag: <ShoppingBag className="h-6 w-6 text-blue-600" />,
+  Smile: <Smile className="h-6 w-6 text-cyan-600" />,
+  Gem: <Gem className="h-6 w-6 text-pink-500" />,
 };
 
 const homeFaqs = [
@@ -88,11 +104,22 @@ const itemVariants: Variants = {
 };
 
 export default function HomePage() {
+  const { user } = useAuth();
   const [currentBg, setCurrentBg] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [activeStep, setActiveStep] = useState(4);
 
   const heroRef = useRef<HTMLDivElement>(null);
+  const categoriesScrollRef = useRef<HTMLDivElement>(null);
+  const [isCategoriesMarqueePaused, setIsCategoriesMarqueePaused] = useState(false);
+
+  const scrollCategories = (direction: 'left' | 'right') => {
+    if (categoriesScrollRef.current) {
+      const scrollAmount = direction === 'left' ? -380 : 380;
+      categoriesScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ['start start', 'end start'],
@@ -106,18 +133,50 @@ export default function HomePage() {
     return () => clearInterval(timer);
   }, []);
 
-  const [eventsList, setEventsList] = useState(mockEvents);
+  // Helper function to calculate automatic event status: live | upcoming | past
+  const checkEventStatus = (dateStr?: string): 'live' | 'upcoming' | 'past' => {
+    if (!dateStr) return 'upcoming';
+    const match = String(dateStr).match(/^(\d{4}-\d{2}-\d{2})/);
+    const dateOnly = match ? match[1] : dateStr.split('T')[0];
+    if (!dateOnly || !/^\d{4}-\d{2}-\d{2}$/.test(dateOnly)) return 'upcoming';
+
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    const today = `${y}-${m}-${d}`;
+
+    if (dateOnly === today) return 'live';
+    if (dateOnly > today) return 'upcoming';
+    return 'past';
+  };
+
+  const [eventsList] = useState(mockEvents);
   const [apiEvents, setApiEvents] = useState<any[]>([]);
+  const [apiPastEvents, setApiPastEvents] = useState<any[]>([]);
 
   useEffect(() => {
-    // Fetch live published events from API
+    // Fetch live published events from API, sort into Live+Upcoming and Past
     async function fetchPublishedEvents() {
       try {
         const res = await fetch('/api/events');
         const json = await res.json();
         if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-          console.log(`[HomePage] Loaded ${json.data.length} published events from /api/events`);
-          setApiEvents(json.data);
+          // Live and Upcoming events
+          const liveAndUpcoming = json.data.filter((e: any) => {
+            const rawDate = e.date || e.startDate || '';
+            const status = e.eventStatus || checkEventStatus(rawDate);
+            return status === 'live' || status === 'upcoming';
+          });
+          setApiEvents(liveAndUpcoming.slice(0, 6));
+
+          // Past events from backend
+          const past = json.data.filter((e: any) => {
+            const rawDate = e.date || e.startDate || '';
+            const status = e.eventStatus || checkEventStatus(rawDate);
+            return status === 'past';
+          });
+          setApiPastEvents(past.slice(0, 6));
         }
       } catch (err) {
         console.error('[HomePage] Failed fetching /api/events:', err);
@@ -126,13 +185,34 @@ export default function HomePage() {
     fetchPublishedEvents();
   }, []);
 
-  const liveEvents = eventsList.filter(e => e.status === 'published');
-  const mainLiveEvent = liveEvents[0] || eventsList[0];
-  // Expanded to include upcoming live event cards
-  const gridLiveEvents = liveEvents.slice(1, 7);
+  // Filter fallback mock events to only Live + Upcoming, sorted nearest first
+  const activeEvents = eventsList
+    .filter(e => {
+      const status = checkEventStatus(e.date || e.startDate);
+      return (status === 'live' || status === 'upcoming') && e.status !== 'cancelled';
+    })
+    .sort((a, b) => {
+      const dateA = (a.date || a.startDate || '').split('T')[0];
+      const dateB = (b.date || b.startDate || '').split('T')[0];
+      return dateA.localeCompare(dateB);
+    });
 
-  const upcomingEvents = eventsList.filter(e => e.status === 'published').slice(0, 6);
-  const pastEvents = eventsList.filter(e => e.status === 'ended');
+  // Filter fallback mock events for past events
+  const fallbackPastEvents = eventsList
+    .filter(e => {
+      const status = checkEventStatus(e.date || e.startDate);
+      return status === 'past' || e.status === 'ended';
+    })
+    .sort((a, b) => {
+      const dateA = (a.date || a.startDate || '').split('T')[0];
+      const dateB = (b.date || b.startDate || '').split('T')[0];
+      return dateB.localeCompare(dateA); // most recent past event first
+    });
+
+  const mainLiveEvent = activeEvents[0] || eventsList[0];
+  const gridLiveEvents = activeEvents.slice(1, 5);
+  const upcomingEvents = activeEvents.slice(0, 6);
+  const pastEvents = apiPastEvents.length > 0 ? apiPastEvents : fallbackPastEvents.slice(0, 6);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAFAF9] overflow-x-hidden">
@@ -302,7 +382,7 @@ export default function HomePage() {
           
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-xs uppercase tracking-widest text-[#059669] font-extrabold flex items-center gap-1.5 bg-[#059669]/10 px-3 py-1 rounded-full w-fit mb-1.5 border border-[#059669]/20">
+              <span className="text-xs uppercase tracking-widest text-[#059669] font-extrabold flex items-center gap-1.5 bg-[#059669]/10 px-3 py-1 rounded-full w-fit mb-3.5 border border-[#059669]/20">
                 <span className="h-2.5 w-2.5 rounded-full bg-[#059669] animate-pulse"></span> LIVE NOW
               </span>
               <h2 className="text-2xl sm:text-4xl font-black text-[#1C1917] tracking-tight flex items-center gap-2">
@@ -350,7 +430,7 @@ export default function HomePage() {
 
               <div className="pt-2">
                 <Link
-                  href={`/events/${mainLiveEvent.slug}`}
+                  href={user ? `/events/${mainLiveEvent.slug}` : `/login?redirect=${encodeURIComponent(`/events/${mainLiveEvent.slug}`)}`}
                   className="rounded-xl bg-[#F97316] px-6 py-3 text-xs sm:text-sm font-extrabold text-white hover:bg-[#ea580c] transition shadow-lg inline-flex items-center gap-2"
                 >
                   <span>Book Now</span> <ArrowRight className="h-4 w-4" />
@@ -370,7 +450,7 @@ export default function HomePage() {
             {gridLiveEvents.map(evt => (
               <motion.div key={evt.id} variants={itemVariants}>
                 <Link
-                  href={`/events/${evt.slug}`}
+                  href={user ? `/events/${evt.slug}` : `/login?redirect=${encodeURIComponent(`/events/${evt.slug}`)}`}
                   className="group rounded-2xl border border-slate-800 bg-[#1C1917] overflow-hidden hover:border-[#0F766E] hover:shadow-xl transition-all flex flex-col justify-between h-full"
                 >
                   <div>
@@ -415,21 +495,22 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-      {/* 3. UPCOMING EVENTS */}
+
+      {/* 3. UPCOMING EVENTS (Curated 6 Events on Homepage) */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 md:px-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <span className="text-xs font-extrabold text-[#F97316] uppercase tracking-widest bg-[#F97316]/10 px-3 py-1 rounded-full border border-[#F97316]/20 inline-block mb-1.5">
+              <span className="text-xs font-extrabold text-[#F97316] uppercase tracking-widest bg-[#F97316]/10 px-3 py-1 rounded-full border border-[#F97316]/20 inline-block mb-3.5">
                 HANDPICKED SELECTIONS
               </span>
               <h2 className="text-2xl sm:text-4xl font-black text-[#1C1917] tracking-tight">
                 Upcoming <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F97316] to-amber-500">Events</span>
               </h2>
-              <p className="text-xs text-[#78716C] mt-1">Happening over the next few weeks across conferences, masterclasses & summits</p>
+              <p className="text-xs text-[#78716C] mt-1">Featured upcoming conferences, masterclasses & summits</p>
             </div>
             <Link href="/events" className="text-sm font-bold text-[#0F766E] hover:text-[#115E59] flex items-center gap-1.5 bg-[#0F766E]/10 hover:bg-[#0F766E]/20 px-4 py-2 rounded-xl transition">
-              View All <ArrowRight className="h-4 w-4" />
+              View All Events <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
@@ -438,10 +519,10 @@ export default function HomePage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             {apiEvents.length > 0 ? (
-              apiEvents.map((evt: any) => (
+              apiEvents.slice(0, 6).map((evt: any) => (
                 <motion.div key={evt.id} variants={itemVariants}>
                   <EventCard
                     id={evt.id}
@@ -449,7 +530,10 @@ export default function HomePage() {
                     slug={evt.slug}
                     coverImage={evt.coverImage}
                     date={evt.date}
+                    startDate={evt.startDate}
+                    endDate={evt.endDate}
                     startTime={evt.startTime}
+                    endTime={evt.endTime}
                     venue={evt.venue}
                     city={evt.city}
                     isOnline={evt.isOnline}
@@ -461,7 +545,7 @@ export default function HomePage() {
                 </motion.div>
               ))
             ) : (
-              upcomingEvents.map(evt => (
+              upcomingEvents.slice(0, 6).map(evt => (
                 <motion.div key={evt.id} variants={itemVariants}>
                   <EventCard event={evt} />
                 </motion.div>
@@ -471,19 +555,22 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. PAST EVENTS SECTION */}
+      {/* 4. PAST EVENTS SECTION (CONCLUDED CONCLAVES ARCHIVE) */}
       <section className="py-16 bg-[#FAFAF9]">
         <div className="container mx-auto px-4 md:px-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <span className="text-xs font-extrabold text-[#78716C] uppercase tracking-widest bg-[#E7E5E4] px-3 py-1 rounded-full inline-flex items-center gap-1.5 mb-1.5">
+              <span className="text-xs font-extrabold text-[#78716C] uppercase tracking-widest bg-[#E7E5E4] px-3 py-1 rounded-full inline-flex items-center gap-1.5 mb-3.5">
                 <Clock className="h-3.5 w-3.5 text-[#78716C]" /> ARCHIVED CONCLAVES
               </span>
               <h2 className="text-2xl sm:text-4xl font-black text-[#1C1917] tracking-tight">
                 Past <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-700 to-slate-900">Events Archive</span>
               </h2>
-              <p className="text-xs text-[#78716C] mt-1">Review concluded events and past schedules</p>
+              <p className="text-xs text-[#78716C] mt-1">Review concluded events, past schedules & proceedings</p>
             </div>
+            <Link href="/events?tab=past" className="text-sm font-bold text-slate-700 hover:text-slate-900 flex items-center gap-1.5 bg-slate-200/70 hover:bg-slate-200 px-4 py-2 rounded-xl transition">
+              View All Past Events <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
 
           <motion.div 
@@ -493,77 +580,143 @@ export default function HomePage() {
             viewport={{ once: true, margin: '-50px' }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {pastEvents.map(evt => (
+            {pastEvents.map((evt: any) => (
               <motion.div key={evt.id} variants={itemVariants}>
-                <EventCard event={evt} />
+                {evt.coverImage ? (
+                  <EventCard
+                    id={evt.id}
+                    title={evt.title}
+                    slug={evt.slug}
+                    coverImage={evt.coverImage}
+                    date={evt.date}
+                    startDate={evt.startDate}
+                    endDate={evt.endDate}
+                    startTime={evt.startTime}
+                    endTime={evt.endTime}
+                    venue={evt.venue}
+                    city={evt.city}
+                    isOnline={evt.isOnline}
+                    startingPrice={evt.startingPrice}
+                    availableSeats={evt.availableSeats}
+                    category={evt.category}
+                    organizerName={evt.organizer?.name}
+                    eventStatus="past"
+                  />
+                ) : (
+                  <EventCard event={evt} eventStatus="past" />
+                )}
               </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* 5. POPULAR CATEGORIES */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="flex items-center justify-between mb-8">
+      {/* 5. POPULAR CATEGORIES (CONTINUOUS AUTO-MOVING TICKER MARQUEE) */}
+      <section className="py-16 bg-[#FAFAF9] border-y border-stone-200/70 overflow-hidden relative">
+        <div className="container mx-auto px-4 md:px-8 mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
             <div>
-              <span className="text-xs font-extrabold text-[#059669] uppercase tracking-widest bg-[#059669]/10 px-3 py-1 rounded-full border border-[#059669]/20 inline-block mb-1.5">
+              <span className="text-xs font-extrabold text-[#059669] uppercase tracking-widest bg-[#059669]/10 px-3 py-1 rounded-full border border-[#059669]/20 inline-block mb-3.5">
                 DISCOVER BY INTEREST
               </span>
               <h2 className="text-2xl sm:text-4xl font-black text-[#1C1917] tracking-tight">
                 Popular <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#059669] to-emerald-600">Categories</span>
               </h2>
-              <p className="text-xs text-[#78716C] mt-1">Explore events tailored to your specific area of interest</p>
+              <p className="text-xs sm:text-sm text-[#78716C] mt-1">
+                Explore handpicked events, summits, workshops & parties across 18 unique domains
+              </p>
             </div>
-            <Link href="/events" className="text-sm font-bold text-[#0F766E] hover:text-[#115E59] flex items-center gap-1.5 bg-[#0F766E]/10 hover:bg-[#0F766E]/20 px-4 py-2 rounded-xl transition">
-              All Categories <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
 
-          <motion.div 
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4"
-          >
-            {mockCategories.map(cat => (
-              <motion.div key={cat.id} variants={itemVariants} whileHover={{ scale: 1.04 }}>
+            <div className="flex items-center gap-3 self-end sm:self-auto shrink-0">
+              {/* Play / Pause Toggle Button */}
+              <button
+                type="button"
+                onClick={() => setIsCategoriesMarqueePaused(prev => !prev)}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-stone-50 border border-stone-200 text-xs font-bold text-stone-700 shadow-2xs transition active:scale-95"
+                title={isCategoriesMarqueePaused ? 'Resume auto-movement' : 'Pause auto-movement'}
+              >
+                {isCategoriesMarqueePaused ? (
+                  <>
+                    <Play className="h-3.5 w-3.5 text-emerald-600 fill-emerald-600" />
+                    <span>Play Motion</span>
+                  </>
+                ) : (
+                  <>
+                    <Pause className="h-3.5 w-3.5 text-[#F97316]" />
+                    <span>Pause</span>
+                  </>
+                )}
+              </button>
+
+              <Link
+                href="/events"
+                className="text-xs sm:text-sm font-bold text-[#0F766E] hover:text-[#115E59] flex items-center gap-1.5 bg-white hover:bg-stone-50 border border-stone-200 px-4 py-2 rounded-xl transition shadow-2xs group"
+              >
+                <span>All {mockCategories.length} Categories</span>
+                <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Continuous Infinite Moving Marquee with Left & Right Gradient Fade */}
+        <div className="relative w-full">
+          {/* Left Gradient Edge Vignette */}
+          <div className="absolute top-0 bottom-0 left-0 w-16 sm:w-28 bg-gradient-to-r from-[#FAFAF9] to-transparent z-10 pointer-events-none" />
+
+          {/* Right Gradient Edge Vignette */}
+          <div className="absolute top-0 bottom-0 right-0 w-16 sm:w-28 bg-gradient-to-l from-[#FAFAF9] to-transparent z-10 pointer-events-none" />
+
+          <div className={`animate-marquee py-2 ${isCategoriesMarqueePaused ? 'animate-marquee-paused' : ''}`}>
+            {/* Render 2 identical loops of the categories for seamless, non-stop circular loop */}
+            {[...mockCategories, ...mockCategories].map((cat, idx) => (
+              <div
+                key={`${cat.id}-${idx}`}
+                className="shrink-0 w-[190px] sm:w-[210px] mx-2"
+              >
                 <Link
                   href={`/events?category=${cat.slug}`}
-                  className="group flex flex-col items-center text-center p-5 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] hover:border-[#0F766E] hover:shadow-md transition-all h-full"
+                  className="group flex flex-col items-center text-center p-5 rounded-2xl border border-stone-200/90 bg-white hover:border-[#0F766E] hover:shadow-xl transition-all duration-300 h-full relative overflow-hidden"
                 >
-                  <div className="p-3 rounded-xl bg-white shadow-xs mb-3 group-hover:scale-110 transition-transform">
+                  {/* Glowing Top Accent on Hover */}
+                  <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[#0F766E] to-[#F97316] opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                  <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-100 shadow-2xs mb-3.5 group-hover:scale-110 group-hover:bg-[#0F766E]/10 transition-all duration-300">
                     {categoryIconMap[cat.icon] || <Cpu className="h-6 w-6 text-[#0F766E]" />}
                   </div>
-                  <h3 className="font-bold text-[#1C1917] text-sm">{cat.name}</h3>
-                  <span className="text-xs text-[#78716C] mt-1">
-                    <AnimatedCounter value={cat.count || 0} /> Events
-                  </span>
+
+                  <h3 className="font-bold text-[#1C1917] text-xs sm:text-sm group-hover:text-[#0F766E] transition line-clamp-1">
+                    {cat.name}
+                  </h3>
+
+                  <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stone-100 text-[11px] font-semibold text-stone-600 group-hover:bg-emerald-50 group-hover:text-emerald-700 transition">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span><AnimatedCounter value={cat.count || 0} /> Events</span>
+                  </div>
                 </Link>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* 6. REDESIGNED MODERN GAMING-STYLE END-TO-END WORKFLOW SECTION */}
-      <section className="py-20 bg-[#0F172A] text-white border-y border-slate-800 relative overflow-hidden">
+      <section className="py-14 sm:py-16 bg-[#0F172A] text-white border-y border-slate-800 relative overflow-hidden">
         {/* Futuristic Glowing Background Orbs */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#F97316]/15 blur-[120px] rounded-full pointer-events-none"></div>
         <div className="absolute inset-0 bg-[radial-gradient(#0F766E_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none"></div>
 
-        <div className="container mx-auto px-4 md:px-8 max-w-6xl relative z-10 space-y-12">
+        <div className="container mx-auto px-4 md:px-8 max-w-5xl relative z-10 space-y-8">
           {/* Gaming Section Header */}
           <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="inline-flex items-center gap-2 rounded-full bg-cyan-500/10 border border-cyan-400/40 px-4 py-1.5 text-xs font-bold text-cyan-300 uppercase tracking-widest backdrop-blur-md shadow-[0_0_15px_rgba(6,182,212,0.25)]">
+            <span className="inline-flex items-center gap-2 rounded-full bg-cyan-500/10 border border-cyan-400/40 px-4 py-1.5 text-xs font-bold text-cyan-300 uppercase tracking-widest backdrop-blur-md shadow-[0_0_15px_rgba(6,182,212,0.25)] mb-3.5">
               <Sparkles className="h-4 w-4 text-cyan-400 animate-spin" /> Quest Progression Map
             </span>
-            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
               Everything You Need to Run an Event — <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-[#F97316] to-emerald-400">In One Place</span>
             </h2>
-            <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
               From creating the event to checking people in and downloading reports. No more switching between tools.
             </p>
           </div>
@@ -583,7 +736,7 @@ export default function HomePage() {
                   type="button"
                   suppressHydrationWarning
                   onClick={() => setActiveStep(num)}
-                  className={`w-10 h-10 rounded-full font-black text-xs transition-all flex items-center justify-center ${
+                  className={`w-8 h-8 rounded-full font-black text-[11px] transition-all flex items-center justify-center ${
                     activeStep === num
                       ? 'bg-gradient-to-r from-cyan-400 to-[#F97316] text-slate-950 scale-125 ring-4 ring-cyan-400/40 shadow-[0_0_20px_rgba(6,182,212,0.8)]'
                       : activeStep > num
@@ -742,16 +895,16 @@ export default function HomePage() {
       </section>
 
       {/* 7. SMART FEATURES THAT ACTUALLY HELP EVENT CREATORS */}
-      <section className="py-16 bg-[#1E293B] text-white">
-        <div className="container mx-auto px-4 md:px-8 max-w-5xl space-y-8">
-          <div className="text-center max-w-3xl mx-auto space-y-2">
-            <span className="text-xs font-extrabold text-cyan-300 uppercase tracking-widest bg-cyan-500/10 px-3.5 py-1.5 rounded-full border border-cyan-400/30 inline-block mb-1">
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4 md:px-8 max-w-6xl space-y-10">
+          <div className="text-center max-w-3xl mx-auto space-y-2.5">
+            <span className="text-xs font-extrabold text-[#0F766E] uppercase tracking-widest bg-[#0F766E]/10 px-3.5 py-1.5 rounded-full border border-[#0F766E]/20 inline-block mb-3.5">
               PROVEN ENGINE
             </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-              Smart Features That <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-[#F97316]">Actually Help Event Creators</span>
+            <h2 className="text-3xl sm:text-4xl font-black text-[#1C1917] tracking-tight">
+              Smart Features That <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] to-[#F97316]">Actually Help Event Creators</span>
             </h2>
-            <p className="text-slate-300 text-sm leading-relaxed">
+            <p className="text-[#78716C] text-sm leading-relaxed">
               Tools designed to save time and reduce manual work — not just look fancy.
             </p>
           </div>
@@ -761,59 +914,59 @@ export default function HomePage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left pt-4"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left pt-2"
           >
             {/* Feature 1 */}
-            <motion.div variants={itemVariants} whileHover={{ scale: 1.03 }} className="p-6 rounded-2xl bg-slate-800/80 border border-slate-700/70 space-y-2.5">
-              <div className="p-2 w-fit bg-[#0F766E]/20 text-[#0F766E] rounded-lg">
-                <Zap className="h-5 w-5 text-[#0F766E]" />
+            <motion.div variants={itemVariants} whileHover={{ y: -4, transition: { duration: 0.2 } }} className="p-6 rounded-3xl bg-[#FAFAF9] border border-[#E7E5E4] hover:border-[#0F766E]/50 hover:shadow-lg transition-all space-y-3">
+              <div className="p-3 w-fit bg-[#0F766E]/10 text-[#0F766E] rounded-2xl">
+                <Zap className="h-6 w-6 text-[#0F766E]" />
               </div>
-              <h3 className="font-bold text-white text-base">Quick Event Creation</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <h3 className="font-extrabold text-[#1C1917] text-base">Quick Event Creation</h3>
+              <p className="text-xs text-[#78716C] leading-relaxed">
                 Fill basic details and the system helps you structure tickets, registration form and pricing. Publish faster.
               </p>
             </motion.div>
 
             {/* Feature 2 */}
-            <motion.div variants={itemVariants} whileHover={{ scale: 1.03 }} className="p-6 rounded-2xl bg-slate-800/80 border border-slate-700/70 space-y-2.5">
-              <div className="p-2 w-fit bg-[#F97316]/20 text-[#F97316] rounded-lg">
-                <Mail className="h-5 w-5 text-[#F97316]" />
+            <motion.div variants={itemVariants} whileHover={{ y: -4, transition: { duration: 0.2 } }} className="p-6 rounded-3xl bg-[#FAFAF9] border border-[#E7E5E4] hover:border-[#F97316]/50 hover:shadow-lg transition-all space-y-3">
+              <div className="p-3 w-fit bg-[#F97316]/10 text-[#F97316] rounded-2xl">
+                <Mail className="h-6 w-6 text-[#F97316]" />
               </div>
-              <h3 className="font-bold text-white text-base">Automated Reminders</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <h3 className="font-extrabold text-[#1C1917] text-base">Automated Reminders</h3>
+              <p className="text-xs text-[#78716C] leading-relaxed">
                 Send registration confirmation, payment success and event reminder emails/SMS automatically. Less follow-up work for you.
               </p>
             </motion.div>
 
             {/* Feature 3 */}
-            <motion.div variants={itemVariants} whileHover={{ scale: 1.03 }} className="p-6 rounded-2xl bg-slate-800/80 border border-slate-700/70 space-y-2.5">
-              <div className="p-2 w-fit bg-[#059669]/20 text-[#059669] rounded-lg">
-                <Percent className="h-5 w-5 text-[#059669]" />
+            <motion.div variants={itemVariants} whileHover={{ y: -4, transition: { duration: 0.2 } }} className="p-6 rounded-3xl bg-[#FAFAF9] border border-[#E7E5E4] hover:border-[#059669]/50 hover:shadow-lg transition-all space-y-3">
+              <div className="p-3 w-fit bg-[#059669]/10 text-[#059669] rounded-2xl">
+                <Percent className="h-6 w-6 text-[#059669]" />
               </div>
-              <h3 className="font-bold text-white text-base">Coupon & Offer Engine</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <h3 className="font-extrabold text-[#1C1917] text-base">Coupon & Offer Engine</h3>
+              <p className="text-xs text-[#78716C] leading-relaxed">
                 Create discount codes, early-bird pricing and group offers in a few clicks. Control usage limits easily.
               </p>
             </motion.div>
 
             {/* Feature 4 */}
-            <motion.div variants={itemVariants} whileHover={{ scale: 1.03 }} className="p-6 rounded-2xl bg-slate-800/80 border border-slate-700/70 space-y-2.5">
-              <div className="p-2 w-fit bg-[#0F766E]/20 text-[#0F766E] rounded-lg">
-                <QrCode className="h-5 w-5 text-[#0F766E]" />
+            <motion.div variants={itemVariants} whileHover={{ y: -4, transition: { duration: 0.2 } }} className="p-6 rounded-3xl bg-[#FAFAF9] border border-[#E7E5E4] hover:border-[#0F766E]/50 hover:shadow-lg transition-all space-y-3">
+              <div className="p-3 w-fit bg-[#0F766E]/10 text-[#0F766E] rounded-2xl">
+                <QrCode className="h-6 w-6 text-[#0F766E]" />
               </div>
-              <h3 className="font-bold text-white text-base">Real-time Check-in</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <h3 className="font-extrabold text-[#1C1917] text-base">Real-time Check-in</h3>
+              <p className="text-xs text-[#78716C] leading-relaxed">
                 Live count of how many people have entered. Useful for both small workshops and large conferences.
               </p>
             </motion.div>
 
             {/* Feature 5 */}
-            <motion.div variants={itemVariants} whileHover={{ scale: 1.03 }} className="p-6 rounded-2xl bg-slate-800/80 border border-slate-700/70 space-y-2.5 sm:col-span-2 lg:col-span-1">
-              <div className="p-2 w-fit bg-[#F97316]/20 text-[#F97316] rounded-lg">
-                <FileSpreadsheet className="h-5 w-5 text-[#F97316]" />
+            <motion.div variants={itemVariants} whileHover={{ y: -4, transition: { duration: 0.2 } }} className="p-6 rounded-3xl bg-[#FAFAF9] border border-[#E7E5E4] hover:border-[#F97316]/50 hover:shadow-lg transition-all space-y-3 sm:col-span-2 lg:col-span-1">
+              <div className="p-3 w-fit bg-[#F97316]/10 text-[#F97316] rounded-2xl">
+                <FileSpreadsheet className="h-6 w-6 text-[#F97316]" />
               </div>
-              <h3 className="font-bold text-white text-base">Basic Reports</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <h3 className="font-extrabold text-[#1C1917] text-base">Basic Reports</h3>
+              <p className="text-xs text-[#78716C] leading-relaxed">
                 See total registrations, revenue collected, attendance percentage and no-show rate without opening Excel.
               </p>
             </motion.div>
@@ -825,7 +978,7 @@ export default function HomePage() {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 md:px-8 max-w-6xl">
           <div className="text-center max-w-3xl mx-auto space-y-2 mb-12">
-            <span className="text-xs font-extrabold text-[#0F766E] uppercase tracking-widest bg-[#0F766E]/10 px-3.5 py-1.5 rounded-full border border-[#0F766E]/20 inline-block mb-1">
+            <span className="text-xs font-extrabold text-[#0F766E] uppercase tracking-widest bg-[#0F766E]/10 px-3.5 py-1.5 rounded-full border border-[#0F766E]/20 inline-block mb-3.5">
               BUILT FOR REAL HOSTS
             </span>
             <h2 className="text-3xl sm:text-4xl font-black text-[#1C1917] tracking-tight">
@@ -914,212 +1067,556 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 9. ORGANIZERS GROWING WITH EPAYEVENTS */}
-      <section className="py-20 bg-[#FAFAF9]">
-        <div className="container mx-auto px-4 md:px-8 max-w-6xl">
-          <div className="text-center max-w-3xl mx-auto space-y-3 mb-14">
-            <span className="text-xs font-extrabold text-[#0F766E] uppercase tracking-widest bg-[#0F766E]/10 px-3.5 py-1.5 rounded-full border border-[#0F766E]/20 inline-block">
-              Organizer Success Stories
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-[#1C1917] tracking-tight">
-              Organizers Growing with <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] to-[#F97316]">ePayEvents</span>
-            </h2>
-            <p className="text-sm text-[#78716C] leading-relaxed">
-              Real metrics and feedback from community hosts, tech summits, and cultural festival organizers across India.
-            </p>
+      {/* 9. ORGANIZERS GROWING WITH EPAYEVENTS (REDESIGNED HIGH-IMPACT GROWTH ENGINE) */}
+      <section className="py-14 sm:py-16 bg-gradient-to-b from-[#0F172A] via-[#1E293B] to-[#0F172A] text-white relative overflow-hidden">
+        {/* Subtle decorative mesh background */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="container mx-auto px-4 md:px-8 max-w-5xl relative z-10 space-y-8">
+          {/* Header & Growth Ribbon */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-300 text-xs font-black uppercase tracking-widest mb-3.5">
+                <TrendingUp className="h-3.5 w-3.5 text-teal-400" />
+                VERIFIED ORGANIZER BENCHMARKS
+              </div>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+                Organizers Growing with <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-emerald-300 to-[#F97316]">ePayEvents</span>
+              </h2>
+              <p className="text-sm text-slate-300 leading-relaxed">
+                Real operational benchmarks and financial metrics from conference founders, community leads, and festival directors scaling on our infrastructure.
+              </p>
+            </div>
+
+            {/* Quick Host CTA in Header */}
+            <div className="flex items-center gap-3 shrink-0">
+              <Link
+                href="/create-event"
+                className="group inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#F97316] to-amber-500 hover:brightness-110 px-5 py-3 text-xs sm:text-sm font-bold text-white shadow-xl shadow-orange-500/20 transition-all"
+              >
+                <span>Host Your Next Event</span>
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
           </div>
 
+          {/* Aggregate Growth Stats Bar */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 p-4 sm:p-5 rounded-2xl bg-slate-900/80 border border-slate-700/80 backdrop-blur-md shadow-2xl">
+            <div className="p-3">
+              <span className="text-xs text-slate-400 block font-medium">Platform Pass Volume</span>
+              <div className="text-2xl sm:text-3xl font-black text-white mt-1">
+                <AnimatedCounter value={52000} suffix="+" />
+              </div>
+              <span className="text-[11px] text-teal-400 font-bold flex items-center gap-1 mt-0.5">
+                <TrendingUp className="h-3 w-3" /> +142% year-on-year
+              </span>
+            </div>
+
+            <div className="p-3 border-l border-slate-800">
+              <span className="text-xs text-slate-400 block font-medium">Average Gate Scan Speed</span>
+              <div className="text-2xl sm:text-3xl font-black text-emerald-400 mt-1">1.8s</div>
+              <span className="text-[10px] text-slate-400 font-medium mt-0.5 block">Zero turnstile queue lag</span>
+            </div>
+
+            <div className="p-3 border-l-0 lg:border-l border-slate-800">
+              <span className="text-xs text-slate-400 block font-medium">Revenue Disbursed</span>
+              <div className="text-2xl sm:text-3xl font-black text-amber-400 mt-1">₹4.8 Cr+</div>
+              <span className="text-[11px] text-amber-300 font-bold mt-0.5 block">Same-day bank settlement</span>
+            </div>
+
+            <div className="p-3 border-l border-slate-800">
+              <span className="text-xs text-slate-400 block font-medium">Organizer Retention</span>
+              <div className="text-2xl sm:text-3xl font-black text-teal-300 mt-1">96.8%</div>
+              <span className="text-[11px] text-emerald-400 font-bold mt-0.5 block">Recurring multi-edition hosts</span>
+            </div>
+          </div>
+
+          {/* 3 Executive Case Study Story Cards */}
           <motion.div 
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+            className="grid grid-cols-1 lg:grid-cols-3 gap-5"
           >
-            {/* Story 1 */}
-            <motion.div variants={itemVariants} className="rounded-3xl border border-[#E7E5E4] bg-white p-6 sm:p-8 flex flex-col justify-between hover:shadow-xl transition-all group">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between border-b border-[#E7E5E4] pb-4">
+            {/* Story 1: AI Builders Club */}
+            <motion.div 
+              variants={itemVariants}
+              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+              className="rounded-2xl border border-slate-800 bg-slate-900/90 p-4 sm:p-5 flex flex-col justify-between hover:border-teal-500/50 hover:shadow-2xl hover:shadow-teal-500/10 transition-all group relative overflow-hidden"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
                   <div>
-                    <h3 className="font-extrabold text-[#1C1917] text-base">AI Builders Club</h3>
-                    <span className="text-[11px] text-[#78716C]">Tech & Hackathons</span>
+                    <span className="text-[10px] font-black tracking-wider text-teal-400 uppercase bg-teal-500/10 border border-teal-500/20 px-2 py-0.5 rounded-md">
+                      HACKATHON & TECH
+                    </span>
+                    <h3 className="font-extrabold text-white text-base mt-1">AI Builders Club</h3>
                   </div>
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#FFEDD5] text-[#F97316]">Bengaluru</span>
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/10 text-slate-300 border border-white/10">
+                    Bengaluru
+                  </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 py-2">
-                  <div className="bg-[#FAFAF9] p-3 rounded-xl border border-[#E7E5E4]">
-                    <span className="text-[10px] text-[#78716C] block font-medium">Tickets Sold</span>
-                    <span className="text-xl font-black text-[#1C1917]">
+                {/* Metric Badges */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60">
+                    <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Passes Sold</span>
+                    <span className="text-lg sm:text-xl font-black text-white mt-0.5 block">
                       <AnimatedCounter value={2450} suffix="+" />
                     </span>
+                    <span className="text-[10px] text-emerald-400 font-bold">100% Sold Out</span>
                   </div>
-                  <div className="bg-[#FAFAF9] p-3 rounded-xl border border-[#E7E5E4]">
-                    <span className="text-[10px] text-[#78716C] block font-medium">Check-in Speed</span>
-                    <span className="text-xl font-black text-[#059669]">2.1 s</span>
+
+                  <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60">
+                    <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Gate Scan Speed</span>
+                    <span className="text-lg sm:text-xl font-black text-teal-300 mt-0.5 block">2.1s</span>
+                    <span className="text-[10px] text-teal-400 font-bold">4 Turnstiles</span>
                   </div>
                 </div>
 
-                <p className="text-xs text-[#78716C] leading-relaxed italic">
-                  &quot;We managed custom team submission questions and scanned 2,000+ hackers at gate entry seamlessly. ePayEvents eliminated zero-day queue chaos.&quot;
-                </p>
+                <div className="bg-slate-800/40 p-2.5 sm:p-3 rounded-xl border border-slate-800/80">
+                  <p className="text-[11px] text-slate-300 leading-relaxed italic">
+                    &quot;We managed custom team submission questions and scanned 2,000+ hackers at gate entry seamlessly. ePayEvents eliminated zero-day queue chaos.&quot;
+                  </p>
+                </div>
               </div>
 
-              <div className="pt-6 border-t border-[#E7E5E4] flex items-center gap-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/speakers/speaker4.jpg" alt="Karan Sharma" className="h-10 w-10 rounded-full object-cover ring-2 ring-[#0F766E]/20" />
-                <div>
-                  <h4 className="font-bold text-[#1C1917] text-xs">Karan Sharma</h4>
-                  <span className="text-[10px] text-[#78716C]">Lead Organizer, AI Builders</span>
+              {/* Organizer Profile Footer */}
+              <div className="pt-3.5 border-t border-slate-800 mt-3.5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/speakers/speaker4.jpg" alt="Karan Sharma" className="h-9 w-9 rounded-xl object-cover ring-2 ring-teal-500/30 shadow-md" />
+                  <div>
+                    <h4 className="font-bold text-white text-xs">Karan Sharma</h4>
+                    <span className="text-[10px] text-slate-400">Lead Organizer, AI Builders</span>
+                  </div>
+                </div>
+                <div className="p-1.5 rounded-lg bg-teal-500/10 text-teal-400 group-hover:scale-110 transition-transform">
+                  <Award className="h-4 w-4" />
                 </div>
               </div>
             </motion.div>
 
-            {/* Story 2 */}
-            <motion.div variants={itemVariants} className="rounded-3xl border border-[#E7E5E4] bg-white p-6 sm:p-8 flex flex-col justify-between hover:shadow-xl transition-all group">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between border-b border-[#E7E5E4] pb-4">
+            {/* Story 2: FinTech Next Summit */}
+            <motion.div 
+              variants={itemVariants}
+              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+              className="rounded-2xl border border-slate-800 bg-slate-900/90 p-4 sm:p-5 flex flex-col justify-between hover:border-orange-500/50 hover:shadow-2xl hover:shadow-orange-500/10 transition-all group relative overflow-hidden"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
                   <div>
-                    <h3 className="font-extrabold text-[#1C1917] text-base">FinTech Next Summit</h3>
-                    <span className="text-[11px] text-[#78716C]">Corporate Conference</span>
+                    <span className="text-[10px] font-black tracking-wider text-orange-400 uppercase bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded-md">
+                      EXECUTIVE SUMMIT
+                    </span>
+                    <h3 className="font-extrabold text-white text-base mt-1">FinTech Next Summit</h3>
                   </div>
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#FFEDD5] text-[#F97316]">Mumbai</span>
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/10 text-slate-300 border border-white/10">
+                    Mumbai
+                  </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 py-2">
-                  <div className="bg-[#FAFAF9] p-3 rounded-xl border border-[#E7E5E4]">
-                    <span className="text-[10px] text-[#78716C] block font-medium">Revenue Settled</span>
-                    <span className="text-xl font-black text-[#1C1917]">₹14.8 L</span>
+                {/* Metric Badges */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60">
+                    <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Revenue Settled</span>
+                    <span className="text-lg sm:text-xl font-black text-amber-400 mt-0.5 block">₹14.8 L</span>
+                    <span className="text-[10px] text-amber-300 font-bold">Same-Day Payout</span>
                   </div>
-                  <div className="bg-[#FAFAF9] p-3 rounded-xl border border-[#E7E5E4]">
-                    <span className="text-[10px] text-[#78716C] block font-medium">Show-up Rate</span>
-                    <span className="text-xl font-black text-[#059669]">
+
+                  <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60">
+                    <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Show-up Rate</span>
+                    <span className="text-lg sm:text-xl font-black text-emerald-400 mt-0.5 block">
                       <AnimatedCounter value={94} suffix="%" />
                     </span>
+                    <span className="text-[10px] text-emerald-300 font-bold">Automated SMS/Mail</span>
                   </div>
                 </div>
 
-                <p className="text-xs text-[#78716C] leading-relaxed italic">
-                  &quot;Automated WhatsApp and email reminders reduced our no-show rates drastically. Instant UPI settlements gave us immediate cash flow.&quot;
-                </p>
+                <div className="bg-slate-800/40 p-2.5 sm:p-3 rounded-xl border border-slate-800/80">
+                  <p className="text-[11px] text-slate-300 leading-relaxed italic">
+                    &quot;Automated WhatsApp and email reminders reduced our no-show rates drastically. Instant UPI settlements gave us immediate cash flow.&quot;
+                  </p>
+                </div>
               </div>
 
-              <div className="pt-6 border-t border-[#E7E5E4] flex items-center gap-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/speakers/speaker3.jpg" alt="Rajesh Kulkarni" className="h-10 w-10 rounded-full object-cover ring-2 ring-[#0F766E]/20" />
-                <div>
-                  <h4 className="font-bold text-[#1C1917] text-xs">Rajesh Kulkarni</h4>
-                  <span className="text-[10px] text-[#78716C]">Head of Events, FinTech Next</span>
+              {/* Organizer Profile Footer */}
+              <div className="pt-3.5 border-t border-slate-800 mt-3.5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/speakers/speaker3.jpg" alt="Rajesh Kulkarni" className="h-9 w-9 rounded-xl object-cover ring-2 ring-orange-500/30 shadow-md" />
+                  <div>
+                    <h4 className="font-bold text-white text-xs">Rajesh Kulkarni</h4>
+                    <span className="text-[10px] text-slate-400">Head of Events, FinTech Next</span>
+                  </div>
+                </div>
+                <div className="p-1.5 rounded-lg bg-orange-500/10 text-orange-400 group-hover:scale-110 transition-transform">
+                  <Award className="h-4 w-4" />
                 </div>
               </div>
             </motion.div>
 
-            {/* Story 3 */}
-            <motion.div variants={itemVariants} className="rounded-3xl border border-[#E7E5E4] bg-white p-6 sm:p-8 flex flex-col justify-between hover:shadow-xl transition-all group">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between border-b border-[#E7E5E4] pb-4">
+            {/* Story 3: Pune Indie Music Fest */}
+            <motion.div 
+              variants={itemVariants}
+              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+              className="rounded-2xl border border-slate-800 bg-slate-900/90 p-4 sm:p-5 flex flex-col justify-between hover:border-pink-500/50 hover:shadow-2xl hover:shadow-pink-500/10 transition-all group relative overflow-hidden"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
                   <div>
-                    <h3 className="font-extrabold text-[#1C1917] text-base">Pune Indie Music Fest</h3>
-                    <span className="text-[11px] text-[#78716C]">Live Concert</span>
+                    <span className="text-[10px] font-black tracking-wider text-pink-400 uppercase bg-pink-500/10 border border-pink-500/20 px-2 py-0.5 rounded-md">
+                      CONCERT & FESTIVAL
+                    </span>
+                    <h3 className="font-extrabold text-white text-base mt-1">Pune Indie Music Fest</h3>
                   </div>
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#FFEDD5] text-[#F97316]">Pune</span>
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/10 text-slate-300 border border-white/10">
+                    Pune
+                  </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 py-2">
-                  <div className="bg-[#FAFAF9] p-3 rounded-xl border border-[#E7E5E4]">
-                    <span className="text-[10px] text-[#78716C] block font-medium">Attended Count</span>
-                    <span className="text-xl font-black text-[#1C1917]">
+                {/* Metric Badges */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60">
+                    <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Crowd Checked-in</span>
+                    <span className="text-lg sm:text-xl font-black text-white mt-0.5 block">
                       <AnimatedCounter value={4120} />
                     </span>
+                    <span className="text-[10px] text-pink-400 font-bold">Night Gate Operations</span>
                   </div>
-                  <div className="bg-[#FAFAF9] p-3 rounded-xl border border-[#E7E5E4]">
-                    <span className="text-[10px] text-[#78716C] block font-medium">Coupon Redemption</span>
-                    <span className="text-xl font-black text-[#059669]">
+
+                  <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60">
+                    <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Promo Lift</span>
+                    <span className="text-lg sm:text-xl font-black text-pink-300 mt-0.5 block">
                       <AnimatedCounter value={38} suffix="%" />
                     </span>
+                    <span className="text-[10px] text-pink-300 font-bold">Group Pass Codes</span>
                   </div>
                 </div>
 
-                <p className="text-xs text-[#78716C] leading-relaxed italic">
-                  &quot;Early bird discounts and group ticketing tools boosted our first-week sales by 250%. Scanning with mobile phones was effortlessly fast.&quot;
-                </p>
+                <div className="bg-slate-800/40 p-2.5 sm:p-3 rounded-xl border border-slate-800/80">
+                  <p className="text-[11px] text-slate-300 leading-relaxed italic">
+                    &quot;Early bird discounts and group ticketing tools boosted our first-week sales by 250%. Scanning with mobile phones was effortlessly fast.&quot;
+                  </p>
+                </div>
               </div>
 
-              <div className="pt-6 border-t border-[#E7E5E4] flex items-center gap-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/organizers/event_manager_qr.jpg" alt="Priya Deshmukh" className="h-10 w-10 rounded-full object-cover ring-2 ring-[#0F766E]/20" />
-                <div>
-                  <h4 className="font-bold text-[#1C1917] text-xs">Priya Deshmukh</h4>
-                  <span className="text-[10px] text-[#78716C]">Festival Curator, Indie Pulse</span>
+              {/* Organizer Profile Footer */}
+              <div className="pt-3.5 border-t border-slate-800 mt-3.5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/organizers/event_manager_qr.jpg" alt="Priya Deshmukh" className="h-9 w-9 rounded-xl object-cover ring-2 ring-pink-500/30 shadow-md" />
+                  <div>
+                    <h4 className="font-bold text-white text-xs">Priya Deshmukh</h4>
+                    <span className="text-[10px] text-slate-400">Festival Curator, Indie Pulse</span>
+                  </div>
+                </div>
+                <div className="p-1.5 rounded-lg bg-pink-500/10 text-pink-400 group-hover:scale-110 transition-transform">
+                  <Award className="h-4 w-4" />
                 </div>
               </div>
             </motion.div>
           </motion.div>
+
+          {/* Organizer Quick Callout Bar */}
+          <div className="p-6 rounded-3xl bg-gradient-to-r from-teal-900/60 via-slate-900 to-amber-950/60 border border-slate-700/80 flex flex-col sm:flex-row items-center justify-between gap-5">
+            <div className="flex items-center gap-3.5">
+              <div className="p-3 rounded-2xl bg-teal-500/20 text-teal-300 border border-teal-500/30">
+                <ShieldCheck className="h-6 w-6" />
+              </div>
+              <div>
+                <h4 className="text-sm font-black text-white">Ready to host your own tech summit, workshop or conference?</h4>
+                <p className="text-xs text-slate-300">Set up custom registration tickets, pricing tiers, and launch gate operations in minutes.</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 shrink-0">
+              <Link
+                href="/organizer/dashboard"
+                className="text-xs font-bold text-slate-300 hover:text-white transition px-4 py-2.5 rounded-xl border border-white/10 hover:bg-white/5"
+              >
+                View Demo Dashboard
+              </Link>
+              <Link
+                href="/create-event"
+                className="text-xs font-black text-slate-950 bg-amber-400 hover:bg-amber-300 transition px-5 py-2.5 rounded-xl shadow-lg flex items-center gap-1.5"
+              >
+                <span>Create Event Free</span>
+                <ChevronRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* 10. WHAT ATTENDEES ARE SAYING (MOVED AFTER ORGANIZERS GROWING WITH EPAYEVENTS) */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4 md:px-8 max-w-4xl text-center">
-          <span className="text-xs font-extrabold text-[#F97316] uppercase tracking-widest bg-[#F97316]/10 px-3.5 py-1.5 rounded-full border border-[#F97316]/20 inline-block mb-2">
-            ATTENDEE REVIEWS
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-[#1C1917] tracking-tight">
-            What Attendees <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F97316] to-amber-500">Are Saying</span>
-          </h2>
-          <p className="text-xs text-[#78716C] mt-2">Real feedback from people who used ePayEvents to book and attend events.</p>
-          
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
-            <motion.div 
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.6 }}
-              className="p-6 rounded-2xl bg-[#FAFAF9] border border-[#E7E5E4] space-y-4 shadow-sm"
-            >
-              <Quote className="h-6 w-6 text-[#0F766E] opacity-60" />
-              <p className="text-xs text-[#1C1917] italic leading-relaxed">
-                &quot;Checking into the FinTech summit took literally 3 seconds. Showed my phone QR code at the gate and walked in. Super smooth!&quot;
+      {/* 10. WHAT ATTENDEES ARE SAYING (REDESIGNED HIGH-IMPACT SOCIAL PROOF SHOWCASE) */}
+      <section className="py-24 bg-gradient-to-b from-white via-slate-50/80 to-[#FAFAF9] relative overflow-hidden">
+        {/* Subtle decorative glow */}
+        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="container mx-auto px-4 md:px-8 max-w-6xl relative z-10">
+          {/* Header & Overall Rating Badge */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+            <div className="space-y-3 max-w-xl">
+              <div className="flex items-center gap-2 mb-3.5">
+                <span className="text-xs font-black text-[#F97316] uppercase tracking-widest bg-[#F97316]/10 px-3.5 py-1.5 rounded-full border border-[#F97316]/20 inline-flex items-center gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5 text-[#F97316]" />
+                  VERIFIED ATTENDEE REVIEWS
+                </span>
+                <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-teal-700 bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200">
+                  <CheckCircle2 className="h-3 w-3 text-teal-600" />
+                  100% Genuine Pass Holders
+                </span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#1C1917] tracking-tight">
+                What Attendees <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F97316] via-amber-500 to-teal-600">Are Saying</span>
+              </h2>
+              <p className="text-sm text-[#78716C] leading-relaxed">
+                Direct testimonials from engineers, founders, designers, and students who booked tickets and checked in with ePayEvents.
               </p>
-              <div className="pt-3 border-t border-[#E7E5E4] flex items-center gap-3">
+            </div>
+
+            {/* Social Proof Metric Card */}
+            <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5 shrink-0 self-start md:self-auto">
+              <div className="flex flex-col">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-3xl font-black text-slate-900 tracking-tight">4.92</span>
+                  <span className="text-xs text-slate-400 font-bold">/ 5.0</span>
+                </div>
+                <div className="flex items-center gap-1 text-amber-400 mt-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-4 w-4 fill-amber-400" />
+                  ))}
+                </div>
+              </div>
+              <div className="h-10 w-px bg-slate-200" />
+              <div>
+                <span className="text-xs font-black text-slate-900 block">12,400+ Verified Passes</span>
+                <span className="text-[11px] text-emerald-600 font-bold flex items-center gap-1 mt-0.5">
+                  <ThumbsUp className="h-3 w-3" /> 98.4% Would Attend Again
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Testimonial Cards Grid (4 Diverse Attendee Stories) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Review 1 */}
+            <motion.div
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.05 }}
+              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+              className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-teal-500/40 transition-all flex flex-col justify-between group relative"
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1 text-amber-400">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
+                    ))}
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-teal-50 text-teal-700 border border-teal-200">
+                    AI Tech Track
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                  &quot;Checking into the AI summit took literally <span className="font-bold text-slate-900 bg-amber-100/60 px-1 py-0.5 rounded">3 seconds</span>. Held my phone QR up to the organizer scanner and walked right in without queue frustration.&quot;
+                </p>
+
+                <div className="text-[11px] text-slate-400 font-mono flex items-center gap-1">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                  <span className="truncate">Attended AI Business Summit 2026</span>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 mt-5 flex items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/speakers/speaker1.jpg" alt="Rohan Verma" className="h-10 w-10 rounded-full object-cover ring-2 ring-[#FFEDD5]" />
-                <div>
-                  <h4 className="font-bold text-[#1C1917] text-xs">Rohan Verma</h4>
-                  <span className="text-[10px] text-[#78716C]">Software Engineer, Mumbai</span>
+                <img
+                  src="/speakers/speaker1.jpg"
+                  alt="Rohan Verma"
+                  className="h-11 w-11 rounded-2xl object-cover ring-2 ring-teal-500/20 shadow-sm shrink-0"
+                />
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-slate-900 text-xs truncate">Rohan Verma</h4>
+                  <p className="text-[11px] text-slate-500 truncate">Senior Software Architect</p>
+                  <span className="text-[10px] text-teal-600 font-semibold block">Mumbai · Verified Attendee</span>
                 </div>
               </div>
             </motion.div>
 
-            <motion.div 
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.6 }}
-              className="p-6 rounded-2xl bg-[#FAFAF9] border border-[#E7E5E4] space-y-4 shadow-sm"
+            {/* Review 2 */}
+            <motion.div
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+              className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-orange-500/40 transition-all flex flex-col justify-between group relative"
             >
-              <Quote className="h-6 w-6 text-[#0F766E] opacity-60" />
-              <p className="text-xs text-[#1C1917] italic leading-relaxed">
-                &quot;The ticket purchase was seamless. Got my PDF pass immediately and the event agenda was clean and easy to follow.&quot;
-              </p>
-              <div className="pt-3 border-t border-[#E7E5E4] flex items-center gap-3">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1 text-amber-400">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
+                    ))}
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-orange-50 text-orange-700 border border-orange-200">
+                    FinTech Pass
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                  &quot;Instant PDF pass with full schedule breakdown. I transferred one extra pass to my teammate 24 hours prior with zero fees. Exceptional platform UI.&quot;
+                </p>
+
+                <div className="text-[11px] text-slate-400 font-mono flex items-center gap-1">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                  <span className="truncate">Attended FinTech & Payments Summit</span>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 mt-5 flex items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/speakers/speaker2.jpg" alt="Ananya Iyer" className="h-10 w-10 rounded-full object-cover ring-2 ring-[#FFEDD5]" />
-                <div>
-                  <h4 className="font-bold text-[#1C1917] text-xs">Ananya Iyer</h4>
-                  <span className="text-[10px] text-[#78716C]">Product Manager, Bengaluru</span>
+                <img
+                  src="/speakers/speaker2.jpg"
+                  alt="Ananya Iyer"
+                  className="h-11 w-11 rounded-2xl object-cover ring-2 ring-orange-500/20 shadow-sm shrink-0"
+                />
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-slate-900 text-xs truncate">Ananya Iyer</h4>
+                  <p className="text-[11px] text-slate-500 truncate">VP of Product, FinPulse</p>
+                  <span className="text-[10px] text-orange-600 font-semibold block">Bengaluru · Verified Attendee</span>
                 </div>
               </div>
             </motion.div>
+
+            {/* Review 3 */}
+            <motion.div
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.25 }}
+              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+              className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-emerald-500/40 transition-all flex flex-col justify-between group relative"
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1 text-amber-400">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
+                    ))}
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    Design Track
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                  &quot;The interactive location map helped me find parking right next to the convention hall. Venue directions were 100% accurate. 10/10 event experience.&quot;
+                </p>
+
+                <div className="text-[11px] text-slate-400 font-mono flex items-center gap-1">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                  <span className="truncate">Attended UX & Design Conclave</span>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 mt-5 flex items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/speakers/speaker3.jpg"
+                  alt="Vikram Malhotra"
+                  className="h-11 w-11 rounded-2xl object-cover ring-2 ring-emerald-500/20 shadow-sm shrink-0"
+                />
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-slate-900 text-xs truncate">Vikram Malhotra</h4>
+                  <p className="text-[11px] text-slate-500 truncate">Lead UX Specialist</p>
+                  <span className="text-[10px] text-emerald-600 font-semibold block">Hyderabad · Verified Attendee</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Review 4 */}
+            <motion.div
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.35 }}
+              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+              className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-pink-500/40 transition-all flex flex-col justify-between group relative"
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1 text-amber-400">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-3.5 w-3.5 fill-amber-400" />
+                    ))}
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-pink-50 text-pink-700 border border-pink-200">
+                    Concert Pass
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                  &quot;Got a 15% group discount when booking passes for my college squad. Zero hidden convenience fees. Mobile gate scanner accepted dark-mode screens cleanly.&quot;
+                </p>
+
+                <div className="text-[11px] text-slate-400 font-mono flex items-center gap-1">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                  <span className="truncate">Attended Indie Acoustic Sunset</span>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 mt-5 flex items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/speakers/speaker4.jpg"
+                  alt="Kavita Nair"
+                  className="h-11 w-11 rounded-2xl object-cover ring-2 ring-pink-500/20 shadow-sm shrink-0"
+                />
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-slate-900 text-xs truncate">Kavita Nair</h4>
+                  <p className="text-[11px] text-slate-500 truncate">Independent Community Curator</p>
+                  <span className="text-[10px] text-pink-600 font-semibold block">Pune · Verified Attendee</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Social Proof Footer Ribbon */}
+          <div className="mt-12 p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-teal-500/10 text-teal-700">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <div>
+                <h4 className="text-xs font-black text-slate-900">Verified Ticket Protection & Gate Entry Guarantee</h4>
+                <p className="text-[11px] text-slate-500">Every review is tied to an encrypted ticket code scanned at the entrance gate.</p>
+              </div>
+            </div>
+
+            <Link
+              href="/events"
+              className="text-xs font-extrabold text-[#0F766E] hover:text-[#115E59] flex items-center gap-1.5 transition shrink-0 group"
+            >
+              <span>Explore Top-Rated Summits</span>
+              <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
         </div>
       </section>
 
       {/* 11. FAQ */}
-      <section className="py-16 bg-[#FAFAF9]">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4 md:px-8 max-w-3xl">
           <div className="text-center mb-10">
-            <span className="text-xs font-extrabold text-[#0F766E] uppercase tracking-widest bg-[#0F766E]/10 px-3.5 py-1.5 rounded-full border border-[#0F766E]/20 inline-block mb-2">
+            <span className="text-xs font-extrabold text-[#0F766E] uppercase tracking-widest bg-[#0F766E]/10 px-3.5 py-1.5 rounded-full border border-[#0F766E]/20 inline-block mb-3.5">
               HELP & HELPDESK
             </span>
             <h2 className="text-3xl sm:text-4xl font-black text-[#1C1917] tracking-tight">

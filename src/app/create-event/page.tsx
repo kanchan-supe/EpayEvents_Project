@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { 
   Check, ChevronRight, ChevronLeft, Plus,
   MapPin, Ticket as TicketIcon, FileText, Send, Sparkles,
-  Users, Award, HelpCircle, UserCheck, AlertCircle
+  Users, Award, HelpCircle, UserCheck, AlertCircle,
+  Lock, ShieldAlert, ArrowRight, Edit, Save, ArrowLeft, RefreshCw
 } from 'lucide-react';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { 
@@ -106,16 +107,251 @@ const STEPS = [
   { id: 9, title: 'Publish', icon: Send },
 ];
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
-export default function CreateEventWizard() {
+function CreateEventWizardInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editTarget = searchParams.get('edit') || searchParams.get('slug');
+
+  const { user, role, loading: authLoading, upgradeToOrganizer } = useAuth();
+
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<EventWizardData>(initialFormData);
   const [isPublished, setIsPublished] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
   const [publishedSlug, setPublishedSlug] = useState<string>('');
+  const [autoRedirectTimer, setAutoRedirectTimer] = useState<number | null>(null);
+
+  // Edit Mode states
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
+  const [isLoadingExisting, setIsLoadingExisting] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  // State for attendee access restriction
+  const [upgradingRole, setUpgradingRole] = useState(false);
+  const [upgradeError, setUpgradeError] = useState<string | null>(null);
+  const [attendeeRedirectTimer, setAttendeeRedirectTimer] = useState<number | null>(10);
+
+  // Load existing event data if editing
+  React.useEffect(() => {
+    if (!editTarget) return;
+
+    let isMounted = true;
+    async function loadEventData() {
+      setIsLoadingExisting(true);
+      setLoadError(null);
+      try {
+        const res = await fetch(`/api/events/${editTarget}`);
+        const json = await res.json();
+        let evt = json.success && json.data ? json.data : null;
+
+        // Check localStorage for latest saved edits on this browser
+        try {
+          const stored = localStorage.getItem('epay_persisted_events');
+          if (stored) {
+            const parsed: Record<string, any> = JSON.parse(stored);
+            let localCopy: any = null;
+            if (typeof parsed === 'object' && parsed !== null) {
+              if (editTarget && editTarget in parsed) {
+                localCopy = parsed[editTarget];
+              } else if (evt && evt.id && evt.id in parsed) {
+                localCopy = parsed[evt.id];
+              }
+            }
+            if (localCopy) {
+              evt = evt ? { ...evt, ...localCopy } : localCopy;
+            }
+          }
+        } catch (e) {
+          console.warn('[CreateEvent] Error reading localStorage during load:', e);
+        }
+
+        if (evt && isMounted) {
+          setIsEditMode(true);
+          setEditingEventId(evt.id || editTarget);
+
+          // Prepopulate full wizard form data
+          setFormData({
+            title: evt.title || '',
+            categorySlug: evt.category?.slug || 'tech-ai',
+            shortDescription: evt.shortDescription || '',
+            description: evt.description || '',
+            bannerUrl: evt.bannerUrl || evt.coverImage || '',
+            organizerName: evt.organization?.name || user?.user_metadata?.full_name || 'ePay Organizer',
+            organizerEmail: evt.organization?.contactEmail || user?.email || 'organizer@epayevents.com',
+            organizerPhone: evt.organization?.phone || user?.user_metadata?.phone || '+91 98765 43210',
+            organizerAvatar: evt.organization?.avatar || '/organizers/organizer_workspace.jpg',
+            organizerBio: evt.organization?.bio || '',
+            startDate: evt.date || (evt.startDate ? evt.startDate.split('T')[0] : ''),
+            startTime: evt.startTime ? evt.startTime.replace(/\s*(AM|PM)/i, '').trim() : '09:00',
+            endDate: evt.endDate ? evt.endDate.split('T')[0] : (evt.date || ''),
+            endTime: evt.endTime ? evt.endTime.replace(/\s*(AM|PM)/i, '').trim() : '18:00',
+            timezone: evt.timezone || 'IST',
+            eventType: evt.eventType || (evt.isOnline ? 'online' : 'physical'),
+            venueName: evt.venue?.name || '',
+            address: evt.venue?.address || '',
+            city: evt.venue?.city || '',
+            onlineUrl: evt.venue?.onlineUrl || '',
+            speakers: Array.isArray(evt.speakers) && evt.speakers.length > 0 
+              ? evt.speakers.map((s: any, i: number) => ({
+                  id: s.id || `sp-${i + 1}`,
+                  name: s.name || '',
+                  role: s.role || '',
+                  company: s.company || '',
+                  avatar: s.avatar || s.imageUrl || '/speakers/speaker1.jpg',
+                  bio: s.bio || '',
+                  linkedinUrl: s.linkedinUrl || '',
+                }))
+              : initialFormData.speakers,
+            agenda: Array.isArray(evt.agenda) && evt.agenda.length > 0
+              ? evt.agenda.map((a: any, i: number) => ({
+                  id: a.id || `ag-${i + 1}`,
+                  time: a.time || '10:00 AM - 11:00 AM',
+                  title: a.title || '',
+                  description: a.description || '',
+                  speaker: a.speaker || '',
+                }))
+              : initialFormData.agenda,
+            sponsors: Array.isArray(evt.sponsors) && evt.sponsors.length > 0
+              ? evt.sponsors.map((sp: any, i: number) => ({
+                  id: sp.id || `sp-${i + 1}`,
+                  name: sp.name || '',
+                  logoUrl: sp.logoUrl || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80',
+                  tier: sp.tier || 'Gold',
+                  websiteUrl: sp.websiteUrl || '',
+                }))
+              : initialFormData.sponsors,
+            exhibitors: Array.isArray(evt.exhibitors) && evt.exhibitors.length > 0
+              ? evt.exhibitors.map((ex: any, i: number) => ({
+                  id: ex.id || `ex-${i + 1}`,
+                  name: ex.name || '',
+                  logoUrl: ex.logoUrl || 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=300&q=80',
+                  category: ex.category || 'Tech',
+                  boothNumber: ex.boothNumber || 'Booth 1',
+                  description: ex.description || '',
+                }))
+              : initialFormData.exhibitors,
+            ticketTypes: Array.isArray(evt.ticketTypes) && evt.ticketTypes.length > 0
+              ? evt.ticketTypes.map((t: any, i: number) => ({
+                  id: t.id || `t-${i + 1}`,
+                  name: t.name || '',
+                  description: t.description || '',
+                  price: Number(t.price) || 0,
+                  quantity: Number(t.quantity) || 100,
+                  minPerOrder: Number(t.minPerOrder) || 1,
+                  maxPerOrder: Number(t.maxPerOrder) || 5,
+                  category: t.category || 'General',
+                  isTransferrable: t.isTransferrable ?? true,
+                  isRefundable: t.isRefundable ?? true,
+                  isHidden: t.isHidden ?? false,
+                }))
+              : initialFormData.ticketTypes,
+            couponCodes: initialFormData.couponCodes,
+            faqs: Array.isArray(evt.faqs) && evt.faqs.length > 0
+              ? evt.faqs.map((f: any, i: number) => ({
+                  id: f.id || `faq-${i + 1}`,
+                  question: f.question || '',
+                  answer: f.answer || '',
+                }))
+              : initialFormData.faqs,
+            termsAndPolicy: evt.termsAndPolicy || initialFormData.termsAndPolicy,
+            registrationFields: Array.isArray(evt.registrationFields) && evt.registrationFields.length > 0
+              ? evt.registrationFields.map((rf: any, i: number) => ({
+                  id: rf.id || `rf-${i + 1}`,
+                  label: rf.label || '',
+                  fieldType: rf.fieldType || rf.type || 'text',
+                  required: Boolean(rf.required),
+                  options: rf.options,
+                }))
+              : initialFormData.registrationFields,
+            taxPercentage: 18,
+            platformFeePercentage: 3.5,
+            status: evt.status || 'published',
+          });
+        } else if (isMounted) {
+          setLoadError(`Event "${editTarget}" was not found.`);
+        }
+      } catch (err: any) {
+        console.error('[CreateEvent] Error loading event:', err);
+        if (isMounted) {
+          setLoadError(err.message || 'Could not load event for editing.');
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingExisting(false);
+        }
+      }
+    }
+
+    loadEventData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [editTarget]);
+
+  // 1. If not authenticated, redirect to /login?redirect=/create-event
+  React.useEffect(() => {
+    if (!authLoading && !user) {
+      router.push(`/login?redirect=/create-event${editTarget ? `?edit=${editTarget}` : ''}`);
+    }
+  }, [authLoading, user, router, editTarget]);
+
+  // 2. If attendee, run auto-redirect countdown to /events
+  React.useEffect(() => {
+    if (!authLoading && user && role === 'attendee' && attendeeRedirectTimer !== null) {
+      if (attendeeRedirectTimer <= 0) {
+        router.push('/events');
+        return;
+      }
+      const t = setTimeout(() => {
+        setAttendeeRedirectTimer(prev => (prev !== null && prev > 0 ? prev - 1 : 0));
+      }, 1000);
+      return () => clearTimeout(t);
+    }
+  }, [authLoading, user, role, attendeeRedirectTimer, router]);
+
+  // 3. Pre-fill organizer contact details from user session (only in create mode)
+  React.useEffect(() => {
+    if (user && !editTarget) {
+      setFormData(prev => ({
+        ...prev,
+        organizerName: prev.organizerName || user.user_metadata?.full_name || 'ePay Organizer',
+        organizerEmail: prev.organizerEmail || user.email || 'organizer@epayevents.com',
+        organizerPhone: prev.organizerPhone || user.user_metadata?.phone || '+91 98765 43210',
+      }));
+    }
+  }, [user, editTarget]);
+
+  // 4. Auto-redirect to the event detail page after successful publish (force full refresh to bust client router cache)
+  React.useEffect(() => {
+    if (isPublished && publishedSlug && autoRedirectTimer !== null) {
+      if (autoRedirectTimer <= 0) {
+        window.location.href = `/events/${publishedSlug}`;
+        return;
+      }
+      const timer = setTimeout(() => {
+        setAutoRedirectTimer(prev => (prev !== null && prev > 0 ? prev - 1 : 0));
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isPublished, publishedSlug, autoRedirectTimer]);
+
+  const handleUpgradeToOrganizer = async () => {
+    setUpgradingRole(true);
+    setUpgradeError(null);
+    const res = await upgradeToOrganizer();
+    setUpgradingRole(false);
+    if (res.error) {
+      setUpgradeError(res.error);
+    } else {
+      setAttendeeRedirectTimer(null);
+    }
+  };
 
   const updateField = <K extends keyof EventWizardData>(field: K, value: EventWizardData[K]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -262,16 +498,28 @@ export default function CreateEventWizard() {
     setIsSubmitting(true);
     setPublishError(null);
 
+    // Basic validation
+    if (!formData.title || !formData.title.trim()) {
+      setPublishError('Event Title is required. Please enter an event title in Step 1.');
+      setCurrentStep(1);
+      setIsSubmitting(false);
+      return;
+    }
+
     const payload = {
       ...formData,
       status,
+      id: editingEventId || undefined,
     };
 
-    console.log('[CreateEvent] Submitting event payload to /api/events:', payload);
+    console.log(`[CreateEvent] Submitting event payload (${isEditMode ? 'UPDATE' : 'CREATE'}):`, payload);
 
     try {
-      const response = await fetch('/api/events', {
-        method: 'POST',
+      const url = isEditMode && editTarget ? `/api/events/${editTarget}` : '/api/events';
+      const method = isEditMode ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -282,87 +530,229 @@ export default function CreateEventWizard() {
       console.log('[CreateEvent] Server response:', result);
 
       if (!response.ok || !result.success) {
-        throw new Error(result.error || 'Failed to publish event. Please verify all required fields.');
+        throw new Error(result.error || `Failed to ${isEditMode ? 'update' : 'publish'} event. Please verify all required fields.`);
       }
 
-      const createdEvent = result.data;
-      setPublishedSlug(createdEvent?.slug || '');
+      const savedEvent = result.data;
+      const finalSlug = savedEvent?.slug || editTarget || '';
+      setPublishedSlug(finalSlug);
       updateField('status', status);
       setIsPublished(true);
-      console.log(`[CreateEvent] Event successfully saved with slug: "${createdEvent?.slug}" and status: "${status}"`);
+      setAutoRedirectTimer(5); // Start 5-second countdown to event page
 
-      // Additionally persist to Supabase if available
+      // Persist to browser localStorage so edits immediately reflect everywhere
       try {
-        const { insertEventToSupabase } = await import('@/lib/supabase/dbService');
-        const eventItemToSave: any = {
-          id: createdEvent?.id || `evt-${Date.now()}`,
-          title: formData.title || 'Untitled Event',
-          slug: createdEvent?.slug || 'new-event',
-          shortDescription: formData.shortDescription || '',
-          description: formData.description || '',
-          bannerUrl: formData.bannerUrl || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1400&q=80',
-          eventType: formData.eventType,
-          status: status,
-          startDate: formData.startDate ? `${formData.startDate}T${formData.startTime}:00Z` : new Date().toISOString(),
-          endDate: formData.endDate ? `${formData.endDate}T${formData.endTime}:00Z` : new Date().toISOString(),
-          timezone: formData.timezone || 'IST',
-          featured: false,
-          category: {
-            id: `cat-${formData.categorySlug}`,
-            name: formData.categorySlug.replace('-', ' '),
-            slug: formData.categorySlug,
-            icon: 'Cpu',
-            description: '',
-          },
-          organization: {
-            id: `org-${Date.now()}`,
-            name: formData.organizerName || 'ePay Organizer',
-            slug: (formData.organizerName || 'org').toLowerCase().replace(/\s+/g, '-'),
-            verified: true,
-            contactEmail: formData.organizerEmail || 'organizer@epayevents.com',
-            avatar: formData.organizerAvatar,
-            bio: formData.organizerBio,
-          },
-          venue: {
-            name: formData.venueName || 'Main Convention Hall',
-            address: formData.address || '',
-            city: formData.city || 'Mumbai',
-            country: 'India',
-            onlineUrl: formData.onlineUrl || '',
-          },
-          speakers: formData.speakers,
-          agenda: formData.agenda,
-          sponsors: formData.sponsors,
-          exhibitors: formData.exhibitors,
-          ticketTypes: formData.ticketTypes,
-          faqs: formData.faqs,
-          registrationFields: formData.registrationFields,
-        };
-        await insertEventToSupabase(eventItemToSave);
-      } catch (err) {
-        console.warn('Could not save to Supabase:', err);
+        const existingRaw = localStorage.getItem('epay_persisted_events');
+        const map = existingRaw ? JSON.parse(existingRaw) : {};
+        if (savedEvent) {
+          if (savedEvent.id) map[savedEvent.id] = savedEvent;
+          if (savedEvent.slug) map[savedEvent.slug] = savedEvent;
+        }
+        if (editTarget && savedEvent) {
+          map[editTarget] = savedEvent;
+        }
+        if (finalSlug && savedEvent) {
+          map[finalSlug] = savedEvent;
+        }
+        localStorage.setItem('epay_persisted_events', JSON.stringify(map));
+        console.log('[CreateEvent] Saved event to localStorage map:', finalSlug);
+      } catch (storageErr) {
+        console.warn('[CreateEvent] Error writing to localStorage:', storageErr);
       }
+
+      console.log(`[CreateEvent] Event successfully ${isEditMode ? 'updated' : 'saved'} with slug: "${finalSlug}" and status: "${status}"`);
     } catch (err: any) {
       console.error('[CreateEvent] Submission failed:', err);
-      setPublishError(err.message || 'An unexpected error occurred while publishing the event.');
+      setPublishError(err.message || `An unexpected error occurred while ${isEditMode ? 'updating' : 'publishing'} the event.`);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Loading State: Fetching event data for editing
+  if (isLoadingExisting) {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center p-6">
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] shadow-sm p-8 text-center max-w-sm w-full space-y-4">
+            <div className="h-8 w-8 border-3 border-[#0F766E] border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-xs font-bold text-[#1C1917]">Loading Event Data for Editing...</p>
+            <p className="text-[11px] text-[#78716C]">Fetching latest schedule, ticket tiers, and event settings</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Auth State 1: Checking Authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center p-6">
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] shadow-sm p-8 text-center max-w-sm w-full space-y-4">
+            <div className="h-8 w-8 border-3 border-[#0F766E] border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-xs font-bold text-[#1C1917]">Verifying Organizer Access...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Auth State 2: Unauthenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center p-6">
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] shadow-sm p-8 text-center max-w-sm w-full space-y-4">
+            <div className="h-8 w-8 border-3 border-[#F97316] border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-xs font-bold text-[#1C1917]">Redirecting to Sign In...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Auth State 3: User is logged in as Attendee
+  if (role === 'attendee') {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
+        <Navbar />
+
+        <div className="bg-gradient-to-r from-[#0F172A] via-[#0F766E] to-[#0F172A] text-white py-10 shadow-md">
+          <div className="container mx-auto px-4 md:px-8 max-w-3xl">
+            <span className="inline-block px-3 py-1 bg-amber-500 text-white text-xs font-bold rounded-full mb-2">
+              Organizer Role Required
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Only Organizers Can Create Events</h1>
+            <p className="text-slate-200 text-xs sm:text-sm mt-1">
+              Your account is currently registered as an Attendee pass holder.
+            </p>
+          </div>
+        </div>
+
+        <main className="container mx-auto px-4 md:px-8 py-10 flex-1 max-w-3xl">
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] shadow-xl p-8 sm:p-10 space-y-6">
+            <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+              <ShieldAlert className="h-8 w-8" />
+            </div>
+
+            <div className="text-center space-y-2">
+              <h2 className="text-xl sm:text-2xl font-black text-[#1C1917]">
+                Only organizers can create events
+              </h2>
+              <p className="text-xs sm:text-sm text-[#78716C] max-w-md mx-auto leading-relaxed">
+                You are currently signed in as <strong>{user.email}</strong> with the <strong>Attendee</strong> role.
+                Publishing tech summits, masterclasses, and conferences requires host privileges.
+              </p>
+            </div>
+
+            {/* Upgrade error banner if any */}
+            {upgradeError && (
+              <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold">
+                {upgradeError}
+              </div>
+            )}
+
+            {/* Auto-redirect countdown banner */}
+            {attendeeRedirectTimer !== null && (
+              <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-center justify-between">
+                <span>
+                  Redirecting to discovery in <strong>{attendeeRedirectTimer}s</strong>...
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setAttendeeRedirectTimer(null)}
+                  className="text-xs font-bold text-amber-900 underline hover:no-underline ml-2"
+                >
+                  Stay on this page
+                </button>
+              </div>
+            )}
+
+            {/* Action options */}
+            <div className="pt-2 space-y-3">
+              <button
+                type="button"
+                onClick={handleUpgradeToOrganizer}
+                disabled={upgradingRole}
+                className="w-full rounded-2xl bg-[#F97316] hover:bg-[#EA580C] text-white py-3.5 px-4 font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 disabled:opacity-60"
+              >
+                {upgradingRole ? (
+                  <>
+                    <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Upgrading your account to Organizer...</span>
+                  </>
+                ) : (
+                  <>
+                    <UserCheck className="h-4 w-4" />
+                    <span>Upgrade to Organizer Account (Free)</span>
+                  </>
+                )}
+              </button>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Link
+                  href="/login?redirect=/create-event"
+                  className="rounded-2xl border border-[#E7E5E4] hover:bg-slate-50 text-[#1C1917] py-3 px-4 font-bold text-xs transition text-center flex items-center justify-center gap-2"
+                >
+                  <Lock className="h-3.5 w-3.5 text-[#0F766E]" />
+                  <span>Sign in as Different User</span>
+                </Link>
+
+                <Link
+                  href="/events"
+                  className="rounded-2xl border border-[#E7E5E4] hover:bg-slate-50 text-[#1C1917] py-3 px-4 font-bold text-xs transition text-center flex items-center justify-center gap-2"
+                >
+                  <span>Browse Events Catalog</span>
+                  <ArrowRight className="h-3.5 w-3.5 text-[#78716C]" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <Footer />
+      </div>
+    );
+  }
+
+  // Auth State 4: User is logged in as Organizer or Admin -> Render Wizard!
   return (
     <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
       <Navbar />
 
       <div className="bg-gradient-to-r from-[#0F172A] via-[#0F766E] to-[#0F172A] text-white py-10 shadow-md">
         <div className="container mx-auto px-4 md:px-8 max-w-6xl">
-          <span className="inline-block px-3 py-1 bg-[#F97316] text-white text-xs font-bold rounded-full mb-2">
-            Organizer Portal
-          </span>
-          <h1 className="text-3xl font-black tracking-tight">Create & Host Your Event</h1>
-          <p className="text-slate-200 text-sm mt-1 max-w-2xl">
-            Configure full event details including organizers, speakers, schedule agenda, sponsors, ticket tiers, FAQs, and custom registration questions.
-          </p>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <span className="inline-block px-3 py-1 bg-[#F97316] text-white text-xs font-bold rounded-full mb-2">
+                {isEditMode ? '✏️ Event Edit Mode' : 'Organizer Portal'}
+              </span>
+              <h1 className="text-3xl font-black tracking-tight">
+                {isEditMode ? `Edit Event: ${formData.title || 'Loading...'}` : 'Create & Host Your Event'}
+              </h1>
+              <p className="text-slate-200 text-sm mt-1 max-w-2xl">
+                {isEditMode
+                  ? 'Update event details, schedules, venue locations, ticket pricing, and attendee registration questions.'
+                  : 'Configure full event details including organizers, speakers, schedule agenda, sponsors, ticket tiers, FAQs, and custom registration questions.'}
+              </p>
+            </div>
+            {isEditMode && editTarget && (
+              <Link
+                href={`/events/${editTarget}`}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 transition backdrop-blur-md shrink-0"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                <span>View Event</span>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
@@ -404,46 +794,95 @@ export default function CreateEventWizard() {
           </div>
         </div>
 
+        {/* Load Error Alert if any */}
+        {loadError && (
+          <div className="mb-6 rounded-2xl bg-amber-50 border border-amber-200 p-4 text-xs font-bold text-amber-800 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-4 w-4 text-amber-600 shrink-0" />
+              <span>{loadError}</span>
+            </div>
+            <Link href="/organizer/dashboard" className="underline hover:no-underline text-amber-900">
+              Return to Dashboard
+            </Link>
+          </div>
+        )}
+
         {/* Wizard Form Body */}
         {isPublished ? (
-          <div className="bg-white p-10 rounded-3xl border border-[#E7E5E4] shadow-xl text-center max-w-2xl mx-auto">
-            <div className="w-16 h-16 bg-[#CCFBF1] text-[#0F766E] rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="bg-white p-8 md:p-10 rounded-3xl border border-[#E7E5E4] shadow-xl text-center max-w-2xl mx-auto">
+            <div className="w-16 h-16 bg-[#CCFBF1] text-[#0F766E] rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
               <Check className="h-8 w-8" />
             </div>
+            
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-full text-xs font-semibold mb-3">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Saved to Supabase & Live on Catalog</span>
+            </div>
+
             <h2 className="text-2xl font-black text-[#1C1917]">
-              Event {formData.status === 'published' ? 'Published Live Successfully!' : 'Saved as Draft!'}
+              {isEditMode 
+                ? (formData.status === 'published' ? 'Event Updated & Live Successfully!' : 'Event Changes Saved as Draft!')
+                : (formData.status === 'published' ? 'Event Published Live Successfully!' : 'Saved as Draft!')}
             </h2>
             <p className="text-[#78716C] text-sm mt-2">
-              Your event <strong>&quot;{formData.title || 'Untitled Event'}&quot;</strong> is fully registered with all organizer contact details, speakers, agenda, sponsors, and tickets.
+              {isEditMode 
+                ? <>Your modifications to <strong>&quot;{formData.title || 'Untitled Event'}&quot;</strong> have been saved and updated live across the platform.</>
+                : <>Your event <strong>&quot;{formData.title || 'Untitled Event'}&quot;</strong> has been published and is now discoverable on the homepage and catalog.</>}
             </p>
 
-            <div className="mt-8 bg-[#FAFAF9] p-5 rounded-2xl border border-[#E7E5E4] text-left space-y-2 text-xs text-[#1C1917]">
-              <p><strong>Organizer:</strong> {formData.organizerName} ({formData.organizerEmail})</p>
+            {/* Auto-redirect countdown banner */}
+            {autoRedirectTimer !== null && publishedSlug && (
+              <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 flex items-center justify-between">
+                <span>
+                  Redirecting to your live event page in <strong>{autoRedirectTimer}</strong>s...
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setAutoRedirectTimer(null)}
+                  className="text-xs font-bold text-amber-900 underline hover:no-underline ml-2"
+                >
+                  Cancel auto-redirect
+                </button>
+              </div>
+            )}
+
+            <div className="mt-6 bg-[#FAFAF9] p-5 rounded-2xl border border-[#E7E5E4] text-left space-y-2 text-xs text-[#1C1917]">
+              {publishedSlug && (
+                <p><strong>Event Slug:</strong> <code className="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-[#0F766E]">/events/{publishedSlug}</code></p>
+              )}
+              <p><strong>Organizer:</strong> {formData.organizerName || 'ePay Organizer'} ({formData.organizerEmail || 'N/A'})</p>
               <p><strong>Category:</strong> {formData.categorySlug}</p>
               <p><strong>Speakers:</strong> {formData.speakers.length} speakers added</p>
-              <p><strong>Agenda Items:</strong> {formData.agenda.length} sessions</p>
+              <p><strong>Agenda Sessions:</strong> {formData.agenda.length} sessions</p>
               <p><strong>Sponsors & Exhibitors:</strong> {formData.sponsors.length} sponsors, {formData.exhibitors.length} exhibitors</p>
               <p><strong>Ticket Tiers:</strong> {formData.ticketTypes.length} tiers configured</p>
             </div>
 
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
               {publishedSlug && (
-                <Link
+                <a
                   href={`/events/${publishedSlug}`}
-                  className="rounded-xl bg-[#F97316] px-6 py-3 text-sm font-bold text-white hover:bg-[#ea580c] transition shadow-md flex items-center gap-2"
+                  className="rounded-xl bg-[#0F766E] px-6 py-3 text-sm font-bold text-white hover:bg-[#115E59] transition shadow-md flex items-center gap-2"
                 >
-                  <span>🎉 View Event Live</span>
-                </Link>
+                  <span>🎉 View Event Page</span>
+                </a>
               )}
-              <Link href="/events" className="rounded-xl bg-[#0F766E] px-6 py-3 text-sm font-bold text-white hover:bg-[#115E59] transition shadow">
-                Browse /events
+              <Link
+                href="/organizer/dashboard"
+                className="rounded-xl bg-[#F97316] px-6 py-3 text-sm font-bold text-white hover:bg-[#ea580c] transition shadow-md flex items-center gap-2"
+              >
+                <span>📊 Organizer Dashboard</span>
               </Link>
-              <Link href="/organizer/dashboard" className="rounded-xl border border-[#0F766E] text-[#0F766E] bg-white px-6 py-3 text-sm font-bold hover:bg-[#CCFBF1]/20 transition">
-                Organizer Dashboard
+              <Link
+                href="/events"
+                className="rounded-xl border border-[#E7E5E4] bg-white px-5 py-3 text-sm font-bold text-[#1C1917] hover:bg-slate-100 transition"
+              >
+                Browse All Events
               </Link>
               <button 
-                onClick={() => { setIsPublished(false); setCurrentStep(1); setFormData(initialFormData); setPublishedSlug(''); }}
-                className="rounded-xl border border-[#E7E5E4] px-6 py-3 text-sm font-bold text-[#1C1917] hover:bg-slate-100 transition"
+                type="button"
+                onClick={() => { setIsPublished(false); setAutoRedirectTimer(null); setCurrentStep(1); setFormData(initialFormData); setPublishedSlug(''); }}
+                className="rounded-xl border border-[#E7E5E4] px-5 py-3 text-sm font-bold text-[#78716C] hover:bg-slate-100 transition"
               >
                 Create Another Event
               </button>
@@ -598,24 +1037,54 @@ export default function CreateEventWizard() {
                   <p className="text-xs text-[#78716C]">Set your event format and physical address or streaming URL</p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-bold text-[#1C1917] mb-1">Start Date *</label>
-                    <input
-                      type="date"
-                      value={formData.startDate}
-                      onChange={e => updateField('startDate', e.target.value)}
-                      className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
-                    />
+                <div className="bg-[#FAFAF9] p-5 rounded-2xl border border-[#E7E5E4] space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-[#1C1917] mb-1">Start Date *</label>
+                      <input
+                        type="date"
+                        value={formData.startDate}
+                        onChange={e => {
+                          const val = e.target.value;
+                          updateField('startDate', val);
+                          if (!formData.endDate) {
+                            updateField('endDate', val);
+                          }
+                        }}
+                        className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-[#1C1917] mb-1">Start Time *</label>
+                      <input
+                        type="time"
+                        value={formData.startTime}
+                        onChange={e => updateField('startTime', e.target.value)}
+                        className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none bg-white"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#1C1917] mb-1">Start Time</label>
-                    <input
-                      type="time"
-                      value={formData.startTime}
-                      onChange={e => updateField('startTime', e.target.value)}
-                      className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
-                    />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-[#1C1917] mb-1">End Date *</label>
+                      <input
+                        type="date"
+                        value={formData.endDate}
+                        min={formData.startDate}
+                        onChange={e => updateField('endDate', e.target.value)}
+                        className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-[#1C1917] mb-1">End Time *</label>
+                      <input
+                        type="time"
+                        value={formData.endTime}
+                        onChange={e => updateField('endTime', e.target.value)}
+                        className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none bg-white"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -1345,14 +1814,23 @@ export default function CreateEventWizard() {
             {currentStep === 9 && (
               <div className="space-y-6">
                 <div className="border-b border-[#E7E5E4] pb-4">
-                  <h2 className="text-xl font-black text-[#1C1917]">Step 9: Final Review & Live Publish</h2>
-                  <p className="text-xs text-[#78716C]">Verify all details before publishing your event to ePayEvents</p>
+                  <h2 className="text-xl font-black text-[#1C1917]">
+                    {isEditMode ? 'Step 9: Review & Save Modifications' : 'Step 9: Final Review & Live Publish'}
+                  </h2>
+                  <p className="text-xs text-[#78716C]">
+                    {isEditMode 
+                      ? 'Verify your event changes before updating the live catalog and Supabase database' 
+                      : 'Verify all details before publishing your event to ePayEvents'}
+                  </p>
                 </div>
 
                 <div className="bg-[#FAFAF9] p-6 rounded-2xl border border-[#E7E5E4] space-y-3 text-xs text-[#1C1917]">
                   <p><strong>Title:</strong> {formData.title || 'Untitled Event'}</p>
-                  <p><strong>Host / Organizer:</strong> {formData.organizerName} ({formData.organizerEmail})</p>
-                  <p><strong>Date & Time:</strong> {formData.startDate || 'TBD'} ({formData.timezone})</p>
+                  <div className="bg-white p-3 rounded-xl border border-[#E7E5E4] space-y-1">
+                    <p><strong>Start Date & Time:</strong> {formData.startDate || 'TBD'} at {formData.startTime || '10:00'}</p>
+                    <p><strong>End Date & Time:</strong> {formData.endDate || formData.startDate || 'TBD'} at {formData.endTime || '18:00'}</p>
+                    <p className="text-[11px] text-[#78716C]">Timezone: {formData.timezone || 'IST'}</p>
+                  </div>
                   <p><strong>Venue / Location:</strong> {formData.venueName || 'Virtual Online'}, {formData.city}</p>
                   <p><strong>Speakers Configured:</strong> {formData.speakers.length} speakers</p>
                   <p><strong>Agenda Sessions:</strong> {formData.agenda.length} sessions</p>
@@ -1381,10 +1859,10 @@ export default function CreateEventWizard() {
                     {isSubmitting ? (
                       <>
                         <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        <span>Publishing to Platform...</span>
+                        <span>{isEditMode ? 'Saving Changes...' : 'Publishing to Platform...'}</span>
                       </>
                     ) : (
-                      <span>🚀 Publish Event Live Now</span>
+                      <span>{isEditMode ? '💾 Save & Update Event Live' : '🚀 Publish Event Live Now'}</span>
                     )}
                   </button>
                   <button
@@ -1428,5 +1906,26 @@ export default function CreateEventWizard() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function CreateEventWizard() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
+          <Navbar />
+          <main className="flex-1 flex items-center justify-center p-6">
+            <div className="bg-white rounded-3xl border border-[#E7E5E4] shadow-sm p-8 text-center max-w-sm w-full space-y-4">
+              <div className="h-8 w-8 border-3 border-[#0F766E] border-t-transparent rounded-full animate-spin mx-auto" />
+              <p className="text-xs font-bold text-[#1C1917]">Loading Event Studio...</p>
+            </div>
+          </main>
+          <Footer />
+        </div>
+      }
+    >
+      <CreateEventWizardInner />
+    </Suspense>
   );
 }

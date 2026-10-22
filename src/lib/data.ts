@@ -2,12 +2,27 @@ import { EventCategory, EventItem } from './types';
 import { supabase, isSupabaseConfigured } from './supabase/client';
 
 export const mockCategories: EventCategory[] = [
+  // Existing 6 categories (Preserved exactly as-is)
   { id: 'cat-1', name: 'Technology & AI', slug: 'tech-ai', icon: 'Cpu', description: 'Tech conferences, AI hackathons, software meetups', count: 18 },
   { id: 'cat-2', name: 'Business & Fintech', slug: 'business-fintech', icon: 'Briefcase', description: 'Finance summits, investor pitch events, startup founders expo', count: 14 },
   { id: 'cat-3', name: 'Music & Concerts', slug: 'music-concerts', icon: 'Music', description: 'Live concerts, music festivals, acoustic nights', count: 22 },
   { id: 'cat-4', name: 'Workshops & Education', slug: 'workshops', icon: 'BookOpen', description: 'Masterclasses, design bootcamps, hands-on training', count: 16 },
   { id: 'cat-5', name: 'Health & Wellness', slug: 'health-fitness', icon: 'HeartPulse', description: 'Yoga retreats, marathons, wellness conventions', count: 10 },
   { id: 'cat-6', name: 'Arts & Culture', slug: 'arts-culture', icon: 'Palette', description: 'Art exhibitions, theater plays, photography walks', count: 12 },
+
+  // New Categories Added as requested
+  { id: 'cat-7', name: 'Small Local Events', slug: 'small-local-events', icon: 'Users', description: 'Society gatherings, local fairs, cultural programs, community meetups, charity events', count: 15 },
+  { id: 'cat-8', name: 'Party Events', slug: 'party-events', icon: 'PartyPopper', description: 'Birthday parties, DJ nights, private parties, engagement parties, baby showers', count: 19 },
+  { id: 'cat-9', name: 'Fashion Shows', slug: 'fashion-shows', icon: 'Sparkles', description: 'Fashion weeks, local designer shows, modeling competitions, boutique launches, ethnic-wear exhibitions', count: 8 },
+  { id: 'cat-10', name: 'Matrimony Committee Meetings', slug: 'matrimony-meetings', icon: 'Heart', description: "Community matchmaking, bride and groom introduction events, parents' meetings, matrimony registration programs", count: 9 },
+  { id: 'cat-11', name: 'Stand-up Comedy', slug: 'standup-comedy', icon: 'Mic2', description: 'Comedy shows, open mics, Marathi comedy, improv shows, storytelling events', count: 14 },
+  { id: 'cat-12', name: 'Spiritual Events', slug: 'spiritual-events', icon: 'Sun', description: 'Bhajan, kirtan, satsang, pravachan, meditation, yoga, temple festivals', count: 11 },
+  { id: 'cat-13', name: 'Sports Events', slug: 'sports-events', icon: 'Trophy', description: 'Cricket, football, badminton, marathons, gaming tournaments', count: 17 },
+  { id: 'cat-14', name: 'Food Events', slug: 'food-events', icon: 'UtensilsCrossed', description: 'Food festivals, street food events, cooking competitions, tasting events', count: 13 },
+  { id: 'cat-15', name: 'Social & Charity Events', slug: 'social-charity', icon: 'HandHeart', description: 'Blood donation camps, volunteering, community service, awareness programs', count: 7 },
+  { id: 'cat-16', name: 'Shopping & Exhibitions', slug: 'shopping-exhibitions', icon: 'ShoppingBag', description: 'Flea markets, handicraft fairs, shopping exhibitions, trade fairs', count: 12 },
+  { id: 'cat-17', name: 'Family & Kids Events', slug: 'family-kids', icon: 'Smile', description: "Kids' workshops, family fun days, school activities, children's entertainment", count: 8 },
+  { id: 'cat-18', name: 'Wedding Events', slug: 'wedding-events', icon: 'Gem', description: 'Wedding exhibitions, bridal shows, wedding planning meetups', count: 6 },
 ];
 
 export const mockEvents: EventItem[] = [
@@ -30,8 +45,11 @@ Join over 3,000 executive leaders, founders, AI researchers, and solution archit
     bannerUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1400&q=80',
     eventType: 'physical',
     status: 'published',
-    startDate: '2026-11-15T10:00:00Z',
-    endDate: '2026-11-16T18:00:00Z',
+    startDate: '2026-11-15T10:00:00',
+    endDate: '2026-11-16T18:00:00',
+    startTime: '10:00 AM',
+    endTime: '06:00 PM',
+    date: '2026-11-15',
     timezone: 'IST',
     featured: true,
     category: mockCategories[0],
@@ -142,8 +160,11 @@ We built the ePay Global FinTech Summit to bring together developers, founders, 
     bannerUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1400&q=80',
     eventType: 'hybrid',
     status: 'published',
-    startDate: '2026-11-15T09:00:00Z',
-    endDate: '2026-11-16T18:00:00Z',
+    startDate: '2026-11-15T10:00:00',
+    endDate: '2026-11-16T18:00:00',
+    startTime: '10:00 AM',
+    endTime: '06:00 PM',
+    date: '2026-11-15',
     timezone: 'IST',
     featured: true,
     category: mockCategories[1],
@@ -365,8 +386,11 @@ We built the ePay Global FinTech Summit to bring together developers, founders, 
     bannerUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1400&q=80',
     eventType: 'physical',
     status: 'published',
-    startDate: '2026-11-28T08:00:00Z',
-    endDate: '2026-11-29T20:00:00Z',
+    startDate: '2026-11-28T08:00:00',
+    endDate: '2026-11-29T20:00:00',
+    startTime: '08:00 AM',
+    endTime: '08:00 PM',
+    date: '2026-11-28',
     timezone: 'IST',
     featured: true,
     category: mockCategories[0],
@@ -406,8 +430,11 @@ We built the ePay Global FinTech Summit to bring together developers, founders, 
     bannerUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1400&q=80',
     eventType: 'physical',
     status: 'published',
-    startDate: '2026-12-12T17:00:00Z',
-    endDate: '2026-12-12T22:30:00Z',
+    startDate: '2026-12-12T17:00:00',
+    endDate: '2026-12-12T22:30:00',
+    startTime: '05:00 PM',
+    endTime: '10:30 PM',
+    date: '2026-12-12',
     timezone: 'IST',
     featured: true,
     category: mockCategories[2],
@@ -686,6 +713,714 @@ We built the ePay Global FinTech Summit to bring together developers, founders, 
       },
     ],
   },
+  // --- NEW CATEGORY SHOWCASE EVENTS ---
+  {
+    id: 'evt-small-local-01',
+    title: 'Green Meadows Annual Society Fair & Cultural Conclave',
+    slug: 'green-meadows-society-cultural-fair-2026',
+    shortDescription: 'Local society gathering featuring community talent performances, traditional handicraft stalls, games, and charity food drives.',
+    description: `
+Join neighbors and families at the Green Meadows Annual Society Fair & Cultural Conclave in Pune.
+
+### Event Highlights
+- **Society Talent Stage**: Live dance and singing performances by local residents of all ages.
+- **Local Art & Craft Fair**: 30+ homegrown artisans showcasing handmade decor and jewelry.
+- **Community Food Stalls**: Authentic homemade Maharashtrian, North Indian, and South Indian cuisines.
+- **Charity Book & Clothes Drive**: Direct donations to local NGO partners.
+    `,
+    bannerUrl: 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1400&q=80',
+    eventType: 'physical',
+    status: 'published',
+    startDate: '2026-11-28T16:00:00Z',
+    endDate: '2026-11-28T22:00:00Z',
+    startTime: '04:00 PM',
+    endTime: '10:00 PM',
+    date: '2026-11-28',
+    timezone: 'IST',
+    featured: false,
+    category: mockCategories[6], // Small Local Events
+    organization: {
+      id: 'org-green-meadows',
+      name: 'Pune Residential Welfare Council',
+      slug: 'pune-rwa-council',
+      verified: true,
+      contactEmail: 'events@greenmeadows.org',
+    },
+    venue: {
+      name: 'Green Meadows Amphitheatre Grounds',
+      address: 'Baner-Pashan Link Road',
+      city: 'Pune',
+      state: 'Maharashtra',
+      country: 'India',
+      latitude: 18.5590,
+      longitude: 73.7868,
+    },
+    ticketTypes: [
+      {
+        id: 'tkt-sm-01',
+        name: 'Family Entry Pass',
+        description: 'All-inclusive entry for family up to 4 members with game coupons.',
+        price: 199,
+        quantity: 400,
+        remainingQuantity: 285,
+        minPerOrder: 1,
+        maxPerOrder: 4,
+        category: 'General',
+        features: ['Full Fair Access', 'Game Stall Tokens', 'Live Musical Stage Access'],
+      },
+    ],
+  },
+  {
+    id: 'evt-party-01',
+    title: 'Neon Groove Bollywood DJ Night & Rooftop Bash',
+    slug: 'neon-groove-bollywood-dj-night-mumbai',
+    shortDescription: 'High-energy Bollywood EDM rooftop party featuring top celebrity DJs, strobe light show, and signature mocktails.',
+    description: `
+Experience Mumbai's most electric rooftop party with DJ Nikhil and DJ Ayesha dropping Bollywood dance beats, remixes, and live percussion.
+
+### Party Experience
+- **Rooftop City Skyline View**: Overlooking the Mumbai skyline under open stars.
+- **Laser & Strobe Light Show**: Immersive sound and projection mapping.
+- **VIP Cabana Lounges**: Dedicated steward service and gourmet appetizers.
+    `,
+    bannerUrl: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1400&q=80',
+    eventType: 'physical',
+    status: 'published',
+    startDate: '2026-12-05T20:00:00Z',
+    endDate: '2026-12-06T02:00:00Z',
+    startTime: '08:00 PM',
+    endTime: '02:00 AM',
+    date: '2026-12-05',
+    timezone: 'IST',
+    featured: true,
+    category: mockCategories[7], // Party Events
+    organization: {
+      id: 'org-skyline-club',
+      name: 'Skyline Nightlife & Entertainment',
+      slug: 'skyline-nightlife',
+      verified: true,
+      contactEmail: 'reservations@skylinenightlife.com',
+    },
+    venue: {
+      name: 'SkyLounge Rooftop Deck',
+      address: 'Senapati Bapat Marg, Lower Parel',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      latitude: 18.9986,
+      longitude: 72.8258,
+    },
+    ticketTypes: [
+      {
+        id: 'tkt-party-stag',
+        name: 'Stag Entry Pass',
+        description: 'Single guest admission with 1 complimentary beverage.',
+        price: 999,
+        quantity: 250,
+        remainingQuantity: 84,
+        minPerOrder: 1,
+        maxPerOrder: 3,
+        category: 'General',
+      },
+      {
+        id: 'tkt-party-couple',
+        name: 'Couple Entry Pass',
+        description: 'Couples pass with 2 welcome drinks and appetizers.',
+        price: 1599,
+        quantity: 150,
+        remainingQuantity: 42,
+        minPerOrder: 1,
+        maxPerOrder: 2,
+        category: 'VIP',
+      },
+    ],
+  },
+  {
+    id: 'evt-fashion-01',
+    title: 'India Couture & Ethnic Runway Week 2026',
+    slug: 'india-couture-ethnic-runway-week-mumbai',
+    shortDescription: 'Premier fashion runway show presenting bridal couture, handloom heritage, and new-age indie designer collections.',
+    description: `
+India Couture & Ethnic Runway Week celebrates India's finest artisans, heritage silks, and contemporary fashion houses.
+
+### What to Expect
+- **Designer Runway Showcases**: 12 top designers exhibiting bridal, festive, and fusion collections.
+- **Boutique Exhibition Lounge**: Exclusive spot-order opportunities directly from designers.
+- **Red Carpet & Media Conclave**: Celebrity guests, fashion influencers, and industry stylists.
+    `,
+    bannerUrl: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1400&q=80',
+    eventType: 'physical',
+    status: 'published',
+    startDate: '2026-12-12T17:00:00Z',
+    endDate: '2026-12-13T22:00:00Z',
+    startTime: '05:00 PM',
+    endTime: '10:00 PM',
+    date: '2026-12-12',
+    timezone: 'IST',
+    featured: true,
+    category: mockCategories[8], // Fashion Shows
+    organization: {
+      id: 'org-fashion-council',
+      name: 'Indian Haute Couture Guild',
+      slug: 'indian-haute-couture',
+      verified: true,
+      contactEmail: 'runway@coutureguild.in',
+    },
+    venue: {
+      name: 'Grand Hyatt Convention Center',
+      address: 'Bandra Kurla Complex Vicinity, Santacruz East',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      latitude: 19.0805,
+      longitude: 72.8530,
+    },
+    ticketTypes: [
+      {
+        id: 'tkt-fsh-standard',
+        name: 'Runway Viewer Pass',
+        description: 'Access to runway rows 4-8 and exhibition lounge.',
+        price: 1899,
+        quantity: 200,
+        remainingQuantity: 114,
+        minPerOrder: 1,
+        maxPerOrder: 4,
+        category: 'General',
+      },
+      {
+        id: 'tkt-fsh-front',
+        name: 'Front-Row VIP Pass',
+        description: 'Row 1 front row seating, gift hamper, and after-party networking invite.',
+        price: 4999,
+        quantity: 50,
+        remainingQuantity: 16,
+        minPerOrder: 1,
+        maxPerOrder: 2,
+        category: 'VIP',
+      },
+    ],
+  },
+  {
+    id: 'evt-matrimony-01',
+    title: 'Maharashtra Parinay Grand Matrimony Meet & Sammelan',
+    slug: 'maharashtra-parinay-matrimony-meet-2026',
+    shortDescription: 'Dignified community matchmaking conclave with verified biodata portfolios, direct family interactions, and counseling booths.',
+    description: `
+A structured and respectful matchmaking conference facilitating open introductions between prospective brides, grooms, and their families.
+
+### Program Outline
+- **Verified Biodata Directory**: Pre-screened background profiles categorized by profession and education.
+- **Direct Candidate Introductions**: One-on-one guided conversation rounds in comfortable private lounges.
+- **Astrology & Counseling Kiosks**: Complimentary horoscopic consultation and relationship counselors.
+    `,
+    bannerUrl: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=80',
+    eventType: 'physical',
+    status: 'published',
+    startDate: '2026-11-22T09:00:00Z',
+    endDate: '2026-11-22T18:00:00Z',
+    startTime: '09:00 AM',
+    endTime: '06:00 PM',
+    date: '2026-11-22',
+    timezone: 'IST',
+    featured: false,
+    category: mockCategories[9], // Matrimony Committee Meetings
+    organization: {
+      id: 'org-parinay-trust',
+      name: 'Parinay Foundation Trust',
+      slug: 'parinay-foundation',
+      verified: true,
+      contactEmail: 'contact@parinaytrust.org',
+    },
+    venue: {
+      name: 'Yashwantrao Chavan Smruti Bhavan',
+      address: 'Kothrud, Paud Road',
+      city: 'Pune',
+      state: 'Maharashtra',
+      country: 'India',
+      latitude: 18.5074,
+      longitude: 73.8077,
+    },
+    ticketTypes: [
+      {
+        id: 'tkt-matri-candidate',
+        name: 'Candidate & Family Registration (Up to 3 Persons)',
+        description: 'Complete registration booklet, tea & high lunch buffet, and profile inclusion.',
+        price: 1200,
+        quantity: 300,
+        remainingQuantity: 140,
+        minPerOrder: 1,
+        maxPerOrder: 1,
+        category: 'General',
+      },
+    ],
+  },
+  {
+    id: 'evt-comedy-01',
+    title: 'Puneri Hasya Katta – Stand-up Comedy Special & Open Mic',
+    slug: 'puneri-hasya-katta-standup-comedy-pune',
+    shortDescription: 'Evening of unfiltered Marathi & Hinglish observational comedy, satirical storytelling, and rising open mic stars.',
+    description: `
+Prepare for non-stop laughter with Pune's top stand-up comics covering everyday IT life, traffic tales, college drama, and cultural quirks.
+
+### Lineup Highlights
+- **Headliners**: 3 veteran TV and YouTube Marathi & Hindi comedians.
+- **Rising Stars Open Mic**: 5 handpicked local comedy talents showcasing fresh sets.
+- **Chilled Vibe**: Auditorium seating with snack bar and photo booth.
+    `,
+    bannerUrl: 'https://images.unsplash.com/photo-1585699324551-f6c309eedeca?auto=format&fit=crop&w=1400&q=80',
+    eventType: 'physical',
+    status: 'published',
+    startDate: '2026-12-04T19:00:00Z',
+    endDate: '2026-12-04T21:30:00Z',
+    startTime: '07:00 PM',
+    endTime: '09:30 PM',
+    date: '2026-12-04',
+    timezone: 'IST',
+    featured: true,
+    category: mockCategories[10], // Stand-up Comedy
+    organization: {
+      id: 'org-laugh-factory',
+      name: 'Hasya Katta Comedy Club',
+      slug: 'hasya-katta-club',
+      verified: true,
+      contactEmail: 'bookings@hasyakatta.in',
+    },
+    venue: {
+      name: 'Bal Gandharva Ranga Mandir',
+      address: 'JM Road, Shivajinagar',
+      city: 'Pune',
+      state: 'Maharashtra',
+      country: 'India',
+      latitude: 18.5246,
+      longitude: 73.8507,
+    },
+    ticketTypes: [
+      {
+        id: 'tkt-comedy-gen',
+        name: 'General Balcony Seating',
+        description: 'Auditorium admission with free parking access.',
+        price: 349,
+        quantity: 450,
+        remainingQuantity: 180,
+        minPerOrder: 1,
+        maxPerOrder: 6,
+        category: 'General',
+      },
+      {
+        id: 'tkt-comedy-vip',
+        name: 'VIP Front Row Seating',
+        description: 'First 5 rows with meet & greet photo session post show.',
+        price: 699,
+        quantity: 100,
+        remainingQuantity: 28,
+        minPerOrder: 1,
+        maxPerOrder: 4,
+        category: 'VIP',
+      },
+    ],
+  },
+  {
+    id: 'evt-spiritual-01',
+    title: 'Ananda Mahotsav: Bhajan, Kirtan & Guided Dhyana Conclave',
+    slug: 'ananda-mahotsav-bhajan-kirtan-dhyana-bengaluru',
+    shortDescription: 'Devotional musical evening, Vedic chanting, transformative meditation sessions, and spiritual discourses by revered mentors.',
+    description: `
+Experience tranquility, soul-stirring live bhajans, and inner peace in this serene spiritual gathering.
+
+### Sacred Activities
+- **Live Kirtan & Harmonium Choir**: Traditional ragas and community call-and-response singing.
+- **Guided Mindfulness Dhyana**: 45-minute deep meditation technique for stress relief.
+- **Maha Mahaprasad**: Wholesome satvik sanctified dinner served to all attendees.
+    `,
+    bannerUrl: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1400&q=80',
+    eventType: 'physical',
+    status: 'published',
+    startDate: '2026-12-19T16:30:00Z',
+    endDate: '2026-12-19T21:00:00Z',
+    startTime: '04:30 PM',
+    endTime: '09:00 PM',
+    date: '2026-12-19',
+    timezone: 'IST',
+    featured: false,
+    category: mockCategories[11], // Spiritual Events
+    organization: {
+      id: 'org-ananda-seva',
+      name: 'Sanatana Peace & Seva Foundation',
+      slug: 'sanatana-peace-seva',
+      verified: true,
+      contactEmail: 'seva@sanatanatrust.org',
+    },
+    venue: {
+      name: 'Art of Living International Center',
+      address: 'Kanakapura Road, Udayapura',
+      city: 'Bengaluru',
+      state: 'Karnataka',
+      country: 'India',
+      latitude: 12.8398,
+      longitude: 77.5147,
+    },
+    ticketTypes: [
+      {
+        id: 'tkt-spirit-free',
+        name: 'Complimentary Satsang Pass',
+        description: 'Free entry pass including Mahaprasad meal coupon.',
+        price: 0,
+        quantity: 1000,
+        remainingQuantity: 412,
+        minPerOrder: 1,
+        maxPerOrder: 5,
+        category: 'General',
+        isComplimentary: true,
+      },
+      {
+        id: 'tkt-spirit-donor',
+        name: 'Seva Donor Pass',
+        description: 'Reserved front seating with Vedic blessing shawl.',
+        price: 501,
+        quantity: 200,
+        remainingQuantity: 86,
+        minPerOrder: 1,
+        maxPerOrder: 4,
+        category: 'VIP',
+      },
+    ],
+  },
+  {
+    id: 'evt-sports-01',
+    title: 'Hyderabad Corporate Box-Cricket & Turf Championship',
+    slug: 'hyderabad-corporate-box-cricket-championship',
+    shortDescription: 'Fast-paced 6-a-side tennis ball corporate cricket tournament with live scoring, medals, and ₹1,00,000 cash prizes.',
+    description: `
+Assemble your company squad and battle for glory at Hyderabad's premier corporate cricket tournament.
+
+### Tournament Features
+- **Matches Under Floodlights**: 8-over league format on FIFA-grade international artificial turf.
+- **Live Video Streaming**: Multi-camera digital broadcast with real-time ball-by-ball commentary.
+- **Prizes & Trophies**: Championship trophy, runners-up cup, best batsman & bowler awards.
+    `,
+    bannerUrl: 'https://images.unsplash.com/photo-1531415074868-036b107e775a?auto=format&fit=crop&w=1400&q=80',
+    eventType: 'physical',
+    status: 'published',
+    startDate: '2026-12-13T08:00:00Z',
+    endDate: '2026-12-13T20:00:00Z',
+    startTime: '08:00 AM',
+    endTime: '08:00 PM',
+    date: '2026-12-13',
+    timezone: 'IST',
+    featured: true,
+    category: mockCategories[12], // Sports Events
+    organization: {
+      id: 'org-arena-sports',
+      name: 'Deccan Sports & Turf League',
+      slug: 'deccan-sports-turf',
+      verified: true,
+      contactEmail: 'tournaments@deccansports.in',
+    },
+    venue: {
+      name: 'HotFut Arena Sports Complex',
+      address: 'Gachibowli Stadium Road',
+      city: 'Hyderabad',
+      state: 'Telangana',
+      country: 'India',
+      latitude: 17.4435,
+      longitude: 78.3489,
+    },
+    ticketTypes: [
+      {
+        id: 'tkt-sports-team',
+        name: 'Full Team Registration (8 Players)',
+        description: 'Includes tournament jersey kit, energy drinks, match balls, and lunch.',
+        price: 3999,
+        quantity: 32,
+        remainingQuantity: 11,
+        minPerOrder: 1,
+        maxPerOrder: 1,
+        category: 'Corporate',
+      },
+      {
+        id: 'tkt-sports-spectator',
+        name: 'Spectator Fan Pass',
+        description: 'Grandstand spectator seat with refreshments coupon.',
+        price: 99,
+        quantity: 300,
+        remainingQuantity: 215,
+        minPerOrder: 1,
+        maxPerOrder: 6,
+        category: 'General',
+      },
+    ],
+  },
+  {
+    id: 'evt-food-01',
+    title: 'The Great Indian Street Food & Craft Brew Festival',
+    slug: 'great-indian-street-food-craft-brew-festival-bengaluru',
+    shortDescription: 'Epic culinary festival with 80+ street food stalls from 18 states, artisanal desserts, and live music performances.',
+    description: `
+Celebrate the rich tapestry of Indian regional gastronomy from spicy Kolhapuri misal and Lucknowi kebabs to Kolkata kathi rolls and craft desserts.
+
+### Festival Highlights
+- **80+ Authentic Food Kiosks**: Curated street chefs and gourmet culinary masters.
+- **Live Cooking Masterclasses**: Interactive cook-offs and chef tastings.
+- **Acoustic Sunset Stage**: Live indie bands playing soul tunes while you dine.
+    `,
+    bannerUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1400&q=80',
+    eventType: 'physical',
+    status: 'published',
+    startDate: '2026-12-06T12:00:00Z',
+    endDate: '2026-12-06T23:00:00Z',
+    startTime: '12:00 PM',
+    endTime: '11:00 PM',
+    date: '2026-12-06',
+    timezone: 'IST',
+    featured: true,
+    category: mockCategories[13], // Food Events
+    organization: {
+      id: 'org-foodies-guild',
+      name: 'Bengaluru Food Crawlers Guild',
+      slug: 'bengaluru-food-crawlers',
+      verified: true,
+      contactEmail: 'festivals@foodcrawlers.in',
+    },
+    venue: {
+      name: 'Jaymahal Palace Gardens',
+      address: 'Near Cantonment Railway Station, Jayamahal',
+      city: 'Bengaluru',
+      state: 'Karnataka',
+      country: 'India',
+      latitude: 12.9972,
+      longitude: 77.5968,
+    },
+    ticketTypes: [
+      {
+        id: 'tkt-food-tasting',
+        name: 'Single Entry + ₹200 Tasting Coupons',
+        description: 'Admission to festival grounds with instant food tokens.',
+        price: 299,
+        quantity: 1500,
+        remainingQuantity: 640,
+        minPerOrder: 1,
+        maxPerOrder: 8,
+        category: 'General',
+      },
+    ],
+  },
+  {
+    id: 'evt-charity-01',
+    title: 'Hope For Tomorrow: Mega Blood Donation & Wellness Drive',
+    slug: 'hope-for-tomorrow-mega-blood-donation-drive-delhi',
+    shortDescription: 'Community social impact initiative featuring voluntary blood donation, free health screenings, and CPR awareness workshops.',
+    description: `
+Give the gift of life. Partnering with certified government blood banks and leading hospitals to support critical surgery patients and pediatric needs.
+
+### Drive Features
+- **Certified Safe Environment**: 10 medical stations with licensed doctors and sterile equipment.
+- **Complimentary Health Checks**: Free Hb, blood pressure, sugar, and BMI screening for all donors.
+- **Donor Certificate & Care Kit**: Verified digital donor card and nutrition care pack.
+    `,
+    bannerUrl: 'https://images.unsplash.com/photo-1615461066841-6116e61058f4?auto=format&fit=crop&w=1400&q=80',
+    eventType: 'physical',
+    status: 'published',
+    startDate: '2026-11-29T08:30:00Z',
+    endDate: '2026-11-29T17:00:00Z',
+    startTime: '08:30 AM',
+    endTime: '05:00 PM',
+    date: '2026-11-29',
+    timezone: 'IST',
+    featured: false,
+    category: mockCategories[14], // Social & Charity Events
+    organization: {
+      id: 'org-redcross-partner',
+      name: 'Yuva Seva Social Foundation',
+      slug: 'yuva-seva-foundation',
+      verified: true,
+      contactEmail: 'contact@yuvaseva.org',
+    },
+    venue: {
+      name: 'Talkatora Indoor Stadium Annexe',
+      address: 'Presidential Estate, Talkatora Garden',
+      city: 'New Delhi',
+      state: 'Delhi',
+      country: 'India',
+      latitude: 28.6210,
+      longitude: 77.1950,
+    },
+    ticketTypes: [
+      {
+        id: 'tkt-donor-reg',
+        name: 'Volunteer Blood Donor Registration',
+        description: 'Complimentary donor slot reservation with wellness pack and badge.',
+        price: 0,
+        quantity: 800,
+        remainingQuantity: 410,
+        minPerOrder: 1,
+        maxPerOrder: 2,
+        category: 'General',
+        isComplimentary: true,
+      },
+    ],
+  },
+  {
+    id: 'evt-shopping-01',
+    title: 'Dastkar Crafts & Flea Market Winter Carnival 2026',
+    slug: 'dastkar-crafts-flea-market-winter-carnival-mumbai',
+    shortDescription: 'Over 120+ authentic stalls featuring handmade ceramics, Khadi wear, vintage decor, artisan jewelry, and live pottery workshops.',
+    description: `
+Explore India's vibrant handcrafted traditions. Meet master weavers, potters, and boutique creators in an open-air carnival setting.
+
+### Carnival Highlights
+- **120+ Curated Stalls**: Sustainable apparel, brassware, handmade soaps, handloom sarees, and quirky accessories.
+- **Hands-on Clay Workshops**: Free pottery wheel sessions guided by master artisans.
+- **Live Acoustic Music & Cafe**: Cozy artisan coffee and snacks under fairy lights.
+    `,
+    bannerUrl: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=1400&q=80',
+    eventType: 'physical',
+    status: 'published',
+    startDate: '2026-12-18T11:00:00Z',
+    endDate: '2026-12-20T21:00:00Z',
+    startTime: '11:00 AM',
+    endTime: '09:00 PM',
+    date: '2026-12-18',
+    timezone: 'IST',
+    featured: true,
+    category: mockCategories[15], // Shopping & Exhibitions
+    organization: {
+      id: 'org-crafts-council',
+      name: 'Heritage Artisan Guild',
+      slug: 'heritage-artisan-guild',
+      verified: true,
+      contactEmail: 'stalls@heritageguild.in',
+    },
+    venue: {
+      name: 'MMRDA Exhibition Grounds',
+      address: 'Bandra Kurla Complex (BKC)',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      latitude: 19.0660,
+      longitude: 72.8680,
+    },
+    ticketTypes: [
+      {
+        id: 'tkt-flea-day',
+        name: 'Single Day Entry Pass',
+        description: 'Full day flea market entry with complimentary cotton tote bag.',
+        price: 149,
+        quantity: 2000,
+        remainingQuantity: 1120,
+        minPerOrder: 1,
+        maxPerOrder: 6,
+        category: 'General',
+      },
+    ],
+  },
+  {
+    id: 'evt-family-01',
+    title: 'Little Innovators: STEM & Robotics Family Fun Fest',
+    slug: 'little-innovators-stem-robotics-family-fun-fest',
+    shortDescription: 'Hands-on weekend learning carnival for kids aged 5-14 with LEGO robotics, drone arenas, science magic shows, and family games.',
+    description: `
+Spark curiosity in young minds. An unforgettable interactive weekend where children discover coding, rocket physics, and robotics through fun games.
+
+### Activity Zones
+- **Robotics Arena**: Build and drive mini rover bots on simulated lunar tracks.
+- **Science Magic Theater**: Explosive, colorful, and completely safe physics & chemistry stage experiments.
+- **Parents & Kids Coding Jam**: Easy drag-and-drop game design workshops for families.
+    `,
+    bannerUrl: 'https://images.unsplash.com/photo-1566140967404-b8b3932483f5?auto=format&fit=crop&w=1400&q=80',
+    eventType: 'physical',
+    status: 'published',
+    startDate: '2026-11-21T10:00:00Z',
+    endDate: '2026-11-22T18:00:00Z',
+    startTime: '10:00 AM',
+    endTime: '06:00 PM',
+    date: '2026-11-21',
+    timezone: 'IST',
+    featured: false,
+    category: mockCategories[16], // Family & Kids Events
+    organization: {
+      id: 'org-stem-academy',
+      name: 'Young Explorers STEM Academy',
+      slug: 'young-explorers-stem',
+      verified: true,
+      contactEmail: 'info@youngexplorers.org',
+    },
+    venue: {
+      name: 'Nehru Science Centre Grounds',
+      address: 'Dr. E. Moses Road, Worli',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      latitude: 19.0163,
+      longitude: 72.8228,
+    },
+    ticketTypes: [
+      {
+        id: 'tkt-kid-parent',
+        name: '1 Child + 1 Parent Duo Pass',
+        description: 'Includes entry to all 6 STEM workshops, science kit, and theater shows.',
+        price: 799,
+        quantity: 350,
+        remainingQuantity: 164,
+        minPerOrder: 1,
+        maxPerOrder: 3,
+        category: 'General',
+      },
+    ],
+  },
+  {
+    id: 'evt-wedding-01',
+    title: 'The Royal Wedding & Bridal Expo 2026',
+    slug: 'the-royal-wedding-bridal-expo-2026-mumbai',
+    shortDescription: 'Luxury wedding planning expo with 100+ celebrity bridal designers, luxury jewelry houses, destination decor leads, and invitation suites.',
+    description: `
+Plan your dream wedding under one roof. Meet top wedding planners, destination venue managers, trousseau curators, and photographers.
+
+### Expo Features
+- **Bridal Trousseau & Haute Couture**: Exclusive runway reveals of upcoming bridal fashion trends.
+- **Destination Wedding Pavilion**: Top heritage palaces from Udaipur, Goa, and Jaipur offering exclusive booking packages.
+- **Tasting Lounge**: Sample curated wedding catering menus and designer wedding cakes.
+    `,
+    bannerUrl: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=80',
+    eventType: 'physical',
+    status: 'published',
+    startDate: '2026-12-19T10:30:00Z',
+    endDate: '2026-12-21T20:00:00Z',
+    startTime: '10:30 AM',
+    endTime: '08:00 PM',
+    date: '2026-12-19',
+    timezone: 'IST',
+    featured: true,
+    category: mockCategories[17], // Wedding Events
+    organization: {
+      id: 'org-wedding-guild',
+      name: 'Elite Wedding Concierge Network',
+      slug: 'elite-wedding-concierge',
+      verified: true,
+      contactEmail: 'expo@eliteweddings.in',
+    },
+    venue: {
+      name: 'Jio World Convention Centre',
+      address: 'G Block, Bandra Kurla Complex',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      latitude: 19.0620,
+      longitude: 72.8680,
+    },
+    ticketTypes: [
+      {
+        id: 'tkt-bridal-couple',
+        name: 'Couple Bridal Pass',
+        description: 'VIP admission for bride & groom + complimentary Wedding Planning Lookbook.',
+        price: 499,
+        quantity: 600,
+        remainingQuantity: 280,
+        minPerOrder: 1,
+        maxPerOrder: 2,
+        category: 'General',
+      },
+    ],
+  },
   // --- PAST EVENTS ---
   {
     id: 'evt-past-1',
@@ -806,24 +1541,90 @@ We built the ePay Global FinTech Summit to bring together developers, founders, 
   },
 ];
 
-// In-memory global store to keep newly published events across requests
+// In-memory global store to keep newly published and edited events across requests
 const globalDataStore = globalThis as unknown as {
   __epay_events__?: EventItem[];
+  __epay_edited_events__?: Record<string, EventItem>;
 };
 
 if (!globalDataStore.__epay_events__) {
   globalDataStore.__epay_events__ = [...mockEvents];
 }
+if (!globalDataStore.__epay_edited_events__) {
+  globalDataStore.__epay_edited_events__ = {};
+}
+
+export const LOCAL_STORAGE_EVENTS_KEY = 'epay_persisted_events';
 
 export function getAllEvents(): EventItem[] {
   if (!globalDataStore.__epay_events__) {
     globalDataStore.__epay_events__ = [...mockEvents];
   }
-  return globalDataStore.__epay_events__;
+  const events = [...globalDataStore.__epay_events__];
+  if (globalDataStore.__epay_edited_events__) {
+    for (let i = 0; i < events.length; i++) {
+      const edited = globalDataStore.__epay_edited_events__[events[i].id] || globalDataStore.__epay_edited_events__[events[i].slug];
+      if (edited) {
+        events[i] = { ...events[i], ...edited };
+      }
+    }
+  }
+  return events;
+}
+
+export function recordEditedEvent(event: EventItem): EventItem {
+  if (!globalDataStore.__epay_edited_events__) {
+    globalDataStore.__epay_edited_events__ = {};
+  }
+  globalDataStore.__epay_edited_events__[event.id] = event;
+  globalDataStore.__epay_edited_events__[event.slug] = event;
+
+  addPublishedEvent(event);
+  return event;
+}
+
+export function getEditedEvent(idOrSlug: string): EventItem | null {
+  if (!globalDataStore.__epay_edited_events__) return null;
+  return globalDataStore.__epay_edited_events__[idOrSlug] || null;
+}
+
+export function saveLocalPersistedEvent(event: EventItem): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_EVENTS_KEY);
+    const map = raw ? JSON.parse(raw) : {};
+    if (event.id) map[event.id] = event;
+    if (event.slug) map[event.slug] = event;
+    localStorage.setItem(LOCAL_STORAGE_EVENTS_KEY, JSON.stringify(map));
+  } catch (e) {
+    console.warn('[data.ts] Failed to save event to localStorage:', e);
+  }
+}
+
+export function getLocalPersistedEvent(idOrSlug: string): EventItem | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_EVENTS_KEY);
+    if (!raw) return null;
+    const map = JSON.parse(raw);
+    return map[idOrSlug] || null;
+  } catch {
+    return null;
+  }
+}
+
+export function getAllLocalPersistedEvents(): Record<string, EventItem> {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_EVENTS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
 }
 
 export function addPublishedEvent(event: EventItem): EventItem {
-  const current = getAllEvents();
+  const current = globalDataStore.__epay_events__ || [...mockEvents];
   const idx = current.findIndex(e => e.id === event.id || e.slug === event.slug);
   if (idx >= 0) {
     current[idx] = event;
@@ -835,16 +1636,6 @@ export function addPublishedEvent(event: EventItem): EventItem {
 }
 
 export async function getEvents(filters?: { query?: string; category?: string; location?: string; eventType?: string; price?: string }): Promise<EventItem[]> {
-  try {
-    const { getEventsFromSupabase } = await import('./supabase/dbService');
-    const supaEvents = await getEventsFromSupabase(filters);
-    if (supaEvents && supaEvents.length > 0) {
-      return supaEvents;
-    }
-  } catch (err) {
-    console.warn('Supabase getEvents fallback to local store:', err);
-  }
-
   let list = [...getAllEvents()];
 
   if (filters?.query) {
@@ -877,21 +1668,6 @@ export async function getEvents(filters?: { query?: string; category?: string; l
 }
 
 export async function getEventBySlug(slug: string): Promise<EventItem | null> {
-  try {
-    const { getEventBySlugFromSupabase } = await import('./supabase/dbService');
-    const supaEvent = await getEventBySlugFromSupabase(slug);
-    if (supaEvent) {
-      return supaEvent;
-    }
-  } catch (err) {
-    console.warn('Supabase getEventBySlug fallback to local store:', err);
-  }
-
   const all = getAllEvents();
   return all.find(e => e.slug === slug) || all[0] || null;
-}
-
-export async function createEventInSupabase(eventData: Partial<EventItem>) {
-  const { insertEventToSupabase } = await import('./supabase/dbService');
-  return insertEventToSupabase(eventData as EventItem);
 }

@@ -21,9 +21,9 @@ const initialFormData: EventWizardData = {
   shortDescription: '',
   description: '',
   bannerUrl: '',
-  organizerName: 'ePayEvents Tech Team',
-  organizerEmail: 'organizer@epayevents.com',
-  organizerPhone: '+91 98765 43210',
+  organizerName: '',
+  organizerEmail: '',
+  organizerPhone: '',
   organizerAvatar: '/organizers/organizer_workspace.jpg',
   organizerBio: 'Experienced event organizer specializing in technology, startups, and innovation summits across India.',
   startDate: '',
@@ -320,9 +320,9 @@ function CreateEventWizardInner() {
     if (user && !editTarget) {
       setFormData(prev => ({
         ...prev,
-        organizerName: prev.organizerName || user.user_metadata?.full_name || 'ePay Organizer',
-        organizerEmail: prev.organizerEmail || user.email || 'organizer@epayevents.com',
-        organizerPhone: prev.organizerPhone || user.user_metadata?.phone || '+91 98765 43210',
+        organizerName: prev.organizerName || user.user_metadata?.full_name || user.email?.split('@')[0] || 'ePay Organizer',
+        organizerEmail: prev.organizerEmail || user.email || '',
+        organizerPhone: prev.organizerPhone || user.user_metadata?.phone || '',
       }));
     }
   }, [user, editTarget]);
@@ -506,10 +506,28 @@ function CreateEventWizardInner() {
       return;
     }
 
+    const currentOrgEmail = user?.email || formData.organizerEmail || '';
+    const currentOrgName = formData.organizerName || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Organizer';
+    const currentOrgId = user?.id || '';
+
     const payload = {
       ...formData,
       status,
       id: editingEventId || undefined,
+      organizerId: currentOrgId,
+      organizer_id: currentOrgId,
+      userId: currentOrgId,
+      organizerEmail: currentOrgEmail,
+      organizerName: currentOrgName,
+      organization: {
+        id: currentOrgId || `org-${Date.now()}`,
+        name: currentOrgName,
+        slug: currentOrgName.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-'),
+        verified: true,
+        contactEmail: currentOrgEmail,
+        bio: formData.organizerBio || 'Event host on ePayEvents',
+        avatar: formData.organizerAvatar || '/team/rahul.jpg',
+      },
     };
 
     console.log(`[CreateEvent] Submitting event payload (${isEditMode ? 'UPDATE' : 'CREATE'}):`, payload);
@@ -545,6 +563,11 @@ function CreateEventWizardInner() {
         const existingRaw = localStorage.getItem('epay_persisted_events');
         const map = existingRaw ? JSON.parse(existingRaw) : {};
         if (savedEvent) {
+          savedEvent.organizerId = currentOrgId;
+          savedEvent.organizer_id = currentOrgId;
+          savedEvent.userId = currentOrgId;
+          savedEvent.organizerEmail = currentOrgEmail;
+          savedEvent.organizerName = currentOrgName;
           if (savedEvent.id) map[savedEvent.id] = savedEvent;
           if (savedEvent.slug) map[savedEvent.slug] = savedEvent;
         }
@@ -555,7 +578,7 @@ function CreateEventWizardInner() {
           map[finalSlug] = savedEvent;
         }
         localStorage.setItem('epay_persisted_events', JSON.stringify(map));
-        console.log('[CreateEvent] Saved event to localStorage map:', finalSlug);
+        console.log('[CreateEvent] Saved event to localStorage map with organizer ownership:', finalSlug, currentOrgEmail);
       } catch (storageErr) {
         console.warn('[CreateEvent] Error writing to localStorage:', storageErr);
       }
@@ -1131,10 +1154,21 @@ function CreateEventWizardInner() {
                           type="text"
                           value={formData.city}
                           onChange={e => updateField('city', e.target.value)}
-                          placeholder="e.g. Mumbai, Bengaluru"
+                          placeholder="e.g. Mumbai, Bengaluru, Pune"
                           className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
                         />
                       </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-bold text-[#1C1917] mb-1">Full Street Address (Optional)</label>
+                      <input
+                        type="text"
+                        value={formData.address}
+                        onChange={e => updateField('address', e.target.value)}
+                        placeholder="e.g. Santacruz East, Western Express Highway"
+                        className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
+                      />
                     </div>
                   </div>
                 )}

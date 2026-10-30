@@ -22,8 +22,12 @@ export interface EventApiResponseItem {
   status: 'published';
   eventStatus: 'live' | 'upcoming' | 'past';
   organizer: {
+    id?: string;
     name: string;
+    email?: string;
   };
+  organizerId?: string;
+  organizerEmail?: string;
 }
 
 export function formatDisplayTime(timeStr?: string): string {
@@ -123,21 +127,44 @@ export function transformEventToApiResponse(event: EventItem): EventApiResponseI
     status: 'published',
     eventStatus: getEventStatus(startDateFormatted),
     organizer: {
+      id: event.organization?.id,
       name: event.organization?.name || 'ePayEvents Organizer',
+      email: event.organization?.contactEmail,
     },
+    organizerId: event.organization?.id,
+    organizerEmail: event.organization?.contactEmail,
   };
 }
 
 /**
  * GET /api/events
  * Returns only events where status = 'published' using eventRepository.getPublishedEvents()
+ * Supports optional ?organizerId=... and ?organizerEmail=... filtering
  */
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const publishedEvents = await getPublishedEvents();
-    const formatted = publishedEvents.map(transformEventToApiResponse);
+    const { searchParams } = new URL(req.url);
+    const filterOrganizerId = searchParams.get('organizerId');
+    const filterOrganizerEmail = searchParams.get('organizerEmail')?.toLowerCase().trim();
 
-    console.log(`[API /api/events GET] Returned ${formatted.length} published events via eventRepository`);
+    const publishedEvents = await getPublishedEvents();
+    let formatted = publishedEvents.map(transformEventToApiResponse);
+
+    if (filterOrganizerId || filterOrganizerEmail) {
+      formatted = formatted.filter(ev => {
+        const idMatch = filterOrganizerId && (
+          ev.organizerId === filterOrganizerId || 
+          ev.organizer?.id === filterOrganizerId
+        );
+        const emailMatch = filterOrganizerEmail && (
+          ev.organizerEmail?.toLowerCase() === filterOrganizerEmail || 
+          ev.organizer?.email?.toLowerCase() === filterOrganizerEmail
+        );
+        return Boolean(idMatch || emailMatch);
+      });
+    }
+
+    console.log(`[API /api/events GET] Returned ${formatted.length} published events via eventRepository (filtered: ${Boolean(filterOrganizerId || filterOrganizerEmail)})`);
 
     return NextResponse.json({
       success: true,

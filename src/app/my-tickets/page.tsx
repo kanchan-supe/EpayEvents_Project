@@ -15,6 +15,9 @@ import { useAuth } from '@/context/AuthContext';
 import { mockEvents } from '@/lib/data';
 import { OrganizerInquiry } from '@/lib/repositories/inquiryRepository';
 import { QRCodeImage } from '@/components/QRCodeImage';
+import QRCode from 'qrcode';
+import { DigitalCertificateModal, CertificateData } from '@/components/DigitalCertificateModal';
+import { Award } from 'lucide-react';
 
 interface AttendeeTicketItem {
   id: string;
@@ -52,6 +55,9 @@ export default function MyTicketsPage() {
   // Modal State for viewing scannable QR Ticket
   const [selectedTicket, setSelectedTicket] = useState<AttendeeTicketItem | null>(null);
   const [copiedCode, setCopiedCode] = useState(false);
+
+  // Digital Certificate of Attendance Modal State
+  const [activeCertificate, setActiveCertificate] = useState<CertificateData | null>(null);
 
   // Cancellation & Refund Modal State
   const [cancellingTicket, setCancellingTicket] = useState<AttendeeTicketItem | null>(null);
@@ -228,13 +234,254 @@ export default function MyTicketsPage() {
     setTimeout(() => setCopiedCode(false), 2000);
   };
 
-  const handlePrintTicket = (ticket: AttendeeTicketItem) => {
+  const handlePrintTicket = async (ticket: AttendeeTicketItem) => {
     setSelectedTicket(ticket);
-    setTimeout(() => {
-      if (typeof window !== 'undefined') {
-        window.print();
+    if (typeof window === 'undefined') return;
+
+    // Generate reliable Data URL offline via QRCode library
+    const payload = ticket.qrPayload || ticket.ticketCode;
+    let qrDataUrl = '';
+    try {
+      const qrLib: any = QRCode;
+      const toDataURLFn = qrLib.toDataURL || qrLib.default?.toDataURL;
+      if (typeof toDataURLFn === 'function') {
+        qrDataUrl = await toDataURLFn(payload, {
+          width: 400,
+          margin: 1,
+          color: { dark: '#0f172a', light: '#ffffff' },
+          errorCorrectionLevel: 'M',
+        });
       }
-    }, 300);
+    } catch (e) {
+      console.warn('QRCode dataUrl generation fallback:', e);
+    }
+
+    if (!qrDataUrl) {
+      qrDataUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(payload)}`;
+    }
+
+    // Remove any previous print frame if present
+    const existingFrame = document.getElementById('ticket-print-frame');
+    if (existingFrame) {
+      existingFrame.remove();
+    }
+
+    const iframe = document.createElement('iframe');
+    iframe.id = 'ticket-print-frame';
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow?.document;
+    if (!doc) {
+      window.print();
+      return;
+    }
+
+    doc.open();
+    doc.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Official Gate Pass - ${ticket.ticketCode}</title>
+          <meta charset="utf-8" />
+          <style>
+            @page {
+              size: portrait;
+              margin: 8mm;
+            }
+            *, *::before, *::after {
+              box-sizing: border-box;
+              margin: 0;
+              padding: 0;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            html, body {
+              width: 100%;
+              margin: 0;
+              padding: 0;
+              background: #ffffff;
+              color: #0f172a;
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            }
+            body {
+              display: flex;
+              justify-content: center;
+              padding-top: 10px;
+            }
+            .pass-card {
+              width: 380px;
+              max-width: 90vw;
+              border: 2px solid #0f766e;
+              border-radius: 20px;
+              overflow: hidden;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+              background: #ffffff;
+              page-break-inside: avoid;
+              break-inside: avoid;
+            }
+            .pass-header {
+              background: #0f172a !important;
+              color: #ffffff !important;
+              padding: 16px 20px;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              border-bottom: 2px solid #0f766e;
+            }
+            .pass-header h3 {
+              font-size: 15px;
+              font-weight: 800;
+              margin-bottom: 2px;
+              color: #ffffff !important;
+            }
+            .pass-header p {
+              font-size: 11px;
+              color: #34d399 !important;
+              font-weight: 600;
+            }
+            .verified-badge {
+              font-size: 10px;
+              font-weight: 800;
+              background: #0f766e !important;
+              color: #ffffff !important;
+              padding: 4px 10px;
+              border-radius: 8px;
+            }
+            .pass-body {
+              padding: 20px;
+              text-align: center;
+              background: #ffffff;
+            }
+            .event-title {
+              font-size: 17px;
+              font-weight: 900;
+              color: #0f172a;
+              line-height: 1.3;
+              margin-bottom: 6px;
+            }
+            .tier-tag {
+              display: inline-block;
+              background: #f1f5f9 !important;
+              color: #0f766e !important;
+              border: 1px solid #cbd5e1;
+              padding: 3px 12px;
+              border-radius: 999px;
+              font-size: 11px;
+              font-weight: 800;
+              margin-bottom: 14px;
+            }
+            .qr-wrapper {
+              display: inline-block;
+              padding: 12px;
+              border: 2px dashed #0f766e;
+              border-radius: 16px;
+              margin-bottom: 14px;
+              background: #ffffff;
+            }
+            .qr-img {
+              width: 175px;
+              height: 175px;
+              display: block;
+              margin: 0 auto;
+              object-fit: contain;
+              image-rendering: pixelated;
+            }
+            .ticket-code-bar {
+              background: #f8fafc !important;
+              border: 1px solid #e2e8f0;
+              padding: 8px 14px;
+              border-radius: 12px;
+              font-family: monospace;
+              font-size: 13px;
+              font-weight: 800;
+              color: #0f766e;
+              margin-bottom: 14px;
+            }
+            .details-box {
+              background: #f8fafc !important;
+              border: 1px solid #e2e8f0;
+              border-radius: 14px;
+              padding: 10px 14px;
+              text-align: left;
+              font-size: 11px;
+              line-height: 1.5;
+              color: #334155;
+            }
+            .details-box strong {
+              color: #0f172a;
+            }
+            .pass-footer {
+              padding: 10px;
+              background: #f8fafc !important;
+              border-top: 1px solid #e2e8f0;
+              font-size: 10px;
+              color: #64748b;
+              font-weight: 600;
+              text-align: center;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="pass-card">
+            <div class="pass-header">
+              <div>
+                <h3>Official Gate Entry Pass</h3>
+                <p>Instant Check-in Ready</p>
+              </div>
+              <span class="verified-badge">VERIFIED</span>
+            </div>
+
+            <div class="pass-body">
+              <h2 class="event-title">${ticket.eventTitle}</h2>
+              <span class="tier-tag">${ticket.ticketTierName}</span>
+
+              <div>
+                <div class="qr-wrapper">
+                  <img id="print-qr-code" class="qr-img" src="${qrDataUrl}" alt="Ticket Gate QR Code" />
+                </div>
+              </div>
+
+              <div class="ticket-code-bar">
+                ${ticket.ticketCode}
+              </div>
+
+              <div class="details-box">
+                <p><strong>Attendee:</strong> ${ticket.attendeeName} (${ticket.attendeeEmail})</p>
+                <p><strong>Date & Time:</strong> ${ticket.eventDate || 'Confirmed Event Date'} at ${ticket.eventTime || 'Start Time'}</p>
+                <p><strong>Venue:</strong> ${ticket.venueName || 'Main Arena'}, ${ticket.venueCity || ''}</p>
+              </div>
+            </div>
+
+            <div class="pass-footer">
+              256-Bit Encrypted Gate Pass • Verified by ePayEvents
+            </div>
+          </div>
+        </body>
+      </html>
+    `);
+    doc.close();
+
+    const printImg = doc.getElementById('print-qr-code') as HTMLImageElement | null;
+    const triggerPrint = () => {
+      setTimeout(() => {
+        iframe.contentWindow?.focus();
+        iframe.contentWindow?.print();
+      }, 150);
+    };
+
+    if (printImg && !printImg.complete) {
+      printImg.onload = triggerPrint;
+      printImg.onerror = triggerPrint;
+    } else {
+      triggerPrint();
+    }
   };
 
   const handleConfirmCancellation = async () => {
@@ -268,7 +515,9 @@ export default function MyTicketsPage() {
 
         setActionAlert({
           type: 'success',
-          message: 'Your pass has been cancelled and a refund request has been logged with the organizer.',
+          message: json.waitlistAlert
+            ? `Your pass has been cancelled and refund initiated. Next attendee in line on the waitlist (${json.waitlistAlert.attendeeName}) was automatically notified!`
+            : 'Your pass has been cancelled and a refund request has been logged with the organizer.',
         });
 
         setCancellingTicket(null);
@@ -686,6 +935,28 @@ export default function MyTicketsPage() {
                       <span className="hidden sm:inline">Print Pass</span>
                     </button>
 
+                    {/* Digital Certificate of Attendance Button (Visible for Checked-In attendees) */}
+                    {isCheckedIn && (
+                      <button
+                        type="button"
+                        onClick={() => setActiveCertificate({
+                          ticketCode: tkt.ticketCode,
+                          attendeeName: tkt.attendeeName,
+                          eventTitle: tkt.eventTitle,
+                          eventDate: tkt.eventDate,
+                          venueName: tkt.venueName,
+                          venueCity: tkt.venueCity,
+                          ticketTierName: tkt.ticketTierName,
+                          checkedInAt: tkt.checkedInAt,
+                        })}
+                        className="rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 text-amber-900 py-2.5 px-3.5 text-xs font-extrabold shadow-xs transition flex items-center justify-center gap-1.5"
+                        title="View & Download Official Digital Certificate of Attendance"
+                      >
+                        <Award className="h-4 w-4 text-amber-600" />
+                        <span>Get Certificate</span>
+                      </button>
+                    )}
+
                     {/* Cancel & Refund Button (Only for valid passes) */}
                     {!isCancelled && !isCheckedIn && (
                       <button
@@ -793,7 +1064,7 @@ export default function MyTicketsPage() {
                 </div>
 
                 {/* Scannable QR Code */}
-                <div className="p-4 bg-white rounded-2xl border-2 border-dashed border-teal-500/40 inline-block shadow-inner">
+                <div id="selected-ticket-qr-box" className="p-4 bg-white rounded-2xl border-2 border-dashed border-teal-500/40 inline-block shadow-inner">
                   <QRCodeImage
                     value={selectedTicket.qrPayload || selectedTicket.ticketCode}
                     size={192}
@@ -841,19 +1112,17 @@ export default function MyTicketsPage() {
               <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center gap-3">
                 <button
                   type="button"
-                  onClick={() => {
-                    if (typeof window !== 'undefined') window.print();
-                  }}
-                  className="flex-1 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 font-bold text-xs text-slate-800 transition flex items-center justify-center gap-1.5"
+                  onClick={() => handlePrintTicket(selectedTicket)}
+                  className="flex-1 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 font-bold text-xs text-slate-800 transition flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <Printer className="h-4 w-4" />
-                  <span>Print / Save PDF</span>
+                  <span>Print / Save PDF (1 Page)</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedTicket(null)}
-                  className="flex-1 py-2.5 rounded-xl bg-[#0F766E] hover:bg-[#115E59] font-bold text-xs text-white transition shadow-sm"
+                  className="flex-1 py-2.5 rounded-xl bg-[#0F766E] hover:bg-[#115E59] font-bold text-xs text-white transition shadow-sm cursor-pointer"
                 >
                   Done
                 </button>
@@ -961,6 +1230,12 @@ export default function MyTicketsPage() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Digital Certificate of Attendance Modal */}
+      <DigitalCertificateModal
+        certificate={activeCertificate}
+        onClose={() => setActiveCertificate(null)}
+      />
 
       <Footer />
     </div>

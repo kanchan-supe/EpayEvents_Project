@@ -130,24 +130,68 @@ export default function QRScannerPage() {
 
   // Fetch organizer events for gate filtering
   useEffect(() => {
+    if (!user) return;
+
     async function loadEvents() {
       try {
-        const res = await fetch('/api/events');
+        const queryParams = new URLSearchParams();
+        if (user?.id) queryParams.set('organizerId', user.id);
+        if (user?.email) queryParams.set('organizerEmail', user.email);
+
+        const res = await fetch(`/api/events?${queryParams.toString()}`);
         const json = await res.json();
+        const staticIds = new Set([
+          'evt_9f3k2', 'evt-101', 'evt-102', 'evt-104', 'evt-105', 'evt-106',
+          'evt-107', 'evt-108', 'evt-109', 'evt-110', 'evt-small-local-01',
+          'evt-party-01', 'evt-fashion-01', 'evt-matrimony-01', 'evt-comedy-01',
+          'evt-spiritual-01', 'evt-sports-01', 'evt-food-01', 'evt-charity-01',
+          'evt-shopping-01', 'evt-family-01', 'evt-wedding-01', 'evt-past-1',
+          'evt-past-2', 'evt-past-3'
+        ]);
+
+        const isOwner = (ev: any) => {
+          if (!ev || staticIds.has(ev.id) || staticIds.has(ev.slug)) return false;
+          const uid = user?.id;
+          const email = user?.email?.toLowerCase().trim();
+          if (uid && (ev.organizerId === uid || ev.organizer_id === uid || ev.userId === uid || ev.organization?.id === uid || ev.organizer?.id === uid)) return true;
+          if (email) {
+            const orgEmail = (ev.organizerEmail || ev.organization?.contactEmail || ev.organizer?.email)?.toLowerCase().trim();
+            if (orgEmail && orgEmail === email) return true;
+          }
+          return false;
+        };
+
+        const map = new Map<string, any>();
         if (json.success && Array.isArray(json.data)) {
-          setEventsList(json.data.map((e: any) => ({
-            id: e.id,
-            title: e.title,
-            slug: e.slug,
-            date: e.date || e.startDate,
-          })));
+          json.data.filter(isOwner).forEach((e: any) => {
+            const key = e.id || e.slug;
+            map.set(key, { id: e.id, title: e.title, slug: e.slug, date: e.date || e.startDate });
+          });
         }
+
+        // Overlay local events from localStorage for this user
+        try {
+          const stored = localStorage.getItem('epay_persisted_events');
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (typeof parsed === 'object' && parsed !== null) {
+              Object.values(parsed).forEach((localEv: any) => {
+                if (localEv && isOwner(localEv)) {
+                  const key = localEv.id || localEv.slug;
+                  map.set(key, { id: localEv.id, title: localEv.title, slug: localEv.slug, date: localEv.date || localEv.startDate });
+                }
+              });
+            }
+          }
+        } catch {}
+
+        setEventsList(Array.from(map.values()));
       } catch (err) {
         console.warn('Failed to load events for scanner:', err);
       }
     }
     loadEvents();
-  }, []);
+  }, [user]);
 
   // Auth Protection
   useEffect(() => {
@@ -672,7 +716,9 @@ export default function QRScannerPage() {
                   onChange={e => setSelectedEventId(e.target.value)}
                   className="w-full bg-slate-950 border border-slate-700 hover:border-emerald-500 text-white text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition cursor-pointer appearance-none pr-7"
                 >
-                  <option value="all">🌐 All My Published Events (Auto-Detect)</option>
+                  <option value="all">
+                    {eventsList.length === 0 ? '⚠️ No events hosted yet (Host an event first)' : '🌐 All My Published Events (Auto-Detect)'}
+                  </option>
                   {eventsList.map(ev => (
                     <option key={ev.id} value={ev.id}>
                       🎯 {ev.title} {ev.date ? `(${ev.date})` : ''}

@@ -9,6 +9,8 @@ import {
   RegistrationPayload
 } from '@/lib/repositories/orderRepository';
 import { createInquiry } from '@/lib/repositories/inquiryRepository';
+import { notifyNextInLine } from '@/lib/repositories/waitlistRepository';
+import { recordReferralConversion } from '@/lib/repositories/promotionsRepository';
 
 export const dynamic = 'force-dynamic';
 
@@ -123,9 +125,32 @@ export async function POST(request: NextRequest) {
         }
       }
 
+      // Automatically alert the next person in line on the waitlist!
+      let waitlistAlert: any = null;
+      if (eventId) {
+        try {
+          const waitlistResult = await notifyNextInLine({
+            eventId,
+            eventTitle,
+          });
+          if (waitlistResult.notified && waitlistResult.entry) {
+            waitlistAlert = {
+              notified: true,
+              attendeeName: waitlistResult.entry.userName,
+              attendeeEmail: waitlistResult.entry.userEmail,
+              tierName: waitlistResult.entry.ticketTierName,
+              message: waitlistResult.message,
+            };
+          }
+        } catch (wErr) {
+          console.warn('[orders API] Waitlist auto-notification notice:', wErr);
+        }
+      }
+
       return NextResponse.json({
         success: true,
         message: cancelResult.message,
+        waitlistAlert,
       });
     }
 
@@ -212,6 +237,16 @@ export async function POST(request: NextRequest) {
     };
 
     const result = await saveOrderAndRegistration(orderPayload, registrationPayload);
+
+    // If order was referred by an affiliate link, log conversion metrics
+    const referralCode = body.referralCode || undefined;
+    if (referralCode) {
+      try {
+        await recordReferralConversion(referralCode, Number(total) || 0, Number(discountAmount) || 0);
+      } catch (refErr) {
+        console.warn('[orders API] Referral tracking notice:', refErr);
+      }
+    }
 
     return NextResponse.json({
       success: true,

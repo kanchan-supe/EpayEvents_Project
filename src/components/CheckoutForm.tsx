@@ -8,8 +8,19 @@ import {
   Users, Clock, Key, AlertCircle, ArrowRightLeft, Undo2, Award
 } from 'lucide-react';
 import { EventItem } from '@/lib/types';
+import { VenueSeatingLayout } from '@/components/VenueSeatingLayout';
 
-export function CheckoutForm({ event, initialTicketId }: { event: EventItem; initialTicketId?: string }) {
+export function CheckoutForm({ 
+  event, 
+  initialTicketId,
+  initialCouponCode = '',
+  initialReferralCode = '',
+}: { 
+  event: EventItem; 
+  initialTicketId?: string;
+  initialCouponCode?: string;
+  initialReferralCode?: string;
+}) {
   const router = useRouter();
   const { user, profile } = useAuth();
 
@@ -18,13 +29,47 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
   const [passcodeInput, setPasscodeInput] = useState('');
   const [passcodeError, setPasscodeError] = useState('');
 
+  // Synchronize event with latest localStorage edits (for freshly created/published events)
+  const [currentEvent, setCurrentEvent] = useState<EventItem>(() => {
+    let active = event;
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('epay_persisted_events');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          const normSlug = (event.slug || '').toLowerCase().trim();
+          const normId = (event.id || '').toLowerCase().trim();
+          let edited = parsed[event.id] || parsed[event.slug];
+          if (!edited && typeof parsed === 'object') {
+            edited = Object.values(parsed).find((item: any) => 
+              (item.slug && item.slug.toLowerCase().trim() === normSlug) ||
+              (item.id && String(item.id).toLowerCase().trim() === normId) ||
+              (item.title && item.title.toLowerCase().trim() === event.title?.toLowerCase().trim())
+            );
+          }
+          if (edited) {
+            active = { ...event, ...edited };
+          }
+        }
+      } catch (e) {
+        console.warn('[CheckoutForm] localStorage error:', e);
+      }
+    }
+    return active;
+  });
+
   // Per-tier quantity state: Record<ticketId, quantity>
   const [ticketQuantities, setTicketQuantities] = useState<Record<string, number>>(() => {
     const initialMap: Record<string, number> = {};
-    event.ticketTypes.forEach(t => {
+    const tTypes = (currentEvent.ticketTypes && currentEvent.ticketTypes.length > 0)
+      ? currentEvent.ticketTypes
+      : (event.ticketTypes && event.ticketTypes.length > 0)
+      ? event.ticketTypes
+      : [];
+    tTypes.forEach(t => {
       // Don't auto-select hidden or waitlist tickets
       if (!t.isHidden && !t.isWaitlist) {
-        initialMap[t.id] = t.id === (initialTicketId || event.ticketTypes[0]?.id) ? 1 : 0;
+        initialMap[t.id] = t.id === (initialTicketId || tTypes[0]?.id) ? 1 : 0;
       } else {
         initialMap[t.id] = 0;
       }
@@ -39,10 +84,50 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
   const [enableTransferProtection, setEnableTransferProtection] = useState(true);
   const [enableRefundGuarantee, setEnableRefundGuarantee] = useState(true);
 
-  // Promo code & discounts
-  const [couponCode, setCouponCode] = useState<string>('');
+  // Referral & Promo code & discounts
+  const [couponCode, setCouponCode] = useState<string>(initialCouponCode || initialReferralCode || '');
+  const [referralCode, setReferralCode] = useState<string>(initialReferralCode || '');
   const [appliedDiscount, setAppliedDiscount] = useState<number>(0);
+  const [referralInfo, setReferralInfo] = useState<{ affiliateName?: string; discountPercent: number } | null>(null);
   const [couponMsg, setCouponMsg] = useState<{ text: string; isError: boolean } | null>(null);
+
+  // Auto-apply referral link discount if passed
+  React.useEffect(() => {
+    const activeRef = initialReferralCode;
+    if (activeRef) {
+      setReferralCode(activeRef);
+      fetch(`/api/promotions?action=get_ref&code=${encodeURIComponent(activeRef)}`)
+        .then(res => res.json())
+        .then(json => {
+          if (json.success && json.data) {
+            const r = json.data;
+            if (r.discountPercent > 0) {
+              setAppliedDiscount(r.discountPercent);
+              setReferralInfo({ affiliateName: r.affiliateName, discountPercent: r.discountPercent });
+              setCouponMsg({
+                text: `Referral Link Applied! ${r.discountPercent}% Discount granted by ${r.affiliateName}.`,
+                isError: false,
+              });
+            }
+          }
+        })
+        .catch(err => console.warn('Referral fetch error:', err));
+    } else if (initialCouponCode) {
+      // Auto-validate initial coupon
+      fetch(`/api/promotions?action=validate&code=${encodeURIComponent(initialCouponCode)}&eventId=${encodeURIComponent(event.id)}`)
+        .then(res => res.json())
+        .then(json => {
+          if (json.success && json.discountPercent !== undefined) {
+            setAppliedDiscount(json.discountPercent);
+            setCouponMsg({ text: `Promo code ${initialCouponCode} applied! (${json.discountPercent}% OFF)`, isError: false });
+          }
+        })
+        .catch(() => {});
+    }
+  }, [initialReferralCode, initialCouponCode, event.id]);
+
+  // Live Seat Selection State
+  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
 
   // Attendee Form Fields
   const [buyerName, setBuyerName] = useState('');
@@ -112,12 +197,36 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
     });
   };
 
-  const handleApplyCoupon = (e: React.FormEvent) => {
+  const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
     const code = couponCode.trim().toUpperCase();
-    if (code === 'EPAY20') {
+    if (!code) return;
+
+    try {
+      const res = await fetch(`/api/promotions?action=validate&code=${encodeURIComponent(code)}&eventId=${encodeURIComponent(event.id)}&subtotal=${subtotal}`);
+      const json = await res.json();
+      if (json.success && (json.discountPercent !== undefined || json.fixedDiscount !== undefined)) {
+        const pct = json.discountPercent || (json.fixedDiscount && subtotal > 0 ? Math.round((json.fixedDiscount / subtotal) * 100) : 0);
+        setAppliedDiscount(pct);
+        setCouponMsg({ 
+          text: json.fixedDiscount 
+            ? `Discount code ${code} applied! (₹${json.fixedDiscount} FLAT OFF)` 
+            : `Promo code ${code} applied! (${pct}% OFF)`, 
+          isError: false 
+        });
+        return;
+      } else if (json.error) {
+        setCouponMsg({ text: json.error, isError: true });
+        return;
+      }
+    } catch (e) {
+      console.warn('Online promo verification failed, testing local fallback:', e);
+    }
+
+    // Static local fallbacks
+    if (code === 'EARLYBIRD20' || code === 'EPAY20') {
       setAppliedDiscount(20);
-      setCouponMsg({ text: 'Promo code EPAY20 applied! (20% OFF)', isError: false });
+      setCouponMsg({ text: `Promo code ${code} applied! (20% OFF)`, isError: false });
     } else if (code === 'EARLYDEV' || code === 'EARLYBIRD') {
       setAppliedDiscount(15);
       setCouponMsg({ text: 'Early Bird Code Applied! (15% OFF)', isError: false });
@@ -125,7 +234,7 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
       setAppliedDiscount(100);
       setCouponMsg({ text: 'VIP Complimentary 100% OFF code applied!', isError: false });
     } else {
-      setCouponMsg({ text: 'Invalid promo code. Try "EPAY20" or "EARLYDEV"', isError: true });
+      setCouponMsg({ text: 'Invalid or expired promo code.', isError: true });
     }
   };
 
@@ -216,6 +325,23 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
           qrPayload: secureQrPayload,
         }
       );
+
+      // Track referral conversion with API
+      if (referralCode) {
+        fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            eventId: event.id,
+            eventTitle: event.title,
+            buyerName,
+            buyerEmail,
+            total,
+            discountAmount: (subtotal * appliedDiscount) / 100,
+            referralCode,
+          }),
+        }).catch(() => {});
+      }
     } catch (err) {
       console.warn('Could not save order:', err);
     }
@@ -238,6 +364,7 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
         transferrable: enableTransferProtection ? 'yes' : 'no',
         refundable: enableRefundGuarantee ? 'yes' : 'no',
         approvalRequired: activeSelectedTier?.isApprovalRequired ? 'yes' : 'no',
+        seats: selectedSeats.length > 0 ? selectedSeats.join(',') : '',
       });
 
       router.push(`/order-success?${queryParams.toString()}`);
@@ -513,6 +640,17 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
             </div>
           </div>
 
+          {/* Live Seat Selection / Venue Seating Layout */}
+          {totalTicketsSelected > 0 && (
+            <VenueSeatingLayout
+              requiredSeatsCount={totalTicketsSelected}
+              selectedSeats={selectedSeats}
+              onSeatSelect={setSelectedSeats}
+              eventTitle={event.title}
+              venueName={event.venue?.name}
+            />
+          )}
+
           {/* Ticket Transfer & Refund Policy Protection Options */}
           <div className="bg-white p-6 rounded-2xl border border-[#E7E5E4] shadow-sm space-y-3">
             <h3 className="font-bold text-[#1C1917] text-sm flex items-center gap-2">
@@ -639,6 +777,23 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
               <p className="text-xs text-amber-600 font-medium italic">No pass selected. Increase ticket count above.</p>
             )}
 
+            {/* Selected Seats summary tag */}
+            {selectedSeats.length > 0 && (
+              <div className="bg-teal-50 border border-teal-200/80 p-2.5 rounded-xl text-xs space-y-1">
+                <div className="flex items-center justify-between text-[#0F766E] font-bold">
+                  <span>Reserved Seats:</span>
+                  <span className="font-mono text-[11px]">{selectedSeats.length} Seat{selectedSeats.length > 1 ? 's' : ''}</span>
+                </div>
+                <div className="flex flex-wrap gap-1 pt-0.5">
+                  {selectedSeats.map(s => (
+                    <span key={s} className="px-1.5 py-0.5 rounded bg-white text-[#0F766E] border border-teal-300 font-mono text-[10px] font-bold">
+                      {s.replace('VIP-', '').replace('PREM-', '').replace('STD-', '')}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {groupDiscountAmount > 0 && (
               <div className="flex justify-between text-[#059669] font-medium text-xs bg-emerald-50 p-2 rounded-lg">
                 <span>Group Booking Discount (4+)</span>
@@ -648,7 +803,7 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
 
             {couponDiscountAmount > 0 && (
               <div className="flex justify-between text-[#059669] font-medium text-xs bg-emerald-50 p-2 rounded-lg">
-                <span>Promo Code ({appliedDiscount}%)</span>
+                <span>{referralInfo ? `Referral Discount (${appliedDiscount}%)` : `Promo Code (${appliedDiscount}%)`}</span>
                 <span>-₹{couponDiscountAmount.toLocaleString()}</span>
               </div>
             )}
@@ -671,32 +826,90 @@ export function CheckoutForm({ event, initialTicketId }: { event: EventItem; ini
             </div>
           </div>
 
-          {/* Coupon / Promo Code Input Box */}
-          <div className="pt-4 border-t border-[#E7E5E4]">
-            <label className="block text-xs font-semibold text-[#1C1917] mb-1 flex items-center gap-1">
-              <Tag className="h-3.5 w-3.5 text-[#0F766E]" /> Coupon / Promo Code
-            </label>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={couponCode}
-                onChange={e => setCouponCode(e.target.value)}
-                placeholder="EPAY20 or EARLYDEV"
-                className="flex-1 uppercase rounded-lg border border-[#E7E5E4] px-3 py-1.5 text-xs font-semibold focus:outline-none text-[#1C1917]"
-              />
-              <button
-                type="button"
-                onClick={handleApplyCoupon}
-                className="rounded-lg bg-[#1E293B] text-white px-3 py-1.5 text-xs font-semibold hover:bg-slate-800 transition"
-              >
-                Apply
-              </button>
+          {/* Promo / Coupon Code Section */}
+          <div className="pt-4 border-t border-slate-200">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-3.5 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                  <Tag className="h-3.5 w-3.5 text-[#0F766E]" />
+                  Have a Coupon or Promo Code?
+                </span>
+                {appliedDiscount > 0 && (
+                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                    {appliedDiscount}% Applied
+                  </span>
+                )}
+              </div>
+
+              {/* Single clean merged input with inside button */}
+              <div className="relative flex items-center">
+                <input
+                  type="text"
+                  value={couponCode}
+                  onChange={e => setCouponCode(e.target.value)}
+                  placeholder="Enter code (e.g. EARLYBIRD20)"
+                  className="w-full rounded-xl border border-slate-300 bg-white pl-3.5 pr-20 py-2.5 text-xs font-mono font-bold uppercase tracking-wider placeholder:normal-case placeholder:font-sans placeholder:font-normal placeholder:text-slate-400 focus:outline-none focus:border-[#0F766E] focus:ring-2 focus:ring-[#0F766E]/20 text-slate-900 shadow-2xs"
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyCoupon}
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-lg bg-[#0F766E] hover:bg-[#115E59] text-white px-3.5 py-1.5 text-xs font-bold transition shadow-xs cursor-pointer active:scale-95"
+                >
+                  Apply
+                </button>
+              </div>
+
+              {/* Suggestions row - clean horizontal wrapping pills */}
+              {!appliedDiscount && (
+                <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                  <span className="text-[11px] text-slate-400 font-medium">Try:</span>
+                  {['EARLYBIRD20', 'EPAY20'].map((code) => (
+                    <button
+                      key={code}
+                      type="button"
+                      onClick={() => {
+                        setCouponCode(code);
+                        setAppliedDiscount(20);
+                        setCouponMsg({ text: `Promo code ${code} applied! (20% OFF)`, isError: false });
+                      }}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-emerald-500 hover:text-emerald-700 transition text-[11px] font-bold cursor-pointer shadow-2xs active:scale-95 group"
+                    >
+                      <span className="font-mono text-emerald-700 group-hover:underline">{code}</span>
+                      <span className="text-[10px] font-extrabold text-white bg-[#0F766E] px-1.5 py-0.2 rounded">
+                        20% OFF
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Status message banner */}
+              {couponMsg && (
+                <div className={`text-xs p-2.5 rounded-xl border flex items-center justify-between gap-2 ${
+                  couponMsg.isError 
+                    ? 'text-red-700 bg-red-50 border-red-200' 
+                    : 'text-emerald-800 bg-emerald-50 border-emerald-200 font-semibold shadow-2xs'
+                }`}>
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Sparkles className={`h-3.5 w-3.5 shrink-0 ${couponMsg.isError ? 'text-red-500' : 'text-emerald-600'}`} />
+                    <span className="truncate">{couponMsg.text}</span>
+                  </div>
+                  {!couponMsg.isError && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCouponCode('');
+                        setAppliedDiscount(0);
+                        setCouponMsg(null);
+                      }}
+                      className="text-[11px] text-emerald-800 underline font-bold cursor-pointer hover:text-emerald-950 shrink-0"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
-            {couponMsg && (
-              <p className={`text-[11px] mt-1.5 ${couponMsg.isError ? 'text-red-500' : 'text-[#059669] font-medium'}`}>
-                {couponMsg.text}
-              </p>
-            )}
           </div>
         </div>
       </div>

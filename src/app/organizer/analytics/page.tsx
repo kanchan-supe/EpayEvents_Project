@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { getAllEvents } from '@/lib/data';
+import { useAuth } from '@/context/AuthContext';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -179,6 +180,7 @@ const baselineMockRegistrations: RegistrationItem[] = [
 ];
 
 export default function OrganizerAnalyticsPage() {
+  const { user } = useAuth();
   const [eventsList, setEventsList] = useState<any[]>([]);
   const [selectedEventId, setSelectedEventId] = useState<string>('all');
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | 'all'>('30d');
@@ -191,25 +193,75 @@ export default function OrganizerAnalyticsPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [tierFilter, setTierFilter] = useState<string>('all');
 
-  // Load events
+  // Load events strictly belonging to the current organizer
   useEffect(() => {
-    let list = getAllEvents().filter(e => e.status === 'published');
-    if (typeof window !== 'undefined') {
+    if (!user) {
+      setEventsList([]);
+      return;
+    }
+
+    async function loadEvents() {
       try {
-        const stored = localStorage.getItem('epay_persisted_events');
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          list = list.map(ev => {
-            const edited = (typeof parsed === 'object' && parsed !== null) ? (parsed[ev.id] || parsed[ev.slug]) : null;
-            return edited ? { ...ev, ...edited } : ev;
+        const queryParams = new URLSearchParams();
+        if (user?.id) queryParams.set('organizerId', user.id);
+        if (user?.email) queryParams.set('organizerEmail', user.email);
+
+        const res = await fetch(`/api/events?${queryParams.toString()}`);
+        const json = await res.json();
+
+        const staticIds = new Set([
+          'evt_9f3k2', 'evt-101', 'evt-102', 'evt-104', 'evt-105', 'evt-106',
+          'evt-107', 'evt-108', 'evt-109', 'evt-110', 'evt-small-local-01',
+          'evt-party-01', 'evt-fashion-01', 'evt-matrimony-01', 'evt-comedy-01',
+          'evt-spiritual-01', 'evt-sports-01', 'evt-food-01', 'evt-charity-01',
+          'evt-shopping-01', 'evt-family-01', 'evt-wedding-01', 'evt-past-1',
+          'evt-past-2', 'evt-past-3'
+        ]);
+
+        const isOwner = (ev: any) => {
+          if (!ev || staticIds.has(ev.id) || staticIds.has(ev.slug)) return false;
+          const uid = user?.id;
+          const email = user?.email?.toLowerCase().trim();
+          if (uid && (ev.organizerId === uid || ev.organizer_id === uid || ev.userId === uid || ev.organization?.id === uid || ev.organizer?.id === uid)) return true;
+          if (email) {
+            const orgEmail = (ev.organizerEmail || ev.organization?.contactEmail || ev.organizer?.email)?.toLowerCase().trim();
+            if (orgEmail && orgEmail === email) return true;
+          }
+          return false;
+        };
+
+        const map = new Map<string, any>();
+        if (json.success && Array.isArray(json.data)) {
+          json.data.filter(isOwner).forEach((e: any) => {
+            const key = e.id || e.slug;
+            map.set(key, e);
           });
         }
-      } catch (e) {
-        console.warn('Storage check:', e);
+
+        // Overlay local events from localStorage for this user
+        try {
+          const stored = localStorage.getItem('epay_persisted_events');
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (typeof parsed === 'object' && parsed !== null) {
+              Object.values(parsed).forEach((localEv: any) => {
+                if (localEv && isOwner(localEv)) {
+                  const key = localEv.id || localEv.slug;
+                  map.set(key, localEv);
+                }
+              });
+            }
+          }
+        } catch {}
+
+        setEventsList(Array.from(map.values()));
+      } catch (err) {
+        console.warn('[Analytics] Failed loading organizer events:', err);
       }
     }
-    setEventsList(list);
-  }, []);
+
+    loadEvents();
+  }, [user]);
 
   // Fetch live orders & registrations from API
   const fetchMetrics = React.useCallback(async () => {
@@ -231,9 +283,27 @@ export default function OrganizerAnalyticsPage() {
     fetchMetrics();
   }, [fetchMetrics]);
 
-  // Combine live registrations with baseline mock registrations
+  // Set of keys (ID, slug, title) belonging to THIS organizer's hosted events
+  const myEventKeySet = useMemo(() => {
+    const set = new Set<string>();
+    eventsList.forEach(ev => {
+      if (ev.id) set.add(String(ev.id).toLowerCase());
+      if (ev.slug) set.add(String(ev.slug).toLowerCase());
+      if (ev.title) set.add(String(ev.title).toLowerCase().trim());
+    });
+    return set;
+  }, [eventsList]);
+
+  // Registrations strictly for this organizer's hosted events (no previous organizer data!)
   const allRegistrations: RegistrationItem[] = useMemo(() => {
-    const formattedLive: RegistrationItem[] = liveRegistrations.map(r => ({
+    if (eventsList.length === 0) return [];
+    const myLive = liveRegistrations.filter(r => {
+      const matchId = r.eventId && myEventKeySet.has(String(r.eventId).toLowerCase());
+      const matchTitle = r.eventTitle && myEventKeySet.has(String(r.eventTitle).toLowerCase().trim());
+      return matchId || matchTitle;
+    });
+
+    return myLive.map(r => ({
       id: r.id || r.ticketCode,
       orderId: r.orderId || 'ORD-LIVE',
       ticketCode: r.ticketCode || r.id,
@@ -250,9 +320,7 @@ export default function OrganizerAnalyticsPage() {
       customResponses: r.customResponses || {},
       isLive: true,
     }));
-
-    return [...formattedLive, ...baselineMockRegistrations];
-  }, [liveRegistrations]);
+  }, [liveRegistrations, eventsList.length, myEventKeySet]);
 
   // Filter registrations by selected event
   const scopedRegistrations = useMemo(() => {
@@ -635,301 +703,385 @@ export default function OrganizerAnalyticsPage() {
           </motion.div>
         </motion.div>
 
-        {/* Charts Section: Velocity Chart & Tier Breakdown with Framer Motion */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10 items-start">
-          {/* Left Column (2 cols): Bar Chart + Gate Rush Heatmap */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Daily Registration Velocity Chart - Gaming Arcade Style in Clean White Container */}
+        {/* Section 1: Top Row - Pass Velocity (2 cols) & Tier Sales Breakdown (1 col) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+          {/* Daily Registration Velocity Chart (2 cols) */}
+          <div className="lg:col-span-2">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
               whileHover={{ y: -2, transition: { duration: 0.2 } }}
-              className="relative overflow-hidden rounded-3xl bg-white border border-slate-200/90 shadow-sm p-5 md:p-6 space-y-4"
+              className="relative overflow-hidden rounded-3xl bg-white border border-slate-200/90 shadow-sm p-5 md:p-6 space-y-4 h-full flex flex-col justify-between"
             >
-            {/* Header HUD */}
-            <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-3.5">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest bg-gradient-to-r from-[#0F766E] to-teal-500 text-white flex items-center gap-1 shadow-sm">
-                    <Gamepad2 className="h-2.5 w-2.5" /> XP VELOCITY ENGINE
-                  </span>
-                  <span className="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-300 flex items-center gap-1">
-                    <Flame className="h-2.5 w-2.5 text-amber-500 animate-pulse" /> STREAK: ACTIVE
-                  </span>
-                </div>
-                <h3 className="text-lg md:text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                  <span>Pass Minting Velocity</span>
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-[#F97316]">
-                    [LVL 99]
-                  </span>
-                </h3>
-                <p className="text-xs text-slate-500">Real-time attendee registrations & minting momentum</p>
-              </div>
-
-              {/* HUD Gamer Status Badges */}
-              <div className="flex items-center gap-2 self-stretch sm:self-auto justify-between sm:justify-end">
-                <div className="px-2.5 py-1 rounded-xl bg-teal-50/70 border border-teal-200 text-right">
-                  <span className="text-[8px] uppercase tracking-wider text-teal-700 font-bold block">Session XP</span>
-                  <span className="font-mono text-xs font-black text-[#0F766E] flex items-center gap-1">
-                    <Zap className="h-3 w-3 text-teal-600" /> +{totalVelocitySum * 250} XP
-                  </span>
-                </div>
-                <div className="px-2.5 py-1 rounded-xl bg-orange-50 border border-orange-200 text-right">
-                  <span className="text-[8px] uppercase tracking-wider text-orange-700 font-bold block">Top Peak</span>
-                  <span className="font-mono text-xs font-black text-[#F97316] flex items-center gap-1">
-                    <Trophy className="h-3 w-3" /> {Math.max(...velocityData.map(v => v.count), 0)} Passes
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Gamer Chart Area with Proper Y-Axis Levels & Compact Height */}
-            <div className="relative z-10 pt-1">
-              <div className="flex gap-2.5">
-                {/* Y-Axis Value Labels */}
-                <div className="flex flex-col justify-between text-right font-mono text-[10px] font-bold text-slate-400 h-52 pb-7 pr-1 select-none">
-                  {yAxisSteps.map((val, idx) => (
-                    <span key={idx} className="flex items-center justify-end gap-1">
-                      <span>{val}</span>
-                      <span className="w-1.5 h-[1px] bg-slate-300 inline-block" />
+              {/* Header HUD */}
+              <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-3.5">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest bg-gradient-to-r from-[#0F766E] to-teal-500 text-white flex items-center gap-1 shadow-sm">
+                      <Gamepad2 className="h-2.5 w-2.5" /> XP VELOCITY ENGINE
                     </span>
-                  ))}
+                    <span className="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-300 flex items-center gap-1">
+                      <Flame className="h-2.5 w-2.5 text-amber-500 animate-pulse" /> STREAK: ACTIVE
+                    </span>
+                  </div>
+                  <h3 className="text-lg md:text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+                    <span>Pass Minting Velocity</span>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-[#F97316]">
+                      [LVL 99]
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-500">Real-time attendee registrations & minting momentum</p>
                 </div>
 
-                {/* Main Graph Grid */}
-                <div className="flex-1 relative h-52 pb-7 flex flex-col justify-between">
-                  {/* Horizontal Grid Lines */}
-                  <div className="absolute inset-0 pb-7 flex flex-col justify-between pointer-events-none">
-                    {yAxisSteps.map((_, idx) => (
-                      <div 
-                        key={idx} 
-                        className={`w-full border-b ${
-                          idx === yAxisSteps.length - 1 
-                            ? 'border-teal-500/50' 
-                            : 'border-slate-100 border-dashed'
-                        }`} 
-                      />
+                {/* HUD Gamer Status Badges */}
+                <div className="flex items-center gap-2 self-stretch sm:self-auto justify-between sm:justify-end">
+                  <div className="px-2.5 py-1 rounded-xl bg-teal-50/70 border border-teal-200 text-right">
+                    <span className="text-[8px] uppercase tracking-wider text-teal-700 font-bold block">Session XP</span>
+                    <span className="font-mono text-xs font-black text-[#0F766E] flex items-center gap-1">
+                      <Zap className="h-3 w-3 text-teal-600" /> +{totalVelocitySum * 250} XP
+                    </span>
+                  </div>
+                  <div className="px-2.5 py-1 rounded-xl bg-orange-50 border border-orange-200 text-right">
+                    <span className="text-[8px] uppercase tracking-wider text-orange-700 font-bold block">Top Peak</span>
+                    <span className="font-mono text-xs font-black text-[#F97316] flex items-center gap-1">
+                      <Trophy className="h-3 w-3" /> {Math.max(...velocityData.map(v => v.count), 0)} Passes
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Gamer Chart Area with Proper Y-Axis Levels & Compact Height */}
+              <div className="relative z-10 pt-1">
+                <div className="flex gap-2.5">
+                  {/* Y-Axis Value Labels */}
+                  <div className="flex flex-col justify-between text-right font-mono text-[10px] font-bold text-slate-400 h-52 pb-7 pr-1 select-none">
+                    {yAxisSteps.map((val, idx) => (
+                      <span key={idx} className="flex items-center justify-end gap-1">
+                        <span>{val}</span>
+                        <span className="w-1.5 h-[1px] bg-slate-300 inline-block" />
+                      </span>
                     ))}
                   </div>
 
-                  {/* Vertical Glowing Bars */}
-                  <div className="relative z-10 h-full flex items-end justify-between gap-2 sm:gap-3 px-1">
-                    {velocityData.map((bar, idx) => {
-                      return (
-                        <div key={idx} className="flex-1 flex flex-col items-center group h-full justify-end relative">
-                          {/* Arcade Floating Tooltip on Hover */}
-                          <div className="absolute -top-11 opacity-0 group-hover:opacity-100 transition-all duration-200 transform group-hover:-translate-y-1 bg-slate-900 text-white text-[10px] font-mono py-1 px-2 rounded-lg shadow-lg pointer-events-none whitespace-nowrap z-30 flex flex-col items-center">
-                            <span className="font-bold text-teal-300">{bar.count} Passes Claimed</span>
-                            <span className="text-[9px] text-amber-300 font-bold">{bar.revenue > 0 ? `₹${bar.revenue.toLocaleString('en-IN')}` : 'Free Tier'}</span>
-                            <div className="w-1.5 h-1.5 bg-slate-900 rotate-45 -mb-1 mt-0.5" />
+                  {/* Main Graph Grid */}
+                  <div className="flex-1 relative h-52 pb-7 flex flex-col justify-between">
+                    {/* Horizontal Grid Lines */}
+                    <div className="absolute inset-0 pb-7 flex flex-col justify-between pointer-events-none">
+                      {yAxisSteps.map((_, idx) => (
+                        <div 
+                          key={idx} 
+                          className={`w-full border-b ${
+                            idx === yAxisSteps.length - 1 
+                              ? 'border-teal-500/50' 
+                              : 'border-slate-100 border-dashed'
+                          }`} 
+                        />
+                      ))}
+                    </div>
+
+                    {/* Vertical Glowing Bars */}
+                    <div className="relative z-10 h-full flex items-end justify-between gap-2 sm:gap-3 px-1">
+                      {velocityData.map((bar, idx) => {
+                        return (
+                          <div key={idx} className="flex-1 flex flex-col items-center group h-full justify-end relative">
+                            {/* Arcade Floating Tooltip on Hover */}
+                            <div className="absolute -top-11 opacity-0 group-hover:opacity-100 transition-all duration-200 transform group-hover:-translate-y-1 bg-slate-900 text-white text-[10px] font-mono py-1 px-2 rounded-lg shadow-lg pointer-events-none whitespace-nowrap z-30 flex flex-col items-center">
+                              <span className="font-bold text-teal-300">{bar.count} Passes Claimed</span>
+                              <span className="text-[9px] text-amber-300 font-bold">{bar.revenue > 0 ? `₹${bar.revenue.toLocaleString('en-IN')}` : 'Free Tier'}</span>
+                              <div className="w-1.5 h-1.5 bg-slate-900 rotate-45 -mb-1 mt-0.5" />
+                            </div>
+
+                            {/* Top Peak Neon Trophy indicator */}
+                            {bar.isPeak && (
+                              <motion.div 
+                                initial={{ scale: 0 }}
+                                animate={{ scale: [1, 1.2, 1] }}
+                                transition={{ repeat: Infinity, duration: 2 }}
+                                className="mb-1 text-[#F97316] drop-shadow-sm"
+                              >
+                                <Flame className="h-3.5 w-3.5" />
+                              </motion.div>
+                            )}
+
+                            {/* The Animated Gaming Bar */}
+                            <div className="w-full max-w-[38px] h-full flex items-end justify-center relative">
+                              {/* Ambient Glow behind bar */}
+                              <div 
+                                className={`absolute inset-x-0 bottom-0 rounded-t-lg blur-xs transition-all ${
+                                  bar.isPeak 
+                                    ? 'bg-[#F97316]/30' 
+                                    : 'bg-teal-500/20 group-hover:bg-teal-500/35'
+                                }`}
+                                style={{ height: `${bar.barHeight}%` }}
+                              />
+
+                              {/* Solid Bar Body */}
+                              <motion.div
+                                initial={{ height: 0 }}
+                                animate={{ height: `${bar.barHeight}%` }}
+                                transition={{ duration: 0.6, delay: idx * 0.06, ease: "easeOut" }}
+                                className={`w-full rounded-t-lg relative overflow-hidden transition-all duration-300 border-t-2 ${
+                                  bar.isPeak
+                                    ? 'bg-gradient-to-t from-[#EA580C] via-[#F97316] to-[#FDBA74] border-amber-300 shadow-sm'
+                                    : 'bg-gradient-to-t from-[#0F766E] via-teal-600 to-teal-400 border-teal-200 group-hover:to-teal-300 shadow-sm'
+                                }`}
+                              >
+                                {/* Futuristic Glass/Scanline Overlay inside bar */}
+                                <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.12)_50%)] [background-size:100%_4px] opacity-60 pointer-events-none" />
+                                <div className="absolute top-0 inset-x-0 h-0.5 bg-white/70" />
+
+                                {/* Value text inside bar if tall enough */}
+                                {bar.count > 0 && (
+                                  <div className="absolute top-1 inset-x-0 text-center font-mono text-[9px] font-black text-white drop-shadow">
+                                    {bar.count}
+                                  </div>
+                                )}
+                              </motion.div>
+                            </div>
+
+                            {/* Bottom X-Axis Date Badge */}
+                            <div className="absolute -bottom-6 text-center w-full">
+                              <span className="font-mono text-[9px] font-bold text-slate-600 group-hover:text-teal-700 transition-colors block">
+                                {bar.dayName}
+                              </span>
+                              <span className="text-[8px] text-slate-400 block -mt-1 font-mono">
+                                {bar.label.split(' ')[1]}
+                              </span>
+                            </div>
                           </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
 
-                          {/* Top Peak Neon Trophy indicator */}
-                          {bar.isPeak && (
-                            <motion.div 
-                              initial={{ scale: 0 }}
-                              animate={{ scale: [1, 1.2, 1] }}
-                              transition={{ repeat: Infinity, duration: 2 }}
-                              className="mb-1 text-[#F97316] drop-shadow-sm"
-                            >
-                              <Flame className="h-3.5 w-3.5" />
-                            </motion.div>
-                          )}
+                {/* Chart Footer Controller */}
+                <div className="mt-6 pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+                  <div className="flex items-center gap-3">
+                    <span className="flex items-center gap-1.5 text-teal-800 font-mono text-[10px] font-bold">
+                      <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-[#0F766E] to-teal-400 border border-teal-300 inline-block" />
+                      REGULAR PASSES
+                    </span>
+                    <span className="flex items-center gap-1.5 text-orange-800 font-mono text-[10px] font-bold">
+                      <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-[#EA580C] to-[#FDBA74] border border-amber-300 inline-block" />
+                      PEAK ACCELERATION
+                    </span>
+                  </div>
 
-                          {/* The Animated Gaming Bar */}
-                          <div className="w-full max-w-[38px] h-full flex items-end justify-center relative">
-                            {/* Ambient Glow behind bar */}
-                            <div 
-                              className={`absolute inset-x-0 bottom-0 rounded-t-lg blur-xs transition-all ${
-                                bar.isPeak 
-                                  ? 'bg-[#F97316]/30' 
-                                  : 'bg-teal-500/20 group-hover:bg-teal-500/35'
-                              }`}
-                              style={{ height: `${bar.barHeight}%` }}
-                            />
+                  <div className="flex items-center gap-1.5 font-mono text-[10px] text-slate-400">
+                    <Crosshair className="h-3 w-3 text-teal-600" />
+                    <span>HUD STATUS: SYNCHRONIZED</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
 
-                            {/* Solid Bar Body */}
-                            <motion.div
-                              initial={{ height: 0 }}
-                              animate={{ height: `${bar.barHeight}%` }}
-                              transition={{ duration: 0.6, delay: idx * 0.06, ease: "easeOut" }}
-                              className={`w-full rounded-t-lg relative overflow-hidden transition-all duration-300 border-t-2 ${
-                                bar.isPeak
-                                  ? 'bg-gradient-to-t from-[#EA580C] via-[#F97316] to-[#FDBA74] border-amber-300 shadow-sm'
-                                  : 'bg-gradient-to-t from-[#0F766E] via-teal-600 to-teal-400 border-teal-200 group-hover:to-teal-300 shadow-sm'
-                              }`}
-                            >
-                              {/* Futuristic Glass/Scanline Overlay inside bar */}
-                              <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.12)_50%)] [background-size:100%_4px] opacity-60 pointer-events-none" />
-                              <div className="absolute top-0 inset-x-0 h-0.5 bg-white/70" />
+          {/* Tier-by-Tier Sales Breakdown (1 col, side-by-side with Velocity Chart) */}
+          <div className="lg:col-span-1">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              whileHover={{ y: -2, transition: { duration: 0.2 } }}
+              className="bg-white p-5 rounded-3xl border border-slate-200/90 shadow-sm flex flex-col justify-between h-full"
+            >
+              <div className="flex-1 flex flex-col min-h-0">
+                {/* Header */}
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
+                  <div>
+                    <h3 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-1.5">
+                      <PieChart className="h-4 w-4 text-[#F97316]" />
+                      <span>Tier Sales Breakdown</span>
+                    </h3>
+                    <p className="text-[11px] text-slate-500">Distribution by VIP, General & Early Bird</p>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-slate-100 text-slate-700 font-mono">
+                    {tierBreakdown.length} Tiers
+                  </span>
+                </div>
 
-                              {/* Value text inside bar if tall enough */}
-                              {bar.count > 0 && (
-                                <div className="absolute top-1 inset-x-0 text-center font-mono text-[9px] font-black text-white drop-shadow">
-                                  {bar.count}
-                                </div>
-                              )}
-                            </motion.div>
-                          </div>
+                {/* Stacked Multi-Segment Distribution Bar */}
+                {tierBreakdown.length > 0 && (
+                  <div className="mt-3 shrink-0">
+                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 mb-1">
+                      <span className="uppercase tracking-wider">Inventory Share</span>
+                      <span className="font-mono text-slate-700">
+                        {tierBreakdown.reduce((sum, t) => sum + t.count, 0)} Passes
+                      </span>
+                    </div>
+                    <div className="w-full h-2 rounded-lg bg-slate-100 overflow-hidden flex p-0.5 gap-0.5 shadow-inner">
+                      {tierBreakdown.map((tier, idx) => {
+                        const colors = [
+                          'bg-teal-600',
+                          'bg-[#F97316]',
+                          'bg-indigo-600',
+                          'bg-emerald-500',
+                          'bg-amber-500',
+                          'bg-rose-500',
+                        ];
+                        const color = colors[idx % colors.length];
+                        return (
+                          <div
+                            key={idx}
+                            title={`${tier.name}: ${tier.percentage}% (${tier.count} passes)`}
+                            style={{ width: `${Math.max(tier.percentage, 2)}%` }}
+                            className={`h-full rounded-xs ${color} transition-all duration-300 hover:brightness-110`}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
 
-                          {/* Bottom X-Axis Date Badge */}
-                          <div className="absolute -bottom-6 text-center w-full">
-                            <span className="font-mono text-[9px] font-bold text-slate-600 group-hover:text-teal-700 transition-colors block">
-                              {bar.dayName}
+                {/* Tier Cards List - Compact Scrollable Container */}
+                <div className="mt-3 space-y-2 flex-1 max-h-[260px] overflow-y-auto pr-1">
+                  {tierBreakdown.map((tier, idx) => {
+                    const colorPalettes = [
+                      { dot: 'bg-teal-500', bar: 'bg-gradient-to-r from-teal-500 to-teal-600', text: 'text-teal-700', bg: 'bg-teal-50/50', border: 'border-teal-200/60', badge: 'bg-teal-100/70 text-teal-800' },
+                      { dot: 'bg-orange-500', bar: 'bg-gradient-to-r from-orange-500 to-orange-600', text: 'text-orange-700', bg: 'bg-orange-50/50', border: 'border-orange-200/60', badge: 'bg-orange-100/70 text-orange-800' },
+                      { dot: 'bg-indigo-500', bar: 'bg-gradient-to-r from-indigo-500 to-indigo-600', text: 'text-indigo-700', bg: 'bg-indigo-50/50', border: 'border-indigo-200/60', badge: 'bg-indigo-100/70 text-indigo-800' },
+                      { dot: 'bg-emerald-500', bar: 'bg-gradient-to-r from-emerald-500 to-emerald-600', text: 'text-emerald-700', bg: 'bg-emerald-50/50', border: 'border-emerald-200/60', badge: 'bg-emerald-100/70 text-emerald-800' },
+                      { dot: 'bg-amber-500', bar: 'bg-gradient-to-r from-amber-500 to-amber-600', text: 'text-amber-700', bg: 'bg-amber-50/50', border: 'border-amber-200/60', badge: 'bg-amber-100/70 text-amber-800' },
+                      { dot: 'bg-rose-500', bar: 'bg-gradient-to-r from-rose-500 to-rose-600', text: 'text-rose-700', bg: 'bg-rose-50/50', border: 'border-rose-200/60', badge: 'bg-rose-100/70 text-rose-800' },
+                    ];
+                    const theme = colorPalettes[idx % colorPalettes.length];
+
+                    return (
+                      <motion.div
+                        key={idx}
+                        whileHover={{ scale: 1.005 }}
+                        transition={{ duration: 0.15 }}
+                        className={`p-2.5 rounded-xl border transition-all ${theme.bg} ${theme.border} hover:shadow-xs`}
+                      >
+                        <div className="flex justify-between items-center gap-2">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5">
+                              <span className={`w-1.5 h-1.5 rounded-full ${theme.dot} shrink-0`} />
+                              <h4 className="font-bold text-xs text-slate-900 truncate" title={tier.name}>
+                                {tier.name}
+                              </h4>
+                            </div>
+                            <span className="text-[10px] text-slate-500 font-medium ml-3 block leading-tight mt-0.5">
+                              {tier.count} {tier.count === 1 ? 'pass' : 'passes'} sold
                             </span>
-                            <span className="text-[8px] text-slate-400 block -mt-1 font-mono">
-                              {bar.label.split(' ')[1]}
+                          </div>
+
+                          <div className="text-right shrink-0">
+                            <span className="font-mono text-xs font-black text-slate-900 block leading-tight">
+                              ₹{tier.revenue.toLocaleString('en-IN')}
+                            </span>
+                            <span className={`inline-block px-1.5 py-0.2 rounded text-[9px] font-mono font-bold ${theme.badge}`}>
+                              {tier.percentage}%
                             </span>
                           </div>
                         </div>
-                      );
-                    })}
-                  </div>
+
+                        {/* Progress Track */}
+                        <div className="w-full bg-slate-200/70 rounded-full h-1 overflow-hidden mt-2 ml-3" style={{ width: 'calc(100% - 12px)' }}>
+                          <div 
+                            className={`h-full rounded-full ${theme.bar} transition-all duration-500`}
+                            style={{ width: `${Math.max(tier.percentage, 3)}%` }}
+                          />
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Chart Footer Controller */}
-              <div className="mt-6 pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
-                <div className="flex items-center gap-3">
-                  <span className="flex items-center gap-1.5 text-teal-800 font-mono text-[10px] font-bold">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-[#0F766E] to-teal-400 border border-teal-300 inline-block" />
-                    REGULAR PASSES
-                  </span>
-                  <span className="flex items-center gap-1.5 text-orange-800 font-mono text-[10px] font-bold">
-                    <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-[#EA580C] to-[#FDBA74] border border-amber-300 inline-block" />
-                    PEAK ACCELERATION
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-1.5 font-mono text-[10px] text-slate-400">
-                  <Crosshair className="h-3 w-3 text-teal-600" />
-                  <span>HUD STATUS: SYNCHRONIZED</span>
-                </div>
+              {/* Micro Summary Footer */}
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 shrink-0">
+                <span className="font-bold text-[10px] uppercase tracking-wider text-slate-400">Total Revenue:</span>
+                <span className="font-mono font-black text-emerald-700 text-sm">
+                  ₹{tierBreakdown.reduce((sum, t) => sum + t.revenue, 0).toLocaleString('en-IN')}
+                </span>
               </div>
-            </div>
             </motion.div>
+          </div>
+        </div>
 
-          {/* Option 1: Peak Gate Check-in Rush Hours & Traffic Heatmap with Framer Motion */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            whileHover={{ y: -2, transition: { duration: 0.2 } }}
-            className="rounded-3xl bg-white border border-slate-200/90 p-5 md:p-6 shadow-sm space-y-4"
-          >
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-100 pb-3">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-orange-100 text-orange-800 border border-orange-200 flex items-center gap-1">
-                    <Clock className="h-3 w-3 text-[#F97316]" /> HOURLY RUSH PATTERNS
-                  </span>
-                  <span className="text-[10px] text-slate-400 font-medium">Turnstile sensor logs</span>
-                </div>
-                <h4 className="text-base font-black text-slate-900 tracking-tight flex items-center gap-2">
-                  <span>Peak Gate Check-In Velocity & Queue Heatmap</span>
-                </h4>
+        {/* Section 2: Full-Width Dedicated Row - Peak Gate Check-in Rush Hours & Traffic Heatmap */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          whileHover={{ y: -2, transition: { duration: 0.2 } }}
+          className="rounded-3xl bg-white border border-slate-200/90 p-5 md:p-6 shadow-sm space-y-4"
+        >
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-orange-100 text-orange-800 border border-orange-200 flex items-center gap-1">
+                  <Clock className="h-3 w-3 text-[#F97316]" /> HOURLY RUSH PATTERNS
+                </span>
+                <span className="text-[10px] text-slate-400 font-medium">Turnstile sensor logs</span>
               </div>
-
-              <div className="flex items-center gap-2 text-[10px] font-bold">
-                <span className="flex items-center gap-1 text-slate-600">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" /> Calm
-                </span>
-                <span className="flex items-center gap-1 text-slate-600">
-                  <span className="w-2 h-2 rounded-full bg-amber-400" /> Moderate
-                </span>
-                <span className="flex items-center gap-1 text-slate-600">
-                  <span className="w-2 h-2 rounded-full bg-[#EA580C]" /> Peak Rush
-                </span>
-              </div>
+              <h4 className="text-base font-black text-slate-900 tracking-tight flex items-center gap-2">
+                <span>Peak Gate Check-In Velocity & Queue Heatmap</span>
+              </h4>
             </div>
 
-            {/* Hourly Time Slot Heatmap Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
-              {[
-                { time: '08:00 - 09:00 AM', status: 'Calm', count: 42, color: 'bg-emerald-50 border-emerald-200 text-emerald-800', badge: 'bg-emerald-500' },
-                { time: '09:00 - 10:00 AM', status: 'Peak Rush', count: 318, color: 'bg-orange-50 border-orange-300 text-orange-900 ring-1 ring-orange-400/40', badge: 'bg-[#EA580C]' },
-                { time: '10:00 - 11:00 AM', status: 'Heavy', count: 215, color: 'bg-amber-50 border-amber-300 text-amber-900', badge: 'bg-amber-500' },
-                { time: '11:00 - 01:00 PM', status: 'Moderate', count: 98, color: 'bg-amber-50/70 border-amber-200 text-amber-800', badge: 'bg-amber-400' },
-                { time: '01:00 - 03:00 PM', status: 'Calm', count: 34, color: 'bg-emerald-50 border-emerald-200 text-emerald-800', badge: 'bg-emerald-500' },
-                { time: '03:00 - Late Entry', status: 'Trickle', count: 18, color: 'bg-slate-50 border-slate-200 text-slate-700', badge: 'bg-slate-400' },
-              ].map((slot, idx) => (
-                <motion.div 
-                  key={idx} 
-                  whileHover={{ scale: 1.03 }}
-                  transition={{ duration: 0.15 }}
-                  className={`p-2.5 rounded-2xl border transition hover:shadow-xs flex flex-col justify-between ${slot.color}`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-slate-600 font-mono truncate">{slot.time}</span>
-                    <span className={`w-2 h-2 rounded-full ${slot.badge} shrink-0`} />
-                  </div>
-                  <div className="mt-2 flex items-baseline justify-between">
-                    <span className="font-mono text-base font-black tracking-tight">{slot.count}</span>
-                    <span className="text-[9px] font-bold uppercase tracking-wider opacity-80">{slot.status}</span>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Ground Staff Advice Footer */}
-            <div className="bg-slate-50 rounded-2xl p-3 border border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-slate-600 gap-2">
-              <div className="flex items-center gap-2">
-                <span className="p-1 rounded-lg bg-orange-100 text-[#F97316]">
-                  <Flame className="h-3.5 w-3.5" />
-                </span>
-                <span>
-                  <strong>Gate Staff Advisory:</strong> Deploy <strong>+3 scanning officers</strong> at Gate 1 & 2 between <strong>09:00 AM – 10:15 AM</strong> to maintain under 45-second wait times.
-                </span>
-              </div>
-              <span className="font-mono text-[10px] text-slate-400 shrink-0">
-                Turnstile sync: 100%
+            <div className="flex items-center gap-2 text-[10px] font-bold">
+              <span className="flex items-center gap-1 text-slate-600">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" /> Calm
+              </span>
+              <span className="flex items-center gap-1 text-slate-600">
+                <span className="w-2 h-2 rounded-full bg-amber-400" /> Moderate
+              </span>
+              <span className="flex items-center gap-1 text-slate-600">
+                <span className="w-2 h-2 rounded-full bg-[#EA580C]" /> Peak Rush
               </span>
             </div>
-          </motion.div>
-        </div>
+          </div>
 
-          {/* Tier-by-Tier Sales Breakdown (1 col) with Framer Motion */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            whileHover={{ y: -2, transition: { duration: 0.2 } }}
-            className="bg-white p-5 md:p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-4"
-          >
-            <div className="border-b border-slate-100 pb-3.5">
-              <h3 className="text-lg md:text-xl font-black text-slate-900 flex items-center gap-2">
-                <PieChart className="h-5 w-5 text-[#F97316]" />
-                <span>Tier Sales Breakdown</span>
-              </h3>
-              <p className="text-xs text-slate-500">Distribution by VIP, General, & Early Bird</p>
-            </div>
-
-            <div className="space-y-4">
-              {tierBreakdown.map((tier, idx) => (
-                <div key={idx} className="space-y-1.5 p-3 rounded-2xl bg-slate-50 border border-slate-100">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-slate-900">{tier.name}</span>
-                    <span className="font-mono font-bold text-[#0F766E]">₹{tier.revenue.toLocaleString('en-IN')}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-[11px] text-slate-500">
-                    <span>{tier.count} passes sold</span>
-                    <span className="font-bold text-slate-700">{tier.percentage}%</span>
-                  </div>
-                  <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
-                    <div 
-                      className="h-full rounded-full bg-[#0F766E]"
-                      style={{ width: `${tier.percentage}%` }}
-                    />
-                  </div>
+          {/* Hourly Time Slot Heatmap Grid (6 equal width columns on desktop) */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+            {[
+              { time: '08:00 - 09:00 AM', status: 'Calm', count: 42, color: 'bg-emerald-50 border-emerald-200 text-emerald-800', badge: 'bg-emerald-500' },
+              { time: '09:00 - 10:00 AM', status: 'Peak Rush', count: 318, color: 'bg-orange-50 border-orange-300 text-orange-900 ring-1 ring-orange-400/40', badge: 'bg-[#EA580C]' },
+              { time: '10:00 - 11:00 AM', status: 'Heavy', count: 215, color: 'bg-amber-50 border-amber-300 text-amber-900', badge: 'bg-amber-500' },
+              { time: '11:00 - 01:00 PM', status: 'Moderate', count: 98, color: 'bg-amber-50/70 border-amber-200 text-amber-800', badge: 'bg-amber-400' },
+              { time: '01:00 - 03:00 PM', status: 'Calm', count: 34, color: 'bg-emerald-50 border-emerald-200 text-emerald-800', badge: 'bg-emerald-500' },
+              { time: '03:00 - Late Entry', status: 'Trickle', count: 18, color: 'bg-slate-50 border-slate-200 text-slate-700', badge: 'bg-slate-400' },
+            ].map((slot, idx) => (
+              <motion.div 
+                key={idx} 
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.15 }}
+                className={`p-3 rounded-2xl border transition hover:shadow-xs flex flex-col justify-between ${slot.color}`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-slate-600 font-mono truncate">{slot.time}</span>
+                  <span className={`w-2 h-2 rounded-full ${slot.badge} shrink-0`} />
                 </div>
-              ))}
+                <div className="mt-2.5 flex items-baseline justify-between">
+                  <span className="font-mono text-base font-black tracking-tight">{slot.count}</span>
+                  <span className="text-[9px] font-bold uppercase tracking-wider opacity-80">{slot.status}</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Ground Staff Advice Footer */}
+          <div className="bg-slate-50 rounded-2xl p-3 border border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-slate-600 gap-2">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded-lg bg-orange-100 text-[#F97316]">
+                <Flame className="h-3.5 w-3.5" />
+              </span>
+              <span>
+                <strong>Gate Staff Advisory:</strong> Deploy <strong>+3 scanning officers</strong> at Gate 1 & 2 between <strong>09:00 AM – 10:15 AM</strong> to maintain under 45-second wait times.
+              </span>
             </div>
-          </motion.div>
-        </div>
+            <span className="font-mono text-[10px] text-slate-400 shrink-0">
+              Turnstile sync: 100%
+            </span>
+          </div>
+        </motion.div>
 
         {/* Master Attendee List & One-Click CSV Export */}
         <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">

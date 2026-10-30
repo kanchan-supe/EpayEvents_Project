@@ -14,6 +14,8 @@ import {
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { getAllEvents } from '@/lib/data';
 import { useAuth } from '@/context/AuthContext';
+import { Tag, Percent, Link2 } from 'lucide-react';
+import { PromotionsManagerModal } from '@/components/PromotionsManagerModal';
 
 interface RegistrationRecord {
   id: string;
@@ -75,35 +77,46 @@ export default function OrganizerDashboardPage() {
     return staticIds.has(item.id) || staticIds.has(item.slug);
   };
 
-  const [publishedEvents, setPublishedEvents] = useState<any[]>(() => {
-    // Only load events created by organizer from local persistence on initial client mount
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem('epay_persisted_events');
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (typeof parsed === 'object' && parsed !== null) {
-            const list: any[] = [];
-            const seen = new Set<string>();
-            Object.values(parsed).forEach((ev: any) => {
-              if (ev && (ev.status === 'published' || !ev.status)) {
-                const key = ev.id || ev.slug;
-                if (!seen.has(key) && !isMockEvent(ev)) {
-                  seen.add(key);
-                  list.push(ev);
-                }
-              }
-            });
-            return list;
-          }
-        }
-      } catch (e) {
-        console.warn('[OrganizerDashboard] Initial localStorage check notice:', e);
+  // Helper: check if an event belongs to the current logged-in organizer
+  const isEventOwner = React.useCallback((item: any, currentUserId?: string, currentUserEmail?: string) => {
+    if (!item) return false;
+    if (isMockEvent(item)) return false;
+    if (!currentUserId && !currentUserEmail) return false;
+
+    const uid = currentUserId?.trim();
+    const email = currentUserEmail?.toLowerCase().trim();
+
+    // 1. Check direct user ID / organizer ID match
+    if (uid) {
+      if (
+        item.organizerId === uid ||
+        item.organizer_id === uid ||
+        item.userId === uid ||
+        item.organization?.id === uid ||
+        item.organizer?.id === uid
+      ) {
+        return true;
       }
     }
-    return [];
-  });
 
+    // 2. Check organizer contact email match
+    if (email) {
+      const orgEmail = (
+        item.organizerEmail ||
+        item.organization?.contactEmail ||
+        item.organizer?.email ||
+        item.email
+      )?.toLowerCase().trim();
+
+      if (orgEmail && orgEmail === email) {
+        return true;
+      }
+    }
+
+    return false;
+  }, []);
+
+  const [publishedEvents, setPublishedEvents] = useState<any[]>([]);
   const [liveOrders, setLiveOrders] = useState<any[]>([]);
   const [liveRegistrations, setLiveRegistrations] = useState<any[]>([]);
   const [isFetchingMetrics, setIsFetchingMetrics] = useState(false);
@@ -114,6 +127,7 @@ export default function OrganizerDashboardPage() {
   const [replyingInquiryId, setReplyingInquiryId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
+  const [showPromotionsModal, setShowPromotionsModal] = useState(false);
 
   const fetchLiveMetrics = React.useCallback(async () => {
     setIsFetchingMetrics(true);
@@ -176,17 +190,26 @@ export default function OrganizerDashboardPage() {
   }, [authLoading, user, router]);
 
   React.useEffect(() => {
+    if (!user) {
+      setPublishedEvents([]);
+      return;
+    }
+
     async function fetchLivePublishedEvents() {
       try {
-        const res = await fetch('/api/events');
+        const queryParams = new URLSearchParams();
+        if (user?.id) queryParams.set('organizerId', user.id);
+        if (user?.email) queryParams.set('organizerEmail', user.email);
+
+        const res = await fetch(`/api/events?${queryParams.toString()}`);
         const json = await res.json();
         let apiEvents: any[] = [];
         if (json.success && Array.isArray(json.data)) {
-          // Filter out dummy static mock events from the backend list
-          apiEvents = json.data.filter((ev: any) => !isMockEvent(ev));
+          // Filter out dummy mock events and keep only events created by this organizer
+          apiEvents = json.data.filter((ev: any) => isEventOwner(ev, user?.id, user?.email));
         }
 
-        // Merge and overlay locally created or edited events from localStorage
+        // Merge and overlay locally created or edited events from localStorage for THIS organizer
         const mergedMap = new Map<string, any>();
         
         // 1. Add valid backend events
@@ -202,7 +225,11 @@ export default function OrganizerDashboardPage() {
             const parsed = JSON.parse(stored);
             if (typeof parsed === 'object' && parsed !== null) {
               Object.values(parsed).forEach((localEv: any) => {
-                if (localEv && (localEv.status === 'published' || !localEv.status) && !isMockEvent(localEv)) {
+                if (
+                  localEv &&
+                  (localEv.status === 'published' || !localEv.status) &&
+                  isEventOwner(localEv, user?.id, user?.email)
+                ) {
                   const key = localEv.id || localEv.slug;
                   if (key) {
                     const existing = mergedMap.get(key);
@@ -221,6 +248,7 @@ export default function OrganizerDashboardPage() {
         console.warn('[OrganizerDashboard] Could not fetch live events:', err);
       }
     }
+
     fetchLivePublishedEvents();
     fetchLiveMetrics();
     fetchInquiries();
@@ -234,7 +262,37 @@ export default function OrganizerDashboardPage() {
     return () => {
       window.removeEventListener('epay_order_created', handleNewOrder);
     };
-  }, [fetchLiveMetrics, fetchInquiries]);
+  }, [user, isEventOwner, fetchLiveMetrics, fetchInquiries]);
+
+  // Set of keys (ID, slug, title) belonging to THIS organizer's hosted events
+  const myEventKeySet = React.useMemo(() => {
+    const set = new Set<string>();
+    publishedEvents.forEach(ev => {
+      if (ev.id) set.add(String(ev.id).toLowerCase());
+      if (ev.slug) set.add(String(ev.slug).toLowerCase());
+      if (ev.title) set.add(String(ev.title).toLowerCase().trim());
+    });
+    return set;
+  }, [publishedEvents]);
+
+  // Filter live orders and registrations to only those matching THIS organizer's events
+  const myLiveOrders = React.useMemo(() => {
+    if (publishedEvents.length === 0) return [];
+    return liveOrders.filter(o => {
+      const matchId = o.eventId && myEventKeySet.has(String(o.eventId).toLowerCase());
+      const matchTitle = o.eventTitle && myEventKeySet.has(String(o.eventTitle).toLowerCase().trim());
+      return matchId || matchTitle;
+    });
+  }, [liveOrders, publishedEvents.length, myEventKeySet]);
+
+  const myLiveRegistrations = React.useMemo(() => {
+    if (publishedEvents.length === 0) return [];
+    return liveRegistrations.filter(r => {
+      const matchId = r.eventId && myEventKeySet.has(String(r.eventId).toLowerCase());
+      const matchTitle = r.eventTitle && myEventKeySet.has(String(r.eventTitle).toLowerCase().trim());
+      return matchId || matchTitle;
+    });
+  }, [liveRegistrations, publishedEvents.length, myEventKeySet]);
 
   const totalEvents = publishedEvents.length;
   
@@ -242,31 +300,29 @@ export default function OrganizerDashboardPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedTimeframe, setSelectedTimeframe] = useState<'30d' | '90d' | 'year'>('30d');
 
-  // Dynamic metrics calculation from real orders and registrations
-  const realRevenue = liveOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
-  const realRegistrationsCount = liveRegistrations.length;
-  const realCheckedInCount = liveRegistrations.filter(r => r.status === 'checked_in' || r.status === 'Checked In').length;
-
-  const baseRevenue = 1845000;
-  const totalRevenue = baseRevenue + realRevenue;
-  const totalRegistrations = 1248 + realRegistrationsCount;
-  const checkedInCount = 742 + realCheckedInCount;
+  // Dynamic metrics calculation strictly for THIS organizer
+  const totalRevenue = myLiveOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 0) ||
+                       myLiveRegistrations.reduce((sum, r) => sum + (Number(r.pricePaid) || 0), 0);
+  const totalRegistrations = myLiveRegistrations.length;
+  const checkedInCount = myLiveRegistrations.filter(r => r.status === 'checked_in' || r.status === 'Checked In').length;
   const checkinRate = totalRegistrations > 0 ? Math.round((checkedInCount / totalRegistrations) * 100) : 0;
 
-  // Format live registrations to prepend to the attendee feed
-  const formattedLiveRegistrations: RegistrationRecord[] = liveRegistrations.map(r => ({
-    id: r.ticketCode || r.id,
-    name: r.attendeeName,
-    email: r.attendeeEmail,
-    ticket: `${r.ticketTierName} (${r.eventTitle})`,
-    status: (r.status === 'checked_in' ? 'Checked In' : 'Approved') as RegistrationRecord['status'],
-    checkinTime: r.checkedInAt || 'Scan Ready',
-    price: Number(r.pricePaid) || 0,
-    date: (r.createdAt || new Date().toISOString()).split('T')[0],
-    isLive: true,
-  }));
+  // Format registrations strictly for this organizer's events
+  const formattedLiveRegistrations: RegistrationRecord[] = React.useMemo(() => {
+    return myLiveRegistrations.map(r => ({
+      id: r.ticketCode || r.id,
+      name: r.attendeeName,
+      email: r.attendeeEmail,
+      ticket: `${r.ticketTierName} (${r.eventTitle})`,
+      status: (r.status === 'checked_in' ? 'Checked In' : 'Approved') as RegistrationRecord['status'],
+      checkinTime: r.checkedInAt || 'Scan Ready',
+      price: Number(r.pricePaid) || 0,
+      date: (r.createdAt || new Date().toISOString()).split('T')[0],
+      isLive: true,
+    }));
+  }, [myLiveRegistrations]);
 
-  const allRegistrations = [...formattedLiveRegistrations, ...mockRegistrations];
+  const allRegistrations = formattedLiveRegistrations;
 
   // Filter registrations
   const filteredRegistrations = allRegistrations.filter(reg => {
@@ -277,6 +333,17 @@ export default function OrganizerDashboardPage() {
     const matchesStatus = statusFilter === 'all' || reg.status.toLowerCase() === statusFilter.toLowerCase();
     return matchesSearch && matchesStatus;
   });
+
+  // Filter inquiries strictly to this organizer's events
+  const myFilteredInquiries = React.useMemo(() => {
+    if (publishedEvents.length === 0) return [];
+    return inquiries.filter(inq => {
+      const matchEvent = inq.eventId && myEventKeySet.has(String(inq.eventId).toLowerCase());
+      const matchTitle = inq.eventTitle && myEventKeySet.has(String(inq.eventTitle).toLowerCase().trim());
+      const matchEmail = inq.organizerEmail && user?.email && inq.organizerEmail.toLowerCase().trim() === user.email.toLowerCase().trim();
+      return matchEvent || matchTitle || matchEmail;
+    });
+  }, [inquiries, publishedEvents.length, myEventKeySet, user?.email]);
 
   const getStatusBadge = (status: RegistrationRecord['status']) => {
     switch (status) {
@@ -385,11 +452,11 @@ export default function OrganizerDashboardPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.15 }}
-              className="flex flex-wrap items-center gap-3"
+              className="flex flex-wrap items-center justify-start md:justify-end gap-2.5"
             >
               <Link
                 href="/organizer/scanner"
-                className="group relative inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#0F766E] to-emerald-600 px-5 py-3 text-xs md:text-sm font-bold text-white shadow-lg hover:shadow-emerald-500/25 transition-all overflow-hidden"
+                className="group relative inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#0F766E] to-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg hover:shadow-emerald-500/25 transition-all overflow-hidden whitespace-nowrap"
               >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                 <QrCode className="h-4 w-4 relative z-10" />
@@ -397,12 +464,20 @@ export default function OrganizerDashboardPage() {
               </Link>
               <Link
                 href="/create-event"
-                className="group relative inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#F97316] to-amber-500 px-5 py-3 text-xs md:text-sm font-bold text-white shadow-lg hover:shadow-orange-500/25 transition-all overflow-hidden"
+                className="group relative inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#F97316] to-amber-500 px-4 py-2.5 text-xs font-bold text-white shadow-lg hover:shadow-orange-500/25 transition-all overflow-hidden whitespace-nowrap"
               >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                 <PlusCircle className="h-4 w-4 relative z-10" />
                 <span className="relative z-10">Host New Event</span>
               </Link>
+              <button
+                type="button"
+                onClick={() => setShowPromotionsModal(true)}
+                className="group relative inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 border border-purple-400/30 px-4 py-2.5 text-xs font-bold text-white shadow-lg transition-all cursor-pointer whitespace-nowrap"
+              >
+                <Link2 className="h-4 w-4 text-purple-200" />
+                <span>Affiliate & Referral Links</span>
+              </button>
             </motion.div>
           </motion.div>
 
@@ -474,9 +549,9 @@ export default function OrganizerDashboardPage() {
               <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-bold mt-1">
                 <ArrowUpRight className="h-3.5 w-3.5" />
                 <span>
-                  {realRegistrationsCount > 0
-                    ? `+${realRegistrationsCount} recent online passes`
-                    : '+18.4% from last month'}
+                  {totalRegistrations > 0
+                    ? `${totalRegistrations} verified event attendees`
+                    : 'No attendees registered yet'}
                 </span>
               </div>
             </div>
@@ -496,13 +571,17 @@ export default function OrganizerDashboardPage() {
               </div>
             </div>
             <div className="mt-4">
-              <h3 className="text-3xl font-black text-slate-900 tracking-tight">₹{(totalRevenue / 100000).toFixed(2)} Lakhs</h3>
+              <h3 className="text-3xl font-black text-slate-900 tracking-tight">
+                {totalRevenue >= 100000 
+                  ? `₹${(totalRevenue / 100000).toFixed(2)} Lakhs` 
+                  : `₹${totalRevenue.toLocaleString()}`}
+              </h3>
               <div className="flex items-center gap-1.5 text-xs text-[#0F766E] font-bold mt-1">
                 <ShieldCheck className="h-3.5 w-3.5" />
                 <span>
-                  {realRevenue > 0
-                    ? `+₹${realRevenue.toLocaleString()} new ticket sales`
-                    : 'Settlement Guaranteed'}
+                  {totalRevenue > 0
+                    ? `₹${totalRevenue.toLocaleString()} verified ticket sales`
+                    : 'No ticket sales yet'}
                 </span>
               </div>
             </div>
@@ -688,10 +767,10 @@ export default function OrganizerDashboardPage() {
                           <span>Edit</span>
                         </Link>
                         <Link
-                          href={`/events/${evt.slug}`}
+                          href={`/events/${evt.slug || evt.id}`}
                           className="inline-flex items-center gap-1 font-bold text-[#F97316] hover:text-[#ea580c] transition text-xs"
                         >
-                          <span>Manage</span>
+                          <span>Manage Event</span>
                           <ChevronRight className="h-3.5 w-3.5" />
                         </Link>
                       </div>
@@ -738,8 +817,8 @@ export default function OrganizerDashboardPage() {
                     }`}
                   >
                     <MessageSquare className="h-3.5 w-3.5" />
-                    <span>Attendee Queries ({inquiries.length})</span>
-                    {inquiries.some(i => i.status === 'unread') && (
+                    <span>Attendee Queries ({myFilteredInquiries.length})</span>
+                    {myFilteredInquiries.some(i => i.status === 'unread') && (
                       <span className="h-2 w-2 rounded-full bg-rose-500 animate-pulse"></span>
                     )}
                   </button>
@@ -815,42 +894,52 @@ export default function OrganizerDashboardPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      <AnimatePresence>
-                        {filteredRegistrations.map((reg) => (
-                          <motion.tr 
-                            key={reg.id} 
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="hover:bg-slate-50/80 transition"
-                          >
-                            <td className="p-3.5 font-mono font-bold text-[#0F766E] text-[11px]">
-                              <div className="flex items-center gap-1.5">
-                                <span>{reg.id}</span>
-                                {reg.isLive && (
-                                  <span className="px-1.5 py-0.5 rounded text-[9px] bg-emerald-100 text-emerald-800 font-extrabold uppercase tracking-wider border border-emerald-300">
-                                    Realtime
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-                            <td className="p-3.5">
-                              <div className="font-bold text-slate-900">{reg.name}</div>
-                              <div className="text-[10px] text-slate-400">{reg.email}</div>
-                            </td>
-                            <td className="p-3.5 font-medium text-slate-700">{reg.ticket}</td>
-                            <td className="p-3.5">
-                              <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${getStatusBadge(reg.status)}`}>
-                                {reg.status === 'Checked In' && <CheckCircle2 className="h-3 w-3" />}
-                                {reg.status} {reg.checkinTime !== '-' && `(${reg.checkinTime})`}
-                              </span>
-                            </td>
-                            <td className="p-3.5 font-extrabold text-slate-900 text-right">
-                              {reg.price === 0 ? 'FREE' : `₹${reg.price.toLocaleString()}`}
-                            </td>
-                          </motion.tr>
-                        ))}
-                      </AnimatePresence>
+                      {filteredRegistrations.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="py-12 text-center text-slate-400">
+                            <Users className="h-8 w-8 mx-auto mb-2 text-slate-300" />
+                            <p className="text-xs font-bold text-slate-600">No attendees registered yet</p>
+                            <p className="text-[11px] text-slate-400 mt-0.5">Attendee registrations for your hosted events will appear here in real-time.</p>
+                          </td>
+                        </tr>
+                      ) : (
+                        <AnimatePresence>
+                          {filteredRegistrations.map((reg) => (
+                            <motion.tr 
+                              key={reg.id} 
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              className="hover:bg-slate-50/80 transition"
+                            >
+                              <td className="p-3.5 font-mono font-bold text-[#0F766E] text-[11px]">
+                                <div className="flex items-center gap-1.5">
+                                  <span>{reg.id}</span>
+                                  {reg.isLive && (
+                                    <span className="px-1.5 py-0.5 rounded text-[9px] bg-emerald-100 text-emerald-800 font-extrabold uppercase tracking-wider border border-emerald-300">
+                                      Realtime
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-3.5">
+                                <div className="font-bold text-slate-900">{reg.name}</div>
+                                <div className="text-[10px] text-slate-400">{reg.email}</div>
+                              </td>
+                              <td className="p-3.5 font-medium text-slate-700">{reg.ticket}</td>
+                              <td className="p-3.5">
+                                <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${getStatusBadge(reg.status)}`}>
+                                  {reg.status === 'Checked In' && <CheckCircle2 className="h-3 w-3" />}
+                                  {reg.status} {reg.checkinTime !== '-' && `(${reg.checkinTime})`}
+                                </span>
+                              </td>
+                              <td className="p-3.5 font-extrabold text-slate-900 text-right">
+                                {reg.price === 0 ? 'FREE' : `₹${reg.price.toLocaleString()}`}
+                              </td>
+                            </motion.tr>
+                          ))}
+                        </AnimatePresence>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -878,7 +967,7 @@ export default function OrganizerDashboardPage() {
                     onChange={(e) => setInquiryStatusFilter(e.target.value)}
                     className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-[#F97316]"
                   >
-                    <option value="all">All Queries ({inquiries.length})</option>
+                    <option value="all">All Queries ({myFilteredInquiries.length})</option>
                     <option value="unread">Unread Only</option>
                     <option value="replied">Replied</option>
                   </select>
@@ -886,7 +975,7 @@ export default function OrganizerDashboardPage() {
 
                 {/* Inquiry Cards List */}
                 <div className="space-y-3">
-                  {inquiries
+                  {myFilteredInquiries
                     .filter((inq) => {
                       const matches = 
                         inq.senderName.toLowerCase().includes(inquirySearch.toLowerCase()) ||
@@ -1033,7 +1122,7 @@ export default function OrganizerDashboardPage() {
                       </div>
                     ))}
 
-                  {inquiries.length === 0 && (
+                  {myFilteredInquiries.length === 0 && (
                     <div className="text-center py-12 text-slate-400 bg-slate-50 rounded-2xl border border-slate-200">
                       <MessageSquare className="h-8 w-8 mx-auto mb-2 text-slate-300" />
                       <p className="text-xs font-medium">No attendee inquiries received yet.</p>
@@ -1064,24 +1153,31 @@ export default function OrganizerDashboardPage() {
                 </span>
               </div>
 
-              <div className="space-y-3.5 text-xs text-slate-600">
-                <div className="flex justify-between items-center">
-                  <span>Gross Ticket Sales</span>
-                  <span className="font-black text-slate-900 text-sm">₹18,45,000</span>
-                </div>
-                <div className="flex justify-between items-center text-slate-500">
-                  <span>Platform Processing (3.5%)</span>
-                  <span>-₹64,575</span>
-                </div>
-                <div className="flex justify-between items-center text-slate-500">
-                  <span>GST Retained (18%)</span>
-                  <span>-₹3,32,100</span>
-                </div>
-                <div className="pt-4 border-t border-slate-200 flex justify-between items-center text-sm font-black text-slate-900">
-                  <span>Net Payout Ready</span>
-                  <span className="text-[#0F766E] text-lg font-black">₹14,48,325</span>
-                </div>
-              </div>
+              {(() => {
+                const platformFee = totalRevenue > 0 ? Math.round(totalRevenue * 0.035) : 0;
+                const gstRetained = totalRevenue > 0 ? Math.round(totalRevenue * 0.18) : 0;
+                const netPayout = Math.max(0, totalRevenue - platformFee - gstRetained);
+                return (
+                  <div className="space-y-3.5 text-xs text-slate-600">
+                    <div className="flex justify-between items-center">
+                      <span>Gross Ticket Sales</span>
+                      <span className="font-black text-slate-900 text-sm">₹{totalRevenue.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-slate-500">
+                      <span>Platform Processing (3.5%)</span>
+                      <span>-₹{platformFee.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-slate-500">
+                      <span>GST Retained (18%)</span>
+                      <span>-₹{gstRetained.toLocaleString()}</span>
+                    </div>
+                    <div className="pt-4 border-t border-slate-200 flex justify-between items-center text-sm font-black text-slate-900">
+                      <span>Net Payout Ready</span>
+                      <span className="text-[#0F766E] text-lg font-black">₹{netPayout.toLocaleString()}</span>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Direct bank settlement card */}
               <div className="rounded-2xl bg-gradient-to-br from-[#0F766E]/10 via-[#0F766E]/5 to-transparent p-4 border border-[#0F766E]/20 space-y-2">
@@ -1090,7 +1186,7 @@ export default function OrganizerDashboardPage() {
                   <span>Instant UPI / NEFT Payout Active</span>
                 </div>
                 <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Next scheduled batch settlement executes automatically to your linked HDFC Bank Account ending in <strong>*4892</strong>.
+                  Scheduled settlements execute directly to your registered organizer account ({user?.email || 'verified account'}).
                 </p>
               </div>
 
@@ -1115,6 +1211,12 @@ export default function OrganizerDashboardPage() {
         </div>
       </main>
 
+            <PromotionsManagerModal
+        isOpen={showPromotionsModal}
+        onClose={() => setShowPromotionsModal(false)}
+        organizerEmail={user?.email || undefined}
+        events={publishedEvents.map((e: any) => ({ id: e.id, title: e.title, slug: e.slug }))}
+      />
       <Footer />
     </div>
   );

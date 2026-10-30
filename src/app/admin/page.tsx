@@ -393,6 +393,14 @@ export default function SuperAdminPage() {
             </div>
 
             <div className="flex items-center gap-3">
+              <Link
+                href="/admin/attendees"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#F97316] to-amber-500 hover:from-[#ea580c] hover:to-amber-600 text-white text-xs font-bold shadow-md transition"
+              >
+                <Users className="h-4 w-4" />
+                <span>Attendees & Bookings</span>
+              </Link>
+
               <button
                 type="button"
                 onClick={loadPlatformData}

@@ -111,6 +111,23 @@ Join over 3,000 executive leaders, founders, AI researchers, and solution archit
         features: ['VIP Front Row Seating', 'Exclusive Speaker Dinner Access', 'Priority Fast-Track Entry', 'All Session Video Replays'],
         isPopular: false,
       },
+      {
+        id: 'tkt-ai-workshop-lab',
+        name: 'Hands-on AI Workshop Intensive',
+        description: 'Deep-dive LLM prompt engineering, fine-tuning and agent architecture lab. Currently sold out — waitlist open.',
+        price: 3499,
+        originalPrice: 3499,
+        quantity: 80,
+        remainingQuantity: 0,
+        minPerOrder: 1,
+        maxPerOrder: 2,
+        category: 'Workshop',
+        isWaitlist: true,
+        isTransferrable: true,
+        isRefundable: true,
+        features: ['Dedicated GPU Sandbox Access', 'Code Repos & Colab Notebooks', 'Certificate of Workshop Attendance', '1-on-1 Mentor Support'],
+        isPopular: false,
+      },
     ],
     speakers: [
       {
@@ -1584,8 +1601,42 @@ export function recordEditedEvent(event: EventItem): EventItem {
 }
 
 export function getEditedEvent(idOrSlug: string): EventItem | null {
-  if (!globalDataStore.__epay_edited_events__) return null;
-  return globalDataStore.__epay_edited_events__[idOrSlug] || null;
+  if (!idOrSlug) return null;
+  const norm = idOrSlug.toLowerCase().trim();
+
+  // 1. Check in-memory store
+  if (globalDataStore.__epay_edited_events__) {
+    if (globalDataStore.__epay_edited_events__[idOrSlug]) return globalDataStore.__epay_edited_events__[idOrSlug];
+    if (globalDataStore.__epay_edited_events__[norm]) return globalDataStore.__epay_edited_events__[norm];
+    const found = Object.values(globalDataStore.__epay_edited_events__).find(e => 
+      (e.id && e.id.toLowerCase() === norm) || 
+      (e.slug && e.slug.toLowerCase() === norm) ||
+      (e.title && e.title.toLowerCase() === norm)
+    );
+    if (found) return found;
+  }
+
+  // 2. Check localStorage in browser context
+  if (typeof window !== 'undefined') {
+    try {
+      const raw = localStorage.getItem(LOCAL_STORAGE_EVENTS_KEY);
+      if (raw) {
+        const map = JSON.parse(raw);
+        if (typeof map === 'object' && map !== null) {
+          if (map[idOrSlug]) return map[idOrSlug];
+          if (map[norm]) return map[norm];
+          const foundLocal = Object.values(map).find((e: any) => 
+            (e?.id && String(e.id).toLowerCase() === norm) || 
+            (e?.slug && String(e.slug).toLowerCase() === norm) ||
+            (e?.title && String(e.title).toLowerCase() === norm)
+          );
+          if (foundLocal) return foundLocal as EventItem;
+        }
+      }
+    } catch {}
+  }
+
+  return null;
 }
 
 export function saveLocalPersistedEvent(event: EventItem): void {

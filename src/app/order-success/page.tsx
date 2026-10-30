@@ -26,6 +26,7 @@ function OrderSuccessContent() {
   const eventTitle = searchParams.get('eventTitle') || 'ePay Global FinTech Summit 2026';
   const venue = searchParams.get('venue') || 'International Tech Convention Center';
   const approvalRequired = searchParams.get('approvalRequired') === 'yes';
+  const reservedSeats = searchParams.get('seats') || '';
 
   const eventId = searchParams.get('eventId') || 'evt-1';
   const rawQrPayload = searchParams.get('qrPayload');
@@ -188,6 +189,14 @@ function OrderSuccessContent() {
             <div className="space-y-2.5 text-xs text-slate-300 w-full sm:w-auto">
               <p><strong>Primary Attendee:</strong> {buyerName} ({buyerPhone})</p>
               <p><strong>Unique Ticket ID:</strong> <span className="font-mono text-cyan-300 font-bold">{ticketCode}</span></p>
+              {reservedSeats && (
+                <p>
+                  <strong>Reserved Seats:</strong>{' '}
+                  <span className="font-mono font-bold text-amber-300 bg-amber-950/60 border border-amber-800/80 px-2 py-0.5 rounded-md inline-block">
+                    {reservedSeats.split(',').map(s => s.replace('VIP-', '').replace('PREM-', '').replace('STD-', '')).join(', ')}
+                  </span>
+                </p>
+              )}
               <p><strong>Pass Count:</strong> {qty} Pass</p>
               <p><strong>Amount Paid:</strong> ₹{total}</p>
               <p>

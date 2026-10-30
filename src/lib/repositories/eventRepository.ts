@@ -143,10 +143,22 @@ export function mapDbRowToEventItem(row: any): EventItem {
     contactEmail: 'contact@epayevents.com',
   };
 
+  const venueName = typeof row.venue === 'object' && row.venue !== null
+    ? (row.venue.name || 'Main Venue')
+    : (row.venue || (row.is_online ? 'Online Event' : 'Main Venue'));
+
+  const venueCity = typeof row.venue === 'object' && row.venue !== null
+    ? (row.venue.city || row.city || 'Mumbai')
+    : (row.city || (row.is_online ? 'Virtual' : 'Mumbai'));
+
+  const venueAddress = typeof row.venue === 'object' && row.venue !== null
+    ? (row.venue.address || row.address || '')
+    : (row.address || '');
+
   const venue: EventVenue = {
-    name: row.venue || (row.is_online ? 'Online Event' : 'Main Venue'),
-    address: row.address || '',
-    city: row.city || (row.is_online ? 'Virtual' : 'Mumbai'),
+    name: venueName,
+    address: venueAddress,
+    city: venueCity,
     country: 'India',
   };
 
@@ -463,7 +475,7 @@ export async function getEventBySlug(slug: string): Promise<EventItem | null> {
               description: t.description || 'Standard pass',
               price: Number(t.price) || 0,
               quantity: 200,
-              remainingQuantity: 200,
+              remainingQuantity: (t.remaining_quantity !== undefined && t.remaining_quantity !== null) ? Number(t.remaining_quantity) : 200,
               minPerOrder: 1,
               maxPerOrder: 5,
               category: 'General',
@@ -472,6 +484,21 @@ export async function getEventBySlug(slug: string): Promise<EventItem | null> {
           }
         } catch (tErr) {
           console.warn('[eventRepository] Could not fetch tickets table:', tErr);
+        }
+
+        // Merge with local static ticketTypes if available so waitlist/custom tiers from mock are preserved
+        const localMatch = getAllEvents().find(e => e.slug === data.slug || e.id === data.id);
+        if (localMatch && Array.isArray(localMatch.ticketTypes) && localMatch.ticketTypes.length > 0) {
+          if (!mapped.ticketTypes || mapped.ticketTypes.length === 0) {
+            mapped.ticketTypes = localMatch.ticketTypes;
+          } else {
+            // Include any rich tiers like waitlist workshops from local definition
+            localMatch.ticketTypes.forEach(lt => {
+              if (!mapped.ticketTypes.some(mt => mt.id === lt.id || mt.name === lt.name)) {
+                mapped.ticketTypes.push(lt);
+              }
+            });
+          }
         }
 
         const effectiveEdited = edited || (data?.id ? getEditedEvent(String(data.id)) : null);
@@ -489,13 +516,20 @@ export async function getEventBySlug(slug: string): Promise<EventItem | null> {
   // Fallback to local store (search by slug or id or loose slug match or title)
   const all = getAllEvents();
   const normalizedSlug = slug.toLowerCase().trim();
-  return all.find(e => 
-    e.slug.toLowerCase() === normalizedSlug || 
-    e.id.toLowerCase() === normalizedSlug ||
+  const match = all.find(e => 
+    (e.slug && e.slug.toLowerCase() === normalizedSlug) || 
+    (e.id && String(e.id).toLowerCase() === normalizedSlug) ||
     generateSlug(e.title) === normalizedSlug ||
     e.title.toLowerCase() === normalizedSlug ||
     e.title.toLowerCase().includes(normalizedSlug.replace(/-/g, ' '))
-  ) || null;
+  );
+  if (match) return match;
+
+  // Also check if any persisted event in memory or localStorage has this title or slug
+  const publishedMem = getEditedEvent(normalizedSlug);
+  if (publishedMem) return publishedMem;
+
+  return null;
 }
 
 /**
@@ -516,7 +550,7 @@ export async function getEventById(id: string): Promise<EventItem | null> {
 
       if (!error && data) {
         const mapped = mapDbRowToEventItem(data);
-        const effectiveEdited = edited || (mapped.slug ? getEditedEvent(mapped.slug) : null);
+        const effectiveEdited = edited || getEditedEvent(String(data.id)) || (mapped.slug ? getEditedEvent(mapped.slug) : null);
         const finalItem = effectiveEdited ? { ...mapped, ...effectiveEdited } : mapped;
         addPublishedEvent(finalItem);
         return finalItem;
@@ -587,18 +621,18 @@ export async function createEvent(data: Partial<EventItem> | any): Promise<Event
     featured: Boolean(data.featured ?? true),
     category,
     organization: {
-      id: data.organization?.id || `org-${Date.now()}`,
+      id: data.organizerId || data.organizer_id || data.userId || data.organization?.id || `org-${Date.now()}`,
       name: data.organizerName || data.organization?.name || 'ePayEvents Organizer',
       slug: generateSlug(data.organizerName || data.organization?.name || 'organizer'),
       verified: true,
       contactEmail: data.organizerEmail || data.organization?.contactEmail || 'organizer@epayevents.com',
-      avatar: '/team/rahul.jpg',
+      avatar: data.organizerAvatar || data.organization?.avatar || '/team/rahul.jpg',
       bio: data.organizerBio || data.organization?.bio || 'Event host on ePayEvents platform',
     },
     venue: {
-      name: data.venueName || data.venue?.name || (data.isOnline ? 'Online Event' : 'Main Venue'),
-      address: data.address || data.venue?.address || (data.isOnline ? 'Virtual' : 'Event Center'),
-      city: data.city || data.venue?.city || (data.isOnline ? 'Virtual' : 'Mumbai'),
+      name: data.venueName || data.venue?.name || data.venue || (data.eventType === 'online' || data.isOnline ? 'Online Event' : 'Main Venue'),
+      address: data.address || data.venue?.address || (data.eventType === 'online' || data.isOnline ? 'Virtual' : ''),
+      city: data.city || data.venue?.city || (data.eventType === 'online' || data.isOnline ? 'Virtual' : 'Mumbai'),
       country: 'India',
       onlineUrl: data.onlineUrl || data.venue?.onlineUrl,
     },
@@ -637,46 +671,79 @@ export async function createEvent(data: Partial<EventItem> | any): Promise<Event
       const supabase = createAdminClient();
 
       // Step A: Save organizer details to the organizers table
-      let organizerId: string | null = null;
-      try {
-        const orgName = data.organizerName || fullEventItem.organization?.name || 'ePay Organizer';
-        const orgEmail = data.organizerEmail || fullEventItem.organization?.contactEmail || '';
-        const orgPhone = data.organizerPhone || data.phone || '';
-        const orgLogo = data.organizerAvatar || fullEventItem.organization?.avatar || '/team/rahul.jpg';
+      let organizerId: string | null = data.organizerId || data.organizer_id || data.userId || null;
+      if (!organizerId) {
+        try {
+          const orgName = data.organizerName || fullEventItem.organization?.name || 'ePay Organizer';
+          const orgEmail = data.organizerEmail || fullEventItem.organization?.contactEmail || '';
+          const orgPhone = data.organizerPhone || data.phone || '';
+          const orgLogo = data.organizerAvatar || fullEventItem.organization?.avatar || '/team/rahul.jpg';
 
-        const { data: orgData, error: orgError } = await supabase
-          .from('organizers')
-          .insert([{
-            name: orgName,
-            email: orgEmail,
-            phone: orgPhone,
-            logo: orgLogo,
-          }])
-          .select()
-          .single();
+          const { data: orgData, error: orgError } = await supabase
+            .from('organizers')
+            .insert([{
+              name: orgName,
+              email: orgEmail,
+              phone: orgPhone,
+              logo: orgLogo,
+            }])
+            .select()
+            .single();
 
-        if (!orgError && orgData) {
-          organizerId = orgData.id;
-          console.log(`[eventRepository] Saved organizer "${orgName}" to organizers table (ID: ${orgData.id})`);
-        } else if (orgError) {
-          console.warn('[eventRepository] Organizers table notice:', orgError.message);
+          if (!orgError && orgData) {
+            organizerId = orgData.id;
+            console.log(`[eventRepository] Saved organizer "${orgName}" to organizers table (ID: ${orgData.id})`);
+          } else if (orgError) {
+            console.warn('[eventRepository] Organizers table notice:', orgError.message);
+          }
+        } catch (orgErr) {
+          console.warn('[eventRepository] Error saving organizer:', orgErr);
         }
-      } catch (orgErr) {
-        console.warn('[eventRepository] Error saving organizer:', orgErr);
       }
 
-      // Step B: Insert into events table with linked organizer_id
+      // Step B: Insert into events table
       const dbPayload = mapEventItemToDbRow(fullEventItem);
-      if (organizerId) {
+      // Only include organizer_id if it's a valid uuid, otherwise omit so foreign key doesn't fail
+      const isUuid = (val: any) => typeof val === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val);
+      if (organizerId && isUuid(organizerId)) {
         dbPayload.organizer_id = organizerId;
       }
 
       console.log('[eventRepository] Attempting insert to Supabase events table:', dbPayload);
-      const { data: inserted, error } = await supabase
+      
+      // Try insert with full mapped row first
+      let { data: inserted, error } = await supabase
         .from('events')
         .insert([dbPayload])
         .select()
         .single();
+
+      // If full insert failed due to extra/unrecognized columns, fallback to standard core columns
+      if (error) {
+        console.warn(`[eventRepository] Full row insert notice: ${error.message}. Retrying with core columns...`);
+        const corePayload = {
+          title: fullEventItem.title,
+          slug: fullEventItem.slug,
+          date: cleanStartDate,
+          category: typeof fullEventItem.category === 'object' ? fullEventItem.category.name : fullEventItem.category,
+          status: 'published',
+          description: fullEventItem.description || '',
+          cover_image: fullEventItem.bannerUrl || '',
+          venue: typeof fullEventItem.venue === 'object' ? fullEventItem.venue?.name : fullEventItem.venue,
+          city: typeof fullEventItem.venue === 'object' ? fullEventItem.venue?.city : (fullEventItem as any).city,
+          starting_price: Number(data.startingPrice) || (fullEventItem.ticketTypes?.[0]?.price ?? 499),
+          is_online: fullEventItem.eventType === 'online',
+        };
+
+        const retryRes = await supabase
+          .from('events')
+          .insert([corePayload])
+          .select()
+          .single();
+
+        inserted = retryRes.data;
+        error = retryRes.error;
+      }
 
       if (!error && inserted) {
         console.log(`[eventRepository] Successfully inserted event "${inserted.title}" to Supabase (id: ${inserted.id})`);

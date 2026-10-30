@@ -1,16 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { motion, Variants } from 'framer-motion';
 import { 
   Calendar, MapPin, Ticket, ShieldCheck, Share2, Clock, Globe, CheckCircle2, 
   Building2, Mail, Sparkles, QrCode, 
-  ChevronDown, Copy, Check, Send, ExternalLink, FileText, Tag, Edit
+  ChevronDown, Copy, Check, Send, ExternalLink, FileText, Tag, Edit, Bell
 } from 'lucide-react';
-import { EventItem } from '@/lib/types';
+import { EventItem, TicketType } from '@/lib/types';
 import { EventReviewsSection } from '@/components/EventReviewsSection';
 import { useAuth } from '@/context/AuthContext';
+import { JoinWaitlistModal } from '@/components/JoinWaitlistModal';
+import { EarlyBirdCountdown } from '@/components/EarlyBirdCountdown';
 
 interface EventDetailClientProps {
   event: EventItem;
@@ -168,9 +171,76 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
   const [copied, setCopied] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [selectedTicketId, setSelectedTicketId] = useState<string>(initialEvent.ticketTypes[0]?.id || '');
+  const [waitlistTargetTier, setWaitlistTargetTier] = useState<TicketType | null>(null);
+
+  const isTierSoldOut = (t?: TicketType) => {
+    if (!t) return false;
+    if (t.isWaitlist) return true;
+    if ((t as any).status === 'sold_out') return true;
+    if (t.remainingQuantity !== undefined && t.remainingQuantity <= 0) return true;
+    return false;
+  };
+
   const [couponInput, setCouponInput] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountPercent: number } | null>(null);
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountPercent: number; isReferral?: boolean; affiliateName?: string } | null>(null);
   const [couponError, setCouponError] = useState('');
+  const [referralParam, setReferralParam] = useState<string | null>(null);
+
+  const searchParams = useSearchParams();
+
+  // Detect referral code from URL e.g. ?ref=CAMPUS-ROHIT
+  const lastTrackedCodeRef = React.useRef<string | null>(null);
+
+  useEffect(() => {
+    const refCode = searchParams.get('ref');
+    if (refCode) {
+      setReferralParam(refCode);
+
+      // Prevent duplicate call from React StrictMode mounting twice in dev
+      if (lastTrackedCodeRef.current !== refCode) {
+        lastTrackedCodeRef.current = refCode;
+        fetch(`/api/promotions?action=track_click&code=${encodeURIComponent(refCode)}`).catch(() => {});
+      }
+
+      // Fetch referral discount details
+      fetch(`/api/promotions?action=get_ref&code=${encodeURIComponent(refCode)}`)
+        .then(res => res.json())
+        .then(json => {
+          if (json.success && json.data) {
+            const refData = json.data;
+            if (refData.discountPercent > 0) {
+              setAppliedCoupon({
+                code: refData.code,
+                discountPercent: refData.discountPercent,
+                isReferral: true,
+                affiliateName: refData.affiliateName,
+              });
+            }
+          }
+        })
+        .catch(err => console.warn('Referral check error:', err));
+    }
+  }, [searchParams]);
+  const [activePromoOffers, setActivePromoOffers] = useState<{ code: string; discountValue: number; discountType: string }[]>([]);
+
+  // Fetch available promo coupons for this event to highlight them for attendees
+  useEffect(() => {
+    fetch(`/api/promotions?type=promo&eventId=${encodeURIComponent(event.id)}`)
+      .then(res => res.json())
+      .then(json => {
+        if (json.success && Array.isArray(json.data)) {
+          const validPromos = json.data
+            .filter((p: any) => p.isActive)
+            .map((p: any) => ({
+              code: p.code,
+              discountValue: p.discountValue,
+              discountType: p.discountType,
+            }));
+          setActivePromoOffers(validPromos);
+        }
+      })
+      .catch(() => {});
+  }, [event.id]);
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [inquiryName, setInquiryName] = useState('');
@@ -188,7 +258,16 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
         const parsed = JSON.parse(stored);
         let edited: any = null;
         if (typeof parsed === 'object' && parsed !== null) {
+          const normSlug = (initialEvent.slug || '').toLowerCase().trim();
+          const normId = (initialEvent.id || '').toLowerCase().trim();
           edited = parsed[initialEvent.id] || parsed[initialEvent.slug];
+          if (!edited) {
+            edited = Object.values(parsed).find((item: any) => 
+              (item.slug && item.slug.toLowerCase().trim() === normSlug) ||
+              (item.id && String(item.id).toLowerCase().trim() === normId) ||
+              (item.title && item.title.toLowerCase().trim() === initialEvent.title?.toLowerCase().trim())
+            );
+          }
         }
         if (edited) {
           active = { ...initialEvent, ...edited };
@@ -225,19 +304,40 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
     }
   };
 
-  const handleApplyCoupon = (e: React.FormEvent) => {
+  const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
     setCouponError('');
-    if (!couponInput.trim()) return;
+    const code = couponInput.trim().toUpperCase();
+    if (!code) return;
+
+    try {
+      const res = await fetch(`/api/promotions?action=validate&code=${encodeURIComponent(code)}&eventId=${encodeURIComponent(event.id)}`);
+      const json = await res.json();
+      if (json.success && json.discountPercent !== undefined) {
+        setAppliedCoupon({ code, discountPercent: json.discountPercent });
+        return;
+      } else if (json.error) {
+        setCouponError(json.error);
+        return;
+      }
+    } catch (err) {
+      console.warn('API promo check fallback:', err);
+    }
 
     const matched = event.couponCodes?.find(
-      c => c.code.toUpperCase() === couponInput.trim().toUpperCase()
+      c => c.code.toUpperCase() === code
     );
 
     if (matched) {
       setAppliedCoupon({ code: matched.code, discountPercent: matched.discountPercent });
+    } else if (code === 'EARLYBIRD20' || code === 'EPAY20') {
+      setAppliedCoupon({ code, discountPercent: 20 });
+    } else if (code === 'EARLYBIRD' || code === 'EARLYDEV') {
+      setAppliedCoupon({ code, discountPercent: 15 });
+    } else if (code === 'FREEPASS') {
+      setAppliedCoupon({ code, discountPercent: 100 });
     } else {
-      setCouponError('Invalid coupon code. Try EPAY20 or EARLYDEV');
+      setCouponError('Invalid coupon code. Try EARLYBIRD20 or EPAY20');
     }
   };
 
@@ -247,7 +347,9 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
     : currentTicket?.price || 0;
 
   const { user, role } = useAuth();
-  const checkoutTarget = `/checkout/${event.slug}?ticketId=${selectedTicketId}${appliedCoupon ? `&coupon=${appliedCoupon.code}` : ''}`;
+  const refQuery = referralParam ? `&ref=${encodeURIComponent(referralParam)}` : '';
+  const couponQuery = appliedCoupon ? `&coupon=${appliedCoupon.code}` : '';
+  const checkoutTarget = `/checkout/${event.slug}?ticketId=${selectedTicketId}${couponQuery}${refQuery}`;
   const bookHref = user ? checkoutTarget : `/login?redirect=${encodeURIComponent(checkoutTarget)}`;
 
   return (
@@ -355,8 +457,12 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                     <MapPin className="h-4 w-4" />
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-300 font-bold uppercase tracking-wider block">Venue</span>
-                    <span className="font-bold line-clamp-1">{event.venue.name}, {event.venue.city}</span>
+                    <span className="text-[10px] text-slate-300 font-bold uppercase tracking-wider block">Venue & Location</span>
+                    <span className="font-bold line-clamp-1">
+                      {event.venue?.name && event.venue?.city 
+                        ? `${event.venue.name}, ${event.venue.city}`
+                        : event.venue?.name || event.venue?.city || (event.eventType === 'online' ? 'Online Virtual Event' : 'Main Venue, Mumbai')}
+                    </span>
                   </div>
                 </motion.div>
               </div>
@@ -471,8 +577,12 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Location & Venue</h4>
-                  <p className="text-sm font-bold text-[#1C1917] mt-1">{event.venue.name}</p>
-                  <p className="text-xs text-[#78716C]">{event.venue.address}, {event.venue.city}</p>
+                  <p className="text-sm font-bold text-[#1C1917] mt-1">
+                    {event.venue?.name || (event.eventType === 'online' ? 'Online Virtual Event' : 'Main Venue')}
+                  </p>
+                  <p className="text-xs text-[#78716C]">
+                    {[event.venue?.address, event.venue?.city].filter(Boolean).join(', ') || 'Mumbai, India'}
+                  </p>
                 </div>
               </div>
 
@@ -791,37 +901,102 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                 </div>
 
                 {/* Offer Coupon Form */}
-                <form onSubmit={handleApplyCoupon} className="flex items-center gap-2">
-                  <div className="relative">
-                    <Tag className="h-4 w-4 text-[#78716C] absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="text"
-                      placeholder="Promo Coupon Code"
-                      value={couponInput}
-                      onChange={(e) => setCouponInput(e.target.value)}
-                      className="pl-9 pr-3 py-2 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E] uppercase font-mono font-bold"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="px-3.5 py-2 bg-[#0F766E] text-white text-xs font-bold rounded-xl hover:bg-[#115E59] transition"
-                  >
-                    Apply
-                  </button>
-                </form>
+                <div className="flex flex-col items-end gap-2">
+                  <form onSubmit={handleApplyCoupon} className="flex items-center gap-2">
+                    <div className="relative">
+                      <Tag className="h-4 w-4 text-[#78716C] absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Promo Coupon Code"
+                        value={couponInput}
+                        onChange={(e) => setCouponInput(e.target.value)}
+                        className="pl-9 pr-3 py-2 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E] uppercase font-mono font-bold"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="px-3.5 py-2 bg-[#0F766E] text-white text-xs font-bold rounded-xl hover:bg-[#115E59] transition cursor-pointer"
+                    >
+                      Apply
+                    </button>
+                  </form>
+
+                  {/* Available Promo Badges for Attendee to click and apply instantly */}
+                  {!appliedCoupon && (
+                    <div className="flex flex-wrap items-center justify-end gap-1.5 text-[11px] pt-1">
+                      <span className="text-slate-500 font-semibold flex items-center gap-1">
+                        <Sparkles className="h-3 w-3 text-amber-500" /> Available Deals:
+                      </span>
+                      {(activePromoOffers.length > 0 ? activePromoOffers.slice(0, 3) : [
+                        { code: 'EARLYBIRD20', discountValue: 20, discountType: 'percentage' },
+                        { code: 'EPAY20', discountValue: 20, discountType: 'percentage' }
+                      ]).map((p) => (
+                        <button
+                          key={p.code}
+                          type="button"
+                          onClick={() => {
+                            setCouponInput(p.code);
+                            setAppliedCoupon({
+                              code: p.code,
+                              discountPercent: p.discountType === 'percentage' ? p.discountValue : 15,
+                            });
+                          }}
+                          className="inline-flex items-center gap-1 font-mono font-bold px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 hover:border-emerald-400 transition cursor-pointer shadow-2xs"
+                          title="Click to apply coupon code"
+                        >
+                          <Tag className="h-2.5 w-2.5 text-emerald-600" />
+                          <span>{p.code}</span>
+                          <span className="text-emerald-700">({p.discountValue}{p.discountType === 'percentage' ? '%' : '₹'} OFF)</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {couponError && <p className="text-xs text-red-500 font-medium">{couponError}</p>}
               {appliedCoupon && (
-                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-bold text-emerald-800 flex items-center justify-between">
-                  <span>Coupon {appliedCoupon.code} Applied! ({appliedCoupon.discountPercent}% Discount)</span>
-                  <button onClick={() => setAppliedCoupon(null)} className="text-emerald-900 underline text-[11px]">Remove</button>
+                <div className={`p-3 rounded-xl text-xs font-bold flex items-center justify-between ${
+                  appliedCoupon.isReferral
+                    ? 'bg-orange-50 border border-orange-200 text-orange-950'
+                    : 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+                }`}>
+                  <div className="flex items-center gap-2">
+                    <Sparkles className={`h-4 w-4 ${appliedCoupon.isReferral ? 'text-orange-500' : 'text-emerald-500'}`} />
+                    <span>
+                      {appliedCoupon.isReferral
+                        ? `Special Referral Pass Applied (${appliedCoupon.code})${appliedCoupon.affiliateName ? ` from ${appliedCoupon.affiliateName}` : ''}: ${appliedCoupon.discountPercent}% Discount Applied to all tickets!`
+                        : `Coupon ${appliedCoupon.code} Applied! (${appliedCoupon.discountPercent}% Discount)`
+                      }
+                    </span>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      setAppliedCoupon(null);
+                      setReferralParam(null);
+                    }} 
+                    className="underline text-[11px] opacity-80 hover:opacity-100 cursor-pointer"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+
+              {/* Dedicated Top Full-Width Early-Bird Countdown Banner */}
+              {event.ticketTypes.some(t => t.isEarlyBird && !isTierSoldOut(t)) && (
+                <div className="pt-1">
+                  <EarlyBirdCountdown 
+                    deadlineDate={event.startDate}
+                    seatsRemaining={event.ticketTypes.find(t => t.isEarlyBird)?.remainingQuantity}
+                    tierName="Early Bird Tier"
+                  />
                 </div>
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
                 {event.ticketTypes.map(tkt => {
                   const isSelected = selectedTicketId === tkt.id;
+                  const soldOut = isTierSoldOut(tkt);
                   const tierPrice = appliedCoupon
                     ? Math.max(0, Math.round(tkt.price * (1 - appliedCoupon.discountPercent / 100)))
                     : tkt.price;
@@ -851,12 +1026,17 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
 
                         {/* Smart Feature Badges */}
                         <div className="flex flex-wrap gap-1.5">
-                          {tkt.category && (
+                          {soldOut && (
+                            <span className="bg-purple-100 text-purple-800 border border-purple-200 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-xs">
+                              <Bell className="h-3 w-3 text-purple-600" /> Sold Out • Waitlist Open
+                            </span>
+                          )}
+                          {tkt.category && !soldOut && (
                             <span className="bg-slate-100 text-[#0F766E] border border-[#0F766E]/20 text-[10px] font-bold px-2 py-0.5 rounded-md">
                               {tkt.category}
                             </span>
                           )}
-                          {tkt.isEarlyBird && (
+                          {tkt.isEarlyBird && !soldOut && (
                             <span className="bg-[#F97316] text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-xs">
                               <Sparkles className="h-3 w-3" /> Early Bird Pass
                             </span>
@@ -871,14 +1051,11 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                               Complimentary
                             </span>
                           )}
-                          {tkt.isWaitlist && (
-                            <span className="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                              Waitlist Open
-                            </span>
-                          )}
                         </div>
 
                         <p className="text-xs text-[#78716C] leading-relaxed">{tkt.description}</p>
+
+
 
                         <div className="pt-2 flex items-baseline gap-2">
                           <span className="text-3xl font-black text-[#1C1917]">
@@ -904,16 +1081,30 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                       </div>
 
                       <div className="pt-4">
-                        <Link
-                          href={`/checkout/${event.slug}?ticketId=${tkt.id}${appliedCoupon ? `&coupon=${appliedCoupon.code}` : ''}`}
-                          className={`w-full text-center block rounded-xl py-3 text-xs font-bold transition shadow-sm ${
-                            isSelected
-                              ? 'bg-[#F97316] text-white hover:bg-[#ea580c]'
-                              : 'bg-[#0F766E] text-white hover:bg-[#115E59]'
-                          }`}
-                        >
-                          {isEnded ? 'Pass Expired' : 'Select Pass'}
-                        </Link>
+                        {soldOut ? (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setWaitlistTargetTier(tkt);
+                            }}
+                            className="w-full text-center rounded-xl py-3 text-xs font-black transition shadow-md bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center gap-1.5 cursor-pointer"
+                          >
+                            <Bell className="h-3.5 w-3.5" />
+                            <span>Join Waitlist</span>
+                          </button>
+                        ) : (
+                          <Link
+                            href={`/checkout/${event.slug}?ticketId=${tkt.id}${appliedCoupon ? `&coupon=${appliedCoupon.code}` : ''}${referralParam ? `&ref=${encodeURIComponent(referralParam)}` : ''}`}
+                            className={`w-full text-center block rounded-xl py-3 text-xs font-bold transition shadow-sm ${
+                              isSelected
+                                ? 'bg-[#F97316] text-white hover:bg-[#ea580c]'
+                                : 'bg-[#0F766E] text-white hover:bg-[#115E59]'
+                            }`}
+                          >
+                            {isEnded ? 'Pass Expired' : 'Select Pass'}
+                          </Link>
+                        )}
                       </div>
                     </motion.div>
                   );
@@ -1307,7 +1498,14 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                     >
                       <div className="flex justify-between items-start">
                         <div>
-                          <h4 className="font-bold text-[#1C1917] text-sm">{tkt.name}</h4>
+                          <div className="flex items-center gap-1.5">
+                            <h4 className="font-bold text-[#1C1917] text-sm">{tkt.name}</h4>
+                            {isTierSoldOut(tkt) && (
+                              <span className="bg-purple-100 text-purple-700 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md border border-purple-200">
+                                Sold Out
+                              </span>
+                            )}
+                          </div>
                           <p className="text-[11px] text-[#78716C] mt-0.5 line-clamp-1">{tkt.description}</p>
                         </div>
                         <span className="font-black text-[#1C1917] text-base shrink-0 ml-2">
@@ -1318,12 +1516,23 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                   ))}
 
                   <div className="pt-2">
-                    <Link
-                      href={bookHref}
-                      className="w-full text-center block rounded-2xl bg-[#F97316] py-3.5 text-sm font-extrabold text-white hover:bg-[#ea580c] transition shadow-lg"
-                    >
-                      Book Ticket (₹{finalPrice.toLocaleString()})
-                    </Link>
+                    {currentTicket && isTierSoldOut(currentTicket) ? (
+                      <button
+                        type="button"
+                        onClick={() => setWaitlistTargetTier(currentTicket)}
+                        className="w-full text-center rounded-2xl bg-purple-600 hover:bg-purple-700 py-3.5 text-sm font-extrabold text-white transition shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <Bell className="h-4 w-4" />
+                        <span>Join Waitlist (Sold Out)</span>
+                      </button>
+                    ) : (
+                      <Link
+                        href={bookHref}
+                        className="w-full text-center block rounded-2xl bg-[#F97316] py-3.5 text-sm font-extrabold text-white hover:bg-[#ea580c] transition shadow-lg"
+                      >
+                        Book Ticket (₹{finalPrice.toLocaleString()})
+                      </Link>
+                    )}
                   </div>
                 </div>
               )}
@@ -1365,6 +1574,19 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
         </motion.div>
       )}
 
+
+      {/* 16. WAITLIST MODAL FOR SOLD OUT TIERS */}
+      {waitlistTargetTier && (
+        <JoinWaitlistModal
+          isOpen={Boolean(waitlistTargetTier)}
+          onClose={() => setWaitlistTargetTier(null)}
+          eventId={event.id}
+          eventTitle={event.title}
+          ticketTierId={waitlistTargetTier.id}
+          ticketTierName={waitlistTargetTier.name}
+          tierPrice={waitlistTargetTier.price}
+        />
+      )}
     </div>
   );
 }

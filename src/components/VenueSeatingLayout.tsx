@@ -135,22 +135,22 @@ export function VenueSeatingLayout({
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5 sm:p-6 shadow-xs space-y-5">
+    <div className="bg-white rounded-2xl border border-[#E7E5E4] p-5 sm:p-6 shadow-xs space-y-5">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#E2E8F0] pb-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#E7E5E4] pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-emerald-50 text-[#059669] border border-emerald-200">
+            <span className="p-1.5 rounded-lg bg-teal-50 text-[#0F766E] border border-teal-200">
               <Armchair className="h-4 w-4" />
             </span>
-            <h3 className="font-extrabold text-[#111827] text-base">
+            <h3 className="font-extrabold text-[#1C1917] text-base">
               Interactive Venue Seating Selection
             </h3>
             <span className="bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase px-2 py-0.5 rounded-full border border-emerald-200">
               Live Map
             </span>
           </div>
-          <p className="text-xs text-[#64748B] mt-1">
+          <p className="text-xs text-[#78716C] mt-1">
             Pick your preferred row and seats in real-time. {venueName ? `Venue: ${venueName}` : ''}
           </p>
         </div>
@@ -159,7 +159,7 @@ export function VenueSeatingLayout({
         <div className="flex items-center gap-2 self-stretch sm:self-auto justify-between">
           <div className="text-right">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Seats Chosen</span>
-            <span className="font-mono text-sm font-black text-[#059669]">
+            <span className="font-mono text-sm font-black text-[#0F766E]">
               {selectedSeats.length} {requiredSeatsCount > 0 ? `/ ${requiredSeatsCount} Pass${requiredSeatsCount > 1 ? 'es' : ''}` : 'selected'}
             </span>
           </div>
@@ -186,8 +186,8 @@ export function VenueSeatingLayout({
             <span className="text-[11px] font-bold text-slate-600">Available</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-3.5 h-3.5 rounded-md bg-[#059669] border-2 border-[#059669] inline-block shadow-xs" />
-            <span className="text-[11px] font-bold text-[#059669]">Selected</span>
+            <span className="w-3.5 h-3.5 rounded-md bg-[#0F766E] border-2 border-[#0F766E] inline-block shadow-xs" />
+            <span className="text-[11px] font-bold text-[#0F766E]">Selected</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3.5 h-3.5 rounded-md bg-slate-300 border-2 border-slate-400 inline-block" />
@@ -204,7 +204,7 @@ export function VenueSeatingLayout({
               onClick={() => setActiveZoneFilter(zone)}
               className={`px-2.5 py-1 rounded-lg font-bold transition ${
                 activeZoneFilter === zone
-                  ? 'bg-[#059669] text-white shadow-xs'
+                  ? 'bg-[#0F766E] text-white shadow-xs'
                   : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
               }`}
             >
@@ -217,7 +217,7 @@ export function VenueSeatingLayout({
       {/* Stage Visual Projection */}
       <div className="relative py-3">
         <div className="w-3/4 max-w-md mx-auto text-center">
-          <div className="h-2 rounded-t-full bg-gradient-to-r from-teal-500 via-[#F59E0B] to-teal-500 shadow-md" />
+          <div className="h-2 rounded-t-full bg-gradient-to-r from-teal-500 via-[#F97316] to-teal-500 shadow-md" />
           <div className="bg-gradient-to-b from-slate-100 to-transparent py-1.5 border-b border-dashed border-slate-300">
             <span className="text-[10px] font-black tracking-widest uppercase text-slate-400 flex items-center justify-center gap-1.5">
               <Sparkles className="h-3 w-3 text-amber-500" /> STAGE / SPEAKER PODIUM <Sparkles className="h-3 w-3 text-amber-500" />
@@ -263,12 +263,12 @@ export function VenueSeatingLayout({
                             isBooked
                               ? 'bg-slate-200 text-slate-400 cursor-not-allowed border border-slate-300/80'
                               : isSelected
-                              ? 'bg-[#059669] text-white border-2 border-teal-700 shadow-md scale-105 z-10'
+                              ? 'bg-[#0F766E] text-white border-2 border-teal-800 shadow-md scale-105 z-10'
                               : seat.zone === 'VIP Front Row'
-                              ? 'bg-amber-50 text-amber-900 border border-amber-300 hover:border-[#059669] hover:bg-emerald-50 hover:text-[#059669]'
+                              ? 'bg-amber-50 text-amber-900 border border-amber-300 hover:border-[#0F766E] hover:bg-teal-50 hover:text-[#0F766E]'
                               : seat.zone === 'Premium Center'
-                              ? 'bg-emerald-50 text-blue-900 border border-emerald-200 hover:border-[#059669] hover:bg-emerald-50 hover:text-[#059669]'
-                              : 'bg-white text-slate-700 border border-slate-300 hover:border-[#059669] hover:bg-emerald-50 hover:text-[#059669]'
+                              ? 'bg-blue-50 text-blue-900 border border-blue-200 hover:border-[#0F766E] hover:bg-teal-50 hover:text-[#0F766E]'
+                              : 'bg-white text-slate-700 border border-slate-300 hover:border-[#0F766E] hover:bg-teal-50 hover:text-[#0F766E]'
                           }`}
                           title={`${seat.zone} - Row ${seat.row}, Seat ${seat.number} (₹${seat.price.toLocaleString()})`}
                         >
@@ -297,13 +297,13 @@ export function VenueSeatingLayout({
       </div>
 
       {/* Hovered Seat Info Pill / Quick Inspector */}
-      <div className="bg-[#F9FAFB] p-3 rounded-xl border border-[#E2E8F0] flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs gap-2">
+      <div className="bg-[#FAFAF9] p-3 rounded-xl border border-[#E7E5E4] flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs gap-2">
         <div className="flex items-center gap-2">
-          <Info className="h-4 w-4 text-[#059669] shrink-0" />
+          <Info className="h-4 w-4 text-[#0F766E] shrink-0" />
           {hoveredSeat ? (
             <span className="text-slate-700 font-medium">
               Hovered: <strong>Row {hoveredSeat.row}, Seat {hoveredSeat.number}</strong> • {hoveredSeat.zone} •{' '}
-              <strong className="text-[#059669]">₹{hoveredSeat.price.toLocaleString()}</strong>
+              <strong className="text-[#0F766E]">₹{hoveredSeat.price.toLocaleString()}</strong>
               {hoveredSeat.status === 'booked' ? ' (Already Booked)' : ' (Available)'}
             </span>
           ) : (
@@ -320,7 +320,7 @@ export function VenueSeatingLayout({
             {selectedSeats.map(seatId => (
               <span
                 key={seatId}
-                className="px-2 py-0.5 rounded-md bg-[#059669] text-white font-mono text-[10px] font-bold shadow-2xs"
+                className="px-2 py-0.5 rounded-md bg-[#0F766E] text-white font-mono text-[10px] font-bold shadow-2xs"
               >
                 {seatId.replace('VIP-', '').replace('PREM-', '').replace('STD-', '')}
               </span>

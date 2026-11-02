@@ -3,64 +3,28 @@
 /* css-disable-next-line unknownAtRules */
 /* vscode-css-linter-ignore */
 @theme inline {
-  --color-primary-emerald: #059669;
-  --color-primary-hover: #047857;
-  --color-accent-amber: #F59E0B;
-  --color-accent-hover: #D97706;
-  --color-primary-blue: #059669;
-  --color-primary-indigo: #059669;
-  --color-primary-teal: #059669;
-  --color-dark-teal: #047857;
-  --color-warm-coral: #F59E0B;
-  --color-soft-peach: #FFFBEB;
-  --color-off-white: #F9FAFB;
+  --color-primary-teal: #0F766E;
+  --color-dark-teal: #115E59;
+  --color-warm-coral: #F97316;
+  --color-soft-peach: #FFEDD5;
+  --color-off-white: #FAFAF9;
   --color-pure-white: #FFFFFF;
-  --color-charcoal: #111827;
-  --color-warm-gray: #4B5563;
-  --color-light-stone: #E5E7EB;
+  --color-charcoal: #1C1917;
+  --color-warm-gray: #78716C;
+  --color-light-stone: #E7E5E4;
   --color-success-emerald: #059669;
-  --color-error-rose: #EF4444;
-  --color-deep-slate: #111827;
+  --color-deep-slate: #1E293B;
 }
 
 :root {
-  --background: #F9FAFB;
-  --foreground: #111827;
-  --card: #FFFFFF;
-  --text-primary: #111827;
-  --text-secondary: #4B5563;
-  --border: #E5E7EB;
-  --primary: #059669;
-  --primary-hover: #047857;
-  --accent: #F59E0B;
-  --accent-hover: #D97706;
-  --success: #059669;
-  --error: #EF4444;
+  --background: #FAFAF9;
+  --foreground: #1C1917;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-}
-
-/* Global utility buttons */
-.btn-primary {
-  background-color: #059669;
-  color: #FFFFFF;
-  transition: all 0.2s ease-in-out;
-}
-.btn-primary:hover {
-  background-color: #047857;
-}
-
-.btn-accent {
-  background-color: #F59E0B;
-  color: #FFFFFF;
-  transition: all 0.2s ease-in-out;
-}
-.btn-accent:hover {
-  background-color: #D97706;
 }
 
 @keyframes marquee-scroll {
@@ -72,29 +36,14 @@ body {
   }
 }
 
-@keyframes marquee-scroll-reverse {
-  0% {
-    transform: translateX(-50%);
-  }
-  100% {
-    transform: translateX(0%);
-  }
-}
-
 .animate-marquee {
   display: flex;
   width: max-content;
   animation: marquee-scroll 42s linear infinite;
 }
 
-.animate-marquee-reverse {
-  display: flex;
-  width: max-content;
-  animation: marquee-scroll-reverse 46s linear infinite;
-}
-
 .animate-marquee:hover,
-.animate-marquee-reverse:hover,
 .animate-marquee-paused {
   animation-play-state: paused;
 }
+

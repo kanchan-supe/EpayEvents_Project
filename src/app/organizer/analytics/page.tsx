@@ -512,13 +512,13 @@ export default function OrganizerAnalyticsPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
       <Navbar />
 
       {/* Top Banner / Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-[#0B0F19] via-[#111827] to-[#0B0F19] text-white py-12 md:py-16">
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#059669]/20 rounded-full blur-[130px] pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#F59E0B]/15 rounded-full blur-[130px] pointer-events-none" />
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#0B0F19] via-[#0F172A] to-[#0B0F19] text-white py-12 md:py-16">
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#0F766E]/20 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#F97316]/15 rounded-full blur-[130px] pointer-events-none" />
 
         <div className="container mx-auto px-4 md:px-8 relative z-10 max-w-7xl">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -531,13 +531,13 @@ export default function OrganizerAnalyticsPage() {
                   <ArrowLeft className="h-3.5 w-3.5" />
                   <span>Organizer Dashboard</span>
                 </Link>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#059669]/30 border border-[#059669]/50 text-xs font-bold text-teal-300">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0F766E]/30 border border-[#0F766E]/50 text-xs font-bold text-teal-300">
                   <BarChart3 className="h-3.5 w-3.5" /> Deep Intelligence
                 </span>
               </div>
 
               <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white">
-                Organizer <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-emerald-300 to-[#F59E0B]">Analytics & Attendee Exports</span>
+                Organizer <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-emerald-300 to-[#F97316]">Analytics & Attendee Exports</span>
               </h1>
               <p className="text-slate-400 text-sm mt-1 max-w-2xl">
                 Daily ticket sales velocity, tier distribution curves, and full registration CSV/Excel exports for gate staff.
@@ -558,7 +558,7 @@ export default function OrganizerAnalyticsPage() {
               <button
                 onClick={handleExportCSV}
                 disabled={exportingFormat === 'csv' || filteredAttendees.length === 0}
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#059669] to-emerald-600 hover:from-[#047857] hover:to-emerald-700 px-5 py-2.5 text-xs md:text-sm font-bold text-white shadow-lg hover:shadow-emerald-500/25 transition disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#0F766E] to-emerald-600 hover:from-[#115E59] hover:to-emerald-700 px-5 py-2.5 text-xs md:text-sm font-bold text-white shadow-lg hover:shadow-emerald-500/25 transition disabled:opacity-50"
               >
                 <FileSpreadsheet className="h-4 w-4" />
                 <span>{exportingFormat === 'csv' ? 'Exporting CSV...' : 'Export Attendee CSV'}</span>
@@ -574,7 +574,7 @@ export default function OrganizerAnalyticsPage() {
                 <select
                   value={selectedEventId}
                   onChange={(e) => setSelectedEventId(e.target.value)}
-                  className="w-full bg-[#1E293B] border border-slate-700 text-white text-xs font-bold rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#059669] appearance-none"
+                  className="w-full bg-[#1E293B] border border-slate-700 text-white text-xs font-bold rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0F766E] appearance-none"
                 >
                   <option value="all">🌟 All Hosted Summits & Events</option>
                   {eventsList.map(e => (
@@ -595,7 +595,7 @@ export default function OrganizerAnalyticsPage() {
                   onClick={() => setTimeRange(tf)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                     timeRange === tf
-                      ? 'bg-[#059669] text-white shadow-sm'
+                      ? 'bg-[#0F766E] text-white shadow-sm'
                       : 'bg-white/5 hover:bg-white/10 text-slate-300'
                   }`}
                 >
@@ -623,7 +623,7 @@ export default function OrganizerAnalyticsPage() {
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Tickets Issued</span>
-              <div className="p-3 bg-emerald-50 text-[#059669] rounded-2xl">
+              <div className="p-3 bg-teal-50 text-[#0F766E] rounded-2xl">
                 <Ticket className="h-5 w-5" />
               </div>
             </div>
@@ -664,7 +664,7 @@ export default function OrganizerAnalyticsPage() {
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Gate Check-In Rate</span>
-              <div className="p-3 bg-orange-50 text-[#F59E0B] rounded-2xl">
+              <div className="p-3 bg-orange-50 text-[#F97316] rounded-2xl">
                 <CheckCircle2 className="h-5 w-5" />
               </div>
             </div>
@@ -675,7 +675,7 @@ export default function OrganizerAnalyticsPage() {
               </div>
               <div className="w-full bg-slate-100 rounded-full h-2 mt-2 overflow-hidden">
                 <div 
-                  className="bg-gradient-to-r from-teal-500 to-[#F59E0B] h-full rounded-full transition-all duration-500" 
+                  className="bg-gradient-to-r from-teal-500 to-[#F97316] h-full rounded-full transition-all duration-500" 
                   style={{ width: `${Math.min(metrics.checkinRate, 100)}%` }}
                 />
               </div>
@@ -719,7 +719,7 @@ export default function OrganizerAnalyticsPage() {
               <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-3.5">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest bg-gradient-to-r from-[#059669] to-teal-500 text-white flex items-center gap-1 shadow-sm">
+                    <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest bg-gradient-to-r from-[#0F766E] to-teal-500 text-white flex items-center gap-1 shadow-sm">
                       <Gamepad2 className="h-2.5 w-2.5" /> XP VELOCITY ENGINE
                     </span>
                     <span className="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-300 flex items-center gap-1">
@@ -728,7 +728,7 @@ export default function OrganizerAnalyticsPage() {
                   </div>
                   <h3 className="text-lg md:text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
                     <span>Pass Minting Velocity</span>
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-[#F59E0B]">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-[#F97316]">
                       [LVL 99]
                     </span>
                   </h3>
@@ -737,15 +737,15 @@ export default function OrganizerAnalyticsPage() {
 
                 {/* HUD Gamer Status Badges */}
                 <div className="flex items-center gap-2 self-stretch sm:self-auto justify-between sm:justify-end">
-                  <div className="px-2.5 py-1 rounded-xl bg-emerald-50/70 border border-emerald-200 text-right">
-                    <span className="text-[8px] uppercase tracking-wider text-teal-600 font-bold block">Session XP</span>
-                    <span className="font-mono text-xs font-black text-[#059669] flex items-center gap-1">
+                  <div className="px-2.5 py-1 rounded-xl bg-teal-50/70 border border-teal-200 text-right">
+                    <span className="text-[8px] uppercase tracking-wider text-teal-700 font-bold block">Session XP</span>
+                    <span className="font-mono text-xs font-black text-[#0F766E] flex items-center gap-1">
                       <Zap className="h-3 w-3 text-teal-600" /> +{totalVelocitySum * 250} XP
                     </span>
                   </div>
                   <div className="px-2.5 py-1 rounded-xl bg-orange-50 border border-orange-200 text-right">
                     <span className="text-[8px] uppercase tracking-wider text-orange-700 font-bold block">Top Peak</span>
-                    <span className="font-mono text-xs font-black text-[#F59E0B] flex items-center gap-1">
+                    <span className="font-mono text-xs font-black text-[#F97316] flex items-center gap-1">
                       <Trophy className="h-3 w-3" /> {Math.max(...velocityData.map(v => v.count), 0)} Passes
                     </span>
                   </div>
@@ -799,7 +799,7 @@ export default function OrganizerAnalyticsPage() {
                                 initial={{ scale: 0 }}
                                 animate={{ scale: [1, 1.2, 1] }}
                                 transition={{ repeat: Infinity, duration: 2 }}
-                                className="mb-1 text-[#F59E0B] drop-shadow-sm"
+                                className="mb-1 text-[#F97316] drop-shadow-sm"
                               >
                                 <Flame className="h-3.5 w-3.5" />
                               </motion.div>
@@ -811,8 +811,8 @@ export default function OrganizerAnalyticsPage() {
                               <div 
                                 className={`absolute inset-x-0 bottom-0 rounded-t-lg blur-xs transition-all ${
                                   bar.isPeak 
-                                    ? 'bg-[#F59E0B]/30' 
-                                    : 'bg-emerald-500/20 group-hover:bg-emerald-500/35'
+                                    ? 'bg-[#F97316]/30' 
+                                    : 'bg-teal-500/20 group-hover:bg-teal-500/35'
                                 }`}
                                 style={{ height: `${bar.barHeight}%` }}
                               />
@@ -824,8 +824,8 @@ export default function OrganizerAnalyticsPage() {
                                 transition={{ duration: 0.6, delay: idx * 0.06, ease: "easeOut" }}
                                 className={`w-full rounded-t-lg relative overflow-hidden transition-all duration-300 border-t-2 ${
                                   bar.isPeak
-                                    ? 'bg-gradient-to-t from-[#D97706] via-[#F59E0B] to-[#FDBA74] border-amber-300 shadow-sm'
-                                    : 'bg-gradient-to-t from-[#059669] via-teal-600 to-teal-400 border-emerald-200 group-hover:to-teal-300 shadow-sm'
+                                    ? 'bg-gradient-to-t from-[#EA580C] via-[#F97316] to-[#FDBA74] border-amber-300 shadow-sm'
+                                    : 'bg-gradient-to-t from-[#0F766E] via-teal-600 to-teal-400 border-teal-200 group-hover:to-teal-300 shadow-sm'
                                 }`}
                               >
                                 {/* Futuristic Glass/Scanline Overlay inside bar */}
@@ -843,7 +843,7 @@ export default function OrganizerAnalyticsPage() {
 
                             {/* Bottom X-Axis Date Badge */}
                             <div className="absolute -bottom-6 text-center w-full">
-                              <span className="font-mono text-[9px] font-bold text-slate-600 group-hover:text-teal-600 transition-colors block">
+                              <span className="font-mono text-[9px] font-bold text-slate-600 group-hover:text-teal-700 transition-colors block">
                                 {bar.dayName}
                               </span>
                               <span className="text-[8px] text-slate-400 block -mt-1 font-mono">
@@ -860,12 +860,12 @@ export default function OrganizerAnalyticsPage() {
                 {/* Chart Footer Controller */}
                 <div className="mt-6 pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
                   <div className="flex items-center gap-3">
-                    <span className="flex items-center gap-1.5 text-emerald-700 font-mono text-[10px] font-bold">
-                      <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-[#059669] to-teal-400 border border-teal-300 inline-block" />
+                    <span className="flex items-center gap-1.5 text-teal-800 font-mono text-[10px] font-bold">
+                      <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-[#0F766E] to-teal-400 border border-teal-300 inline-block" />
                       REGULAR PASSES
                     </span>
                     <span className="flex items-center gap-1.5 text-orange-800 font-mono text-[10px] font-bold">
-                      <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-[#D97706] to-[#FDBA74] border border-amber-300 inline-block" />
+                      <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-[#EA580C] to-[#FDBA74] border border-amber-300 inline-block" />
                       PEAK ACCELERATION
                     </span>
                   </div>
@@ -894,7 +894,7 @@ export default function OrganizerAnalyticsPage() {
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
                   <div>
                     <h3 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-1.5">
-                      <PieChart className="h-4 w-4 text-[#F59E0B]" />
+                      <PieChart className="h-4 w-4 text-[#F97316]" />
                       <span>Tier Sales Breakdown</span>
                     </h3>
                     <p className="text-[11px] text-slate-500">Distribution by VIP, General & Early Bird</p>
@@ -917,7 +917,7 @@ export default function OrganizerAnalyticsPage() {
                       {tierBreakdown.map((tier, idx) => {
                         const colors = [
                           'bg-teal-600',
-                          'bg-[#F59E0B]',
+                          'bg-[#F97316]',
                           'bg-indigo-600',
                           'bg-emerald-500',
                           'bg-amber-500',
@@ -941,9 +941,9 @@ export default function OrganizerAnalyticsPage() {
                 <div className="mt-3 space-y-2 flex-1 max-h-[260px] overflow-y-auto pr-1">
                   {tierBreakdown.map((tier, idx) => {
                     const colorPalettes = [
-                      { dot: 'bg-emerald-500', bar: 'bg-gradient-to-r from-teal-500 to-teal-600', text: 'text-teal-600', bg: 'bg-emerald-50/50', border: 'border-emerald-200/60', badge: 'bg-teal-100/70 text-emerald-700' },
+                      { dot: 'bg-teal-500', bar: 'bg-gradient-to-r from-teal-500 to-teal-600', text: 'text-teal-700', bg: 'bg-teal-50/50', border: 'border-teal-200/60', badge: 'bg-teal-100/70 text-teal-800' },
                       { dot: 'bg-orange-500', bar: 'bg-gradient-to-r from-orange-500 to-orange-600', text: 'text-orange-700', bg: 'bg-orange-50/50', border: 'border-orange-200/60', badge: 'bg-orange-100/70 text-orange-800' },
-                      { dot: 'bg-emerald-500', bar: 'bg-gradient-to-r from-indigo-500 to-indigo-600', text: 'text-emerald-800', bg: 'bg-emerald-50/50', border: 'border-emerald-200/60', badge: 'bg-indigo-100/70 text-indigo-800' },
+                      { dot: 'bg-indigo-500', bar: 'bg-gradient-to-r from-indigo-500 to-indigo-600', text: 'text-indigo-700', bg: 'bg-indigo-50/50', border: 'border-indigo-200/60', badge: 'bg-indigo-100/70 text-indigo-800' },
                       { dot: 'bg-emerald-500', bar: 'bg-gradient-to-r from-emerald-500 to-emerald-600', text: 'text-emerald-700', bg: 'bg-emerald-50/50', border: 'border-emerald-200/60', badge: 'bg-emerald-100/70 text-emerald-800' },
                       { dot: 'bg-amber-500', bar: 'bg-gradient-to-r from-amber-500 to-amber-600', text: 'text-amber-700', bg: 'bg-amber-50/50', border: 'border-amber-200/60', badge: 'bg-amber-100/70 text-amber-800' },
                       { dot: 'bg-rose-500', bar: 'bg-gradient-to-r from-rose-500 to-rose-600', text: 'text-rose-700', bg: 'bg-rose-50/50', border: 'border-rose-200/60', badge: 'bg-rose-100/70 text-rose-800' },
@@ -1017,7 +1017,7 @@ export default function OrganizerAnalyticsPage() {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-orange-100 text-orange-800 border border-orange-200 flex items-center gap-1">
-                  <Clock className="h-3 w-3 text-[#F59E0B]" /> HOURLY RUSH PATTERNS
+                  <Clock className="h-3 w-3 text-[#F97316]" /> HOURLY RUSH PATTERNS
                 </span>
                 <span className="text-[10px] text-slate-400 font-medium">Turnstile sensor logs</span>
               </div>
@@ -1034,7 +1034,7 @@ export default function OrganizerAnalyticsPage() {
                 <span className="w-2 h-2 rounded-full bg-amber-400" /> Moderate
               </span>
               <span className="flex items-center gap-1 text-slate-600">
-                <span className="w-2 h-2 rounded-full bg-[#D97706]" /> Peak Rush
+                <span className="w-2 h-2 rounded-full bg-[#EA580C]" /> Peak Rush
               </span>
             </div>
           </div>
@@ -1043,7 +1043,7 @@ export default function OrganizerAnalyticsPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
             {[
               { time: '08:00 - 09:00 AM', status: 'Calm', count: 42, color: 'bg-emerald-50 border-emerald-200 text-emerald-800', badge: 'bg-emerald-500' },
-              { time: '09:00 - 10:00 AM', status: 'Peak Rush', count: 318, color: 'bg-orange-50 border-orange-300 text-orange-900 ring-1 ring-orange-400/40', badge: 'bg-[#D97706]' },
+              { time: '09:00 - 10:00 AM', status: 'Peak Rush', count: 318, color: 'bg-orange-50 border-orange-300 text-orange-900 ring-1 ring-orange-400/40', badge: 'bg-[#EA580C]' },
               { time: '10:00 - 11:00 AM', status: 'Heavy', count: 215, color: 'bg-amber-50 border-amber-300 text-amber-900', badge: 'bg-amber-500' },
               { time: '11:00 - 01:00 PM', status: 'Moderate', count: 98, color: 'bg-amber-50/70 border-amber-200 text-amber-800', badge: 'bg-amber-400' },
               { time: '01:00 - 03:00 PM', status: 'Calm', count: 34, color: 'bg-emerald-50 border-emerald-200 text-emerald-800', badge: 'bg-emerald-500' },
@@ -1070,7 +1070,7 @@ export default function OrganizerAnalyticsPage() {
           {/* Ground Staff Advice Footer */}
           <div className="bg-slate-50 rounded-2xl p-3 border border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-slate-600 gap-2">
             <div className="flex items-center gap-2">
-              <span className="p-1 rounded-lg bg-orange-100 text-[#F59E0B]">
+              <span className="p-1 rounded-lg bg-orange-100 text-[#F97316]">
                 <Flame className="h-3.5 w-3.5" />
               </span>
               <span>
@@ -1099,7 +1099,7 @@ export default function OrganizerAnalyticsPage() {
                 disabled={exportingFormat === 'csv' || filteredAttendees.length === 0}
                 className="rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2.5 text-xs font-bold text-slate-700 flex items-center gap-2 shadow-sm transition"
               >
-                <Download className="h-3.5 w-3.5 text-[#059669]" />
+                <Download className="h-3.5 w-3.5 text-[#0F766E]" />
                 <span>Export CSV ({filteredAttendees.length})</span>
               </button>
             </div>
@@ -1114,14 +1114,14 @@ export default function OrganizerAnalyticsPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search by name, email, or ticket code..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#059669]"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#0F766E]"
               />
             </div>
 
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-[#059669]"
+              className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-[#0F766E]"
             >
               <option value="all">All Gate Statuses</option>
               <option value="checked_in">Checked In</option>
@@ -1133,7 +1133,7 @@ export default function OrganizerAnalyticsPage() {
             <select
               value={tierFilter}
               onChange={(e) => setTierFilter(e.target.value)}
-              className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-[#059669]"
+              className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-[#0F766E]"
             >
               <option value="all">All Ticket Tiers</option>
               {uniqueTiers.map(t => (
@@ -1145,7 +1145,7 @@ export default function OrganizerAnalyticsPage() {
           {/* Table */}
           <div className="overflow-x-auto rounded-2xl border border-slate-100">
             <table className="w-full text-left text-xs text-slate-600">
-              <thead className="bg-[#F9FAFB] text-slate-700 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
+              <thead className="bg-[#FAFAF9] text-slate-700 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
                 <tr>
                   <th className="p-3.5">Ticket Code</th>
                   <th className="p-3.5">Attendee Info</th>
@@ -1165,7 +1165,7 @@ export default function OrganizerAnalyticsPage() {
                 ) : (
                   filteredAttendees.map((reg) => (
                     <tr key={reg.id} className="hover:bg-slate-50/80 transition">
-                      <td className="p-3.5 font-mono font-bold text-[#059669] text-[11px]">
+                      <td className="p-3.5 font-mono font-bold text-[#0F766E] text-[11px]">
                         <div className="flex items-center gap-1.5">
                           <span>{reg.ticketCode}</span>
                           {reg.isLive && (
@@ -1196,7 +1196,7 @@ export default function OrganizerAnalyticsPage() {
                             <CheckCircle2 className="h-3 w-3" /> Checked In
                           </span>
                         ) : reg.status === 'valid' ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-teal-600 border border-emerald-200">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-600 border border-teal-200">
                             <Clock className="h-3 w-3" /> Ready
                           </span>
                         ) : (

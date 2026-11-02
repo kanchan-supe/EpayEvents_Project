@@ -248,7 +248,7 @@ export default function MyTicketsPage() {
         qrDataUrl = await toDataURLFn(payload, {
           width: 400,
           margin: 1,
-          color: { dark: '#111827', light: '#ffffff' },
+          color: { dark: '#0f172a', light: '#ffffff' },
           errorCorrectionLevel: 'M',
         });
       }
@@ -307,7 +307,7 @@ export default function MyTicketsPage() {
               margin: 0;
               padding: 0;
               background: #ffffff;
-              color: #111827;
+              color: #0f172a;
               font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             }
             body {
@@ -318,7 +318,7 @@ export default function MyTicketsPage() {
             .pass-card {
               width: 380px;
               max-width: 90vw;
-              border: 2px solid #059669;
+              border: 2px solid #0f766e;
               border-radius: 20px;
               overflow: hidden;
               box-shadow: 0 4px 12px rgba(0,0,0,0.05);
@@ -327,13 +327,13 @@ export default function MyTicketsPage() {
               break-inside: avoid;
             }
             .pass-header {
-              background: #111827 !important;
+              background: #0f172a !important;
               color: #ffffff !important;
               padding: 16px 20px;
               display: flex;
               align-items: center;
               justify-content: space-between;
-              border-bottom: 2px solid #059669;
+              border-bottom: 2px solid #0f766e;
             }
             .pass-header h3 {
               font-size: 15px;
@@ -349,7 +349,7 @@ export default function MyTicketsPage() {
             .verified-badge {
               font-size: 10px;
               font-weight: 800;
-              background: #059669 !important;
+              background: #0f766e !important;
               color: #ffffff !important;
               padding: 4px 10px;
               border-radius: 8px;
@@ -362,14 +362,14 @@ export default function MyTicketsPage() {
             .event-title {
               font-size: 17px;
               font-weight: 900;
-              color: #111827;
+              color: #0f172a;
               line-height: 1.3;
               margin-bottom: 6px;
             }
             .tier-tag {
               display: inline-block;
               background: #f1f5f9 !important;
-              color: #059669 !important;
+              color: #0f766e !important;
               border: 1px solid #cbd5e1;
               padding: 3px 12px;
               border-radius: 999px;
@@ -380,7 +380,7 @@ export default function MyTicketsPage() {
             .qr-wrapper {
               display: inline-block;
               padding: 12px;
-              border: 2px dashed #059669;
+              border: 2px dashed #0f766e;
               border-radius: 16px;
               margin-bottom: 14px;
               background: #ffffff;
@@ -394,32 +394,32 @@ export default function MyTicketsPage() {
               image-rendering: pixelated;
             }
             .ticket-code-bar {
-              background: #F9FAFB !important;
+              background: #f8fafc !important;
               border: 1px solid #e2e8f0;
               padding: 8px 14px;
               border-radius: 12px;
               font-family: monospace;
               font-size: 13px;
               font-weight: 800;
-              color: #059669;
+              color: #0f766e;
               margin-bottom: 14px;
             }
             .details-box {
-              background: #F9FAFB !important;
+              background: #f8fafc !important;
               border: 1px solid #e2e8f0;
               border-radius: 14px;
               padding: 10px 14px;
               text-align: left;
               font-size: 11px;
               line-height: 1.5;
-              color: #111827;
+              color: #334155;
             }
             .details-box strong {
-              color: #111827;
+              color: #0f172a;
             }
             .pass-footer {
               padding: 10px;
-              background: #F9FAFB !important;
+              background: #f8fafc !important;
               border-top: 1px solid #e2e8f0;
               font-size: 10px;
               color: #64748b;
@@ -430,18 +430,12 @@ export default function MyTicketsPage() {
         </head>
         <body>
           <div class="pass-card">
-            <div class="pass-header" style="background:#111827!important;color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:between;border-bottom:3px solid #059669;">
-              <div style="display:flex;align-items:center;gap:10px;">
-                <svg width="30" height="30" viewBox="0 0 40 40" fill="none">
-                  <path d="M 6 11 C 6 8.238 8.238 6 11 6 L 29 6 C 31.762 6 34 8.238 34 11 C 34 12.657 32.657 14 31 14 C 29.343 14 28 15.343 28 17 C 28 18.657 29.343 20 31 20 C 32.657 20 34 21.343 34 23 L 34 29 C 34 31.762 31.762 34 29 34 L 11 34 C 8.238 34 6 31.762 6 29 L 6 23 C 7.657 23 9 21.657 9 20 C 9 18.343 7.657 17 6 17 C 6 15.343 6 12.657 6 11 Z" fill="#059669"/>
-                  <path d="M 11.5 20 L 14.5 20 L 16.5 15.5 L 19 24.5 L 21.5 13 L 24 22 L 26 18.5 L 28.5 20 L 29.5 20" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <div>
-                  <h3 style="margin:0;font-size:16px;font-weight:900;letter-spacing:-0.5px;"><span style="color:#ffffff;">ePay</span><span style="color:#10b981;">Events</span></h3>
-                  <p style="margin:0;font-size:10px;color:#34d399;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;">Official Gate Entry Pass</p>
-                </div>
+            <div class="pass-header">
+              <div>
+                <h3>Official Gate Entry Pass</h3>
+                <p>Instant Check-in Ready</p>
               </div>
-              <span class="verified-badge" style="background:#059669!important;color:#ffffff;font-size:10px;font-weight:800;padding:4px 10px;border-radius:6px;border:1px solid #10b981;">VERIFIED PASS</span>
+              <span class="verified-badge">VERIFIED</span>
             </div>
 
             <div class="pass-body">
@@ -546,13 +540,13 @@ export default function MyTicketsPage() {
 
   if (authLoading || (!user && loading)) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
+      <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
         <Navbar />
         <main className="flex-1 flex items-center justify-center p-6">
-          <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-sm p-8 text-center max-w-sm w-full space-y-4">
-            <div className="h-8 w-8 border-3 border-[#059669] border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-xs font-bold text-[#111827]">Loading Your Passes...</p>
-            <p className="text-[11px] text-[#64748B]">Retrieving confirmed gate tickets and QR codes</p>
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] shadow-sm p-8 text-center max-w-sm w-full space-y-4">
+            <div className="h-8 w-8 border-3 border-[#0F766E] border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-xs font-bold text-[#1C1917]">Loading Your Passes...</p>
+            <p className="text-[11px] text-[#78716C]">Retrieving confirmed gate tickets and QR codes</p>
           </div>
         </main>
         <Footer />
@@ -561,15 +555,15 @@ export default function MyTicketsPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
+    <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
       <Navbar />
 
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-50/70 via-white to-amber-50/50 text-slate-800 py-10 shadow-md">
+      <div className="bg-gradient-to-r from-[#0F172A] via-[#0F766E] to-[#0F172A] text-white py-10 shadow-md">
         <div className="container mx-auto px-4 md:px-8 max-w-6xl">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F59E0B] text-white text-xs font-bold rounded-full mb-2 shadow-sm">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F97316] text-white text-xs font-bold rounded-full mb-2 shadow-sm">
                 <Ticket className="h-3.5 w-3.5" />
                 <span>Attendee Ticket Vault</span>
               </span>
@@ -581,7 +575,7 @@ export default function MyTicketsPage() {
 
             <Link
               href="/events"
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white text-[#059669] hover:bg-slate-100 text-xs font-extrabold shadow-md transition shrink-0"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white text-[#0F766E] hover:bg-slate-100 text-xs font-extrabold shadow-md transition shrink-0"
             >
               <span>Explore More Events</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -616,14 +610,14 @@ export default function MyTicketsPage() {
         )}
 
         {/* Controls: Tabs & Search Filter */}
-        <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-white p-4 rounded-2xl border border-[#E2E8F0] shadow-sm">
+        <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-white p-4 rounded-2xl border border-[#E7E5E4] shadow-sm">
           {/* Filter Tabs */}
           <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl overflow-x-auto">
             <button
               onClick={() => setActiveTab('all')}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 whitespace-nowrap ${
                 activeTab === 'all'
-                  ? 'bg-white text-[#059669] shadow-sm'
+                  ? 'bg-white text-[#0F766E] shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -637,7 +631,7 @@ export default function MyTicketsPage() {
               onClick={() => setActiveTab('upcoming')}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 whitespace-nowrap ${
                 activeTab === 'upcoming'
-                  ? 'bg-white text-[#059669] shadow-sm'
+                  ? 'bg-white text-[#0F766E] shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -651,7 +645,7 @@ export default function MyTicketsPage() {
               onClick={() => setActiveTab('past')}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 whitespace-nowrap ${
                 activeTab === 'past'
-                  ? 'bg-white text-[#059669] shadow-sm'
+                  ? 'bg-white text-[#0F766E] shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -665,7 +659,7 @@ export default function MyTicketsPage() {
               onClick={() => setActiveTab('inquiries')}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 whitespace-nowrap ${
                 activeTab === 'inquiries'
-                  ? 'bg-white text-[#059669] shadow-sm'
+                  ? 'bg-white text-[#0F766E] shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -689,7 +683,7 @@ export default function MyTicketsPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by event title, ticket code, or city..."
-              className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#059669] bg-[#F9FAFB]"
+              className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#0F766E] bg-[#FAFAF9]"
             />
             {searchQuery && (
               <button 
@@ -710,7 +704,7 @@ export default function MyTicketsPage() {
                 <h3 className="text-lg font-black text-slate-900">Your Submitted Inquiries & Support Messages</h3>
                 <p className="text-xs text-slate-500 mt-0.5">Track questions you have sent to event organizers and view their answers.</p>
               </div>
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-[#059669] border border-emerald-200">
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-teal-50 text-[#0F766E] border border-teal-200">
                 {inquiries.length} Total Queries
               </span>
             </div>
@@ -735,8 +729,8 @@ export default function MyTicketsPage() {
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                         <div className="space-y-0.5">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-extrabold text-[#059669] flex items-center gap-1.5">
-                              <Calendar className="h-3.5 w-3.5 text-[#F59E0B]" /> {inq.eventTitle}
+                            <span className="text-xs font-extrabold text-[#0F766E] flex items-center gap-1.5">
+                              <Calendar className="h-3.5 w-3.5 text-[#F97316]" /> {inq.eventTitle}
                             </span>
                             {isReplied ? (
                               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1">
@@ -774,8 +768,8 @@ export default function MyTicketsPage() {
 
                       {/* Organizer Answer / Reply */}
                       {isReplied ? (
-                        <div className="mt-4 p-4 rounded-2xl bg-gradient-to-r from-teal-50/90 to-emerald-50/70 border border-emerald-200/80 space-y-2">
-                          <div className="flex items-center justify-between text-xs font-bold text-[#059669]">
+                        <div className="mt-4 p-4 rounded-2xl bg-gradient-to-r from-teal-50/90 to-emerald-50/70 border border-teal-200/80 space-y-2">
+                          <div className="flex items-center justify-between text-xs font-bold text-[#0F766E]">
                             <div className="flex items-center gap-2">
                               <CornerDownRight className="h-4 w-4 text-emerald-600 shrink-0" />
                               <span>Organizer / Support Reply:</span>
@@ -806,8 +800,8 @@ export default function MyTicketsPage() {
                 })}
               </div>
             ) : (
-              <div className="bg-white rounded-3xl border border-[#E2E8F0] p-12 text-center max-w-lg mx-auto space-y-4 shadow-sm">
-                <div className="w-16 h-16 bg-emerald-50 text-[#059669] rounded-full flex items-center justify-center mx-auto shadow-inner">
+              <div className="bg-white rounded-3xl border border-[#E7E5E4] p-12 text-center max-w-lg mx-auto space-y-4 shadow-sm">
+                <div className="w-16 h-16 bg-teal-50 text-[#0F766E] rounded-full flex items-center justify-center mx-auto shadow-inner">
                   <MessageSquare className="h-8 w-8" />
                 </div>
                 <div className="space-y-1">
@@ -819,7 +813,7 @@ export default function MyTicketsPage() {
                 <div className="pt-2">
                   <Link
                     href="/events"
-                    className="inline-flex items-center gap-2 rounded-xl bg-[#059669] hover:bg-[#047857] text-white px-6 py-2.5 text-xs font-bold shadow-md transition"
+                    className="inline-flex items-center gap-2 rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white px-6 py-2.5 text-xs font-bold shadow-md transition"
                   >
                     <span>Browse Events</span>
                     <ArrowRight className="h-4 w-4" />
@@ -839,7 +833,7 @@ export default function MyTicketsPage() {
                   key={tkt.id}
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white rounded-3xl border border-[#E2E8F0] shadow-sm hover:shadow-md transition overflow-hidden flex flex-col justify-between"
+                  className="bg-white rounded-3xl border border-[#E7E5E4] shadow-sm hover:shadow-md transition overflow-hidden flex flex-col justify-between"
                 >
                   {/* Top Header: Banner Image & Category */}
                   <div className="relative h-44 w-full overflow-hidden bg-slate-900">
@@ -878,7 +872,7 @@ export default function MyTicketsPage() {
                         {tkt.eventTitle}
                       </h3>
                       <p className="text-slate-300 text-xs flex items-center gap-1.5 mt-0.5">
-                        <MapPin className="h-3 w-3 text-[#F59E0B] shrink-0" />
+                        <MapPin className="h-3 w-3 text-[#F97316] shrink-0" />
                         <span className="truncate">{tkt.venueName}, {tkt.venueCity}</span>
                       </p>
                     </div>
@@ -890,7 +884,7 @@ export default function MyTicketsPage() {
                       <div>
                         <span className="text-[10px] font-semibold text-slate-400 block uppercase tracking-wider">Date & Time</span>
                         <div className="flex items-center gap-1.5 font-bold text-slate-800 mt-0.5">
-                          <Calendar className="h-3.5 w-3.5 text-[#059669] shrink-0" />
+                          <Calendar className="h-3.5 w-3.5 text-[#0F766E] shrink-0" />
                           <span>{tkt.eventDate}</span>
                         </div>
                         <span className="text-[11px] text-slate-500 block pl-5">{tkt.eventTime}</span>
@@ -899,10 +893,10 @@ export default function MyTicketsPage() {
                       <div>
                         <span className="text-[10px] font-semibold text-slate-400 block uppercase tracking-wider">Pass Tier</span>
                         <div className="flex items-center gap-1.5 font-bold text-slate-800 mt-0.5">
-                          <Ticket className="h-3.5 w-3.5 text-[#F59E0B] shrink-0" />
+                          <Ticket className="h-3.5 w-3.5 text-[#F97316] shrink-0" />
                           <span className="truncate">{tkt.ticketTierName}</span>
                         </div>
-                        <span className="text-[11px] font-black text-[#059669] block pl-5">
+                        <span className="text-[11px] font-black text-[#0F766E] block pl-5">
                           {tkt.pricePaid > 0 ? `₹${tkt.pricePaid.toLocaleString()}` : 'Free Pass'}
                         </span>
                       </div>
@@ -915,7 +909,7 @@ export default function MyTicketsPage() {
                       </div>
                       <div className="text-right">
                         <span className="text-[10px] text-slate-400 block">Ticket Code</span>
-                        <span className="font-mono text-xs font-bold text-[#059669]">{tkt.ticketCode}</span>
+                        <span className="font-mono text-xs font-bold text-[#0F766E]">{tkt.ticketCode}</span>
                       </div>
                     </div>
                   </div>
@@ -925,21 +919,12 @@ export default function MyTicketsPage() {
                     <button
                       type="button"
                       onClick={() => setSelectedTicket(tkt)}
-                      className="flex-1 rounded-xl bg-[#059669] hover:bg-[#047857] text-white py-2.5 px-3 text-xs font-bold shadow-sm transition flex items-center justify-center gap-2"
+                      className="flex-1 rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white py-2.5 px-3 text-xs font-bold shadow-sm transition flex items-center justify-center gap-2"
                     >
                       <QrCode className="h-4 w-4" />
                       <span>View Gate QR Pass</span>
                     </button>
 
-                    <a
-                      href={'/api/admin/tickets/' + encodeURIComponent(tkt.ticketCode || tkt.bookingId) + '/download'}
-                      download={'ePayEvents-Pass-' + tkt.ticketCode + '.pdf'}
-                      className="rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 py-2.5 px-3 text-xs font-bold transition flex items-center justify-center gap-1.5"
-                      title="Download Official PDF Pass with QR Scanner"
-                    >
-                      <Download className="h-4 w-4 text-[#059669]" />
-                      <span className="hidden sm:inline">Download PDF</span>
-                    </a>
                     <button
                       type="button"
                       onClick={() => handlePrintTicket(tkt)}
@@ -947,7 +932,7 @@ export default function MyTicketsPage() {
                       title="Print or Save as PDF"
                     >
                       <Printer className="h-4 w-4 text-slate-500" />
-                      <span className="hidden sm:inline">Print</span>
+                      <span className="hidden sm:inline">Print Pass</span>
                     </button>
 
                     {/* Digital Certificate of Attendance Button (Visible for Checked-In attendees) */}
@@ -991,7 +976,7 @@ export default function MyTicketsPage() {
                         className="rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100/80 text-amber-800 py-2.5 px-3 text-xs font-bold transition flex items-center justify-center gap-1.5"
                         title="Rate & Review this Event"
                       >
-                        <Star className="h-3.5 w-3.5 fill-[#F59E0B] text-[#F59E0B]" />
+                        <Star className="h-3.5 w-3.5 fill-[#F97316] text-[#F97316]" />
                         <span className="hidden sm:inline">Review</span>
                       </Link>
                     )}
@@ -1011,8 +996,8 @@ export default function MyTicketsPage() {
             })}
           </div>
         ) : (
-          <div className="bg-white rounded-3xl border border-[#E2E8F0] p-12 text-center max-w-lg mx-auto space-y-5 shadow-sm">
-            <div className="w-16 h-16 bg-emerald-50 text-[#059669] rounded-full flex items-center justify-center mx-auto shadow-inner">
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] p-12 text-center max-w-lg mx-auto space-y-5 shadow-sm">
+            <div className="w-16 h-16 bg-teal-50 text-[#0F766E] rounded-full flex items-center justify-center mx-auto shadow-inner">
               <Ticket className="h-8 w-8" />
             </div>
 
@@ -1030,7 +1015,7 @@ export default function MyTicketsPage() {
             <div className="pt-2">
               <Link
                 href="/events"
-                className="inline-flex items-center gap-2 rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-white px-6 py-3 text-xs font-bold shadow-md transition"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#F97316] hover:bg-[#ea580c] text-white px-6 py-3 text-xs font-bold shadow-md transition"
               >
                 <span>Browse & Book Events</span>
                 <ArrowRight className="h-4 w-4" />
@@ -1051,7 +1036,7 @@ export default function MyTicketsPage() {
               className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-md w-full overflow-hidden text-slate-900"
             >
               {/* Modal Header */}
-              <div className="bg-gradient-to-r from-[#111827] to-[#059669] p-4 text-white flex items-center justify-between">
+              <div className="bg-gradient-to-r from-[#0F172A] to-[#0F766E] p-4 text-white flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="h-5 w-5 text-emerald-400" />
                   <div>
@@ -1074,7 +1059,7 @@ export default function MyTicketsPage() {
                 </h3>
                 
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">
-                  <Ticket className="h-3 w-3 text-[#F59E0B]" />
+                  <Ticket className="h-3 w-3 text-[#F97316]" />
                   <span>{selectedTicket.ticketTierName}</span>
                 </div>
 
@@ -1090,11 +1075,11 @@ export default function MyTicketsPage() {
 
                 {/* Ticket Code Box */}
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs flex items-center justify-between">
-                  <span className="font-mono font-bold text-[#059669]">{selectedTicket.ticketCode}</span>
+                  <span className="font-mono font-bold text-[#0F766E]">{selectedTicket.ticketCode}</span>
                   <button
                     type="button"
                     onClick={() => handleCopyCode(selectedTicket.ticketCode)}
-                    className="flex items-center gap-1 text-[11px] font-bold text-slate-600 hover:text-[#059669] transition"
+                    className="flex items-center gap-1 text-[11px] font-bold text-slate-600 hover:text-[#0F766E] transition"
                   >
                     {copiedCode ? (
                       <>
@@ -1131,21 +1116,13 @@ export default function MyTicketsPage() {
                   className="flex-1 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 font-bold text-xs text-slate-800 transition flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <Printer className="h-4 w-4" />
-                  <span>Print Pass</span>
+                  <span>Print / Save PDF (1 Page)</span>
                 </button>
-                <a
-                  href={'/api/admin/tickets/' + encodeURIComponent(selectedTicket.ticketCode || selectedTicket.bookingId) + '/download'}
-                  download={'ePayEvents-Pass-' + selectedTicket.ticketCode + '.pdf'}
-                  className="flex-1 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 font-bold text-xs text-emerald-800 transition flex items-center justify-center gap-1.5 cursor-pointer text-center"
-                >
-                  <Download className="h-4 w-4 text-[#059669]" />
-                  <span>Download Pass PDF</span>
-                </a>
 
                 <button
                   type="button"
                   onClick={() => setSelectedTicket(null)}
-                  className="flex-1 py-2.5 rounded-xl bg-[#059669] hover:bg-[#047857] font-bold text-xs text-white transition shadow-sm cursor-pointer"
+                  className="flex-1 py-2.5 rounded-xl bg-[#0F766E] hover:bg-[#115E59] font-bold text-xs text-white transition shadow-sm cursor-pointer"
                 >
                   Done
                 </button>
@@ -1209,7 +1186,7 @@ export default function MyTicketsPage() {
                   <select
                     value={cancelReason}
                     onChange={(e) => setCancelReason(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 font-medium focus:outline-none focus:border-[#059669]"
+                    className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 font-medium focus:outline-none focus:border-[#0F766E]"
                   >
                     <option value="Change of personal schedule">Change of personal schedule</option>
                     <option value="Accidental / duplicate purchase">Accidental / duplicate purchase</option>
@@ -1224,7 +1201,7 @@ export default function MyTicketsPage() {
                     type="text"
                     placeholder="Please specify reason..."
                     onChange={(e) => setCancelReason(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#059669]"
+                    className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#0F766E]"
                   />
                 )}
               </div>

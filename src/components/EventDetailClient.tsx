@@ -368,12 +368,12 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
               href={`/organizer/scanner`}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold transition border border-white/15"
             >
-              <QrCode className="h-3.5 w-3.5 text-[#059669]" />
+              <QrCode className="h-3.5 w-3.5 text-[#0F766E]" />
               <span>Gate Scanner</span>
             </Link>
             <Link
               href={`/create-event?edit=${event.slug}`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F59E0B] hover:bg-[#D97706] text-white font-bold transition shadow-sm"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F97316] hover:bg-[#ea580c] text-white font-bold transition shadow-sm"
             >
               <Edit className="h-3.5 w-3.5" />
               <span>Edit Event Details</span>
@@ -383,7 +383,7 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
       )}
       
       {/* 1. FULL SCREEN HERO BANNER WITH FRAMER MOTION ANIMATIONS & GLASSMORPHISM OVERLAY */}
-      <div className="relative w-full min-h-[85vh] lg:min-h-[90vh] bg-gradient-to-b from-[#111827] via-[#1E293B] to-[#111827] text-white overflow-hidden flex items-center justify-center">
+      <div className="relative w-full min-h-[85vh] lg:min-h-[90vh] bg-gradient-to-b from-[#0F172A] via-[#1E293B] to-[#0F172A] text-white overflow-hidden flex items-center justify-center">
         {/* Full-width Background Image Display with Gradient Overlays */}
         <motion.div 
           initial={{ scale: 1.1, opacity: 0 }}
@@ -397,14 +397,14 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
             alt={event.title}
             className={`w-full h-full object-cover object-center ${isEnded ? 'grayscale' : ''}`}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#111827] via-[#111827]/75 to-transparent"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#111827]/90 via-[#111827]/60 to-[#111827]/90"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/75 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0F172A]/90 via-[#0F172A]/60 to-[#0F172A]/90"></div>
         </motion.div>
 
         {/* Ambient Glowing Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#059669]/20 blur-[130px] rounded-full pointer-events-none"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#F59E0B]/15 blur-[130px] rounded-full pointer-events-none"></div>
-        <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#059669_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none"></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#0F766E]/20 blur-[130px] rounded-full pointer-events-none"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#F97316]/15 blur-[130px] rounded-full pointer-events-none"></div>
+        <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#0F766E_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none"></div>
 
         <div className="container mx-auto px-4 md:px-8 py-16 lg:py-24 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -420,9 +420,9 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
-                className="inline-flex items-center gap-2 rounded-full bg-[#059669]/30 border border-[#059669]/50 px-4 py-1.5 text-xs font-bold text-[#FFEDD5] backdrop-blur-md shadow-lg"
+                className="inline-flex items-center gap-2 rounded-full bg-[#0F766E]/30 border border-[#0F766E]/50 px-4 py-1.5 text-xs font-bold text-[#FFEDD5] backdrop-blur-md shadow-lg"
               >
-                <Sparkles className="h-4 w-4 text-[#F59E0B]" /> 
+                <Sparkles className="h-4 w-4 text-[#F97316]" /> 
                 <span>{isEnded ? 'Concluded Event Archive' : 'Official Verified Event Showcase'}</span>
               </motion.div>
 
@@ -440,7 +440,7 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                   whileHover={{ scale: 1.02 }}
                   className="flex items-center gap-3 text-xs sm:text-sm text-white bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/15 shadow-md"
                 >
-                  <div className="p-2 rounded-xl bg-[#F59E0B] text-white shrink-0 shadow">
+                  <div className="p-2 rounded-xl bg-[#F97316] text-white shrink-0 shadow">
                     <Calendar className="h-4 w-4" />
                   </div>
                   <div>
@@ -453,7 +453,7 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                   whileHover={{ scale: 1.02 }}
                   className="flex items-center gap-3 text-xs sm:text-sm text-white bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/15 shadow-md"
                 >
-                  <div className="p-2 rounded-xl bg-[#059669] text-white shrink-0 shadow">
+                  <div className="p-2 rounded-xl bg-[#0F766E] text-white shrink-0 shadow">
                     <MapPin className="h-4 w-4" />
                   </div>
                   <div>
@@ -471,14 +471,14 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
               <div className="pt-4 flex flex-wrap items-center gap-4">
                 <a
                   href="#ticket-section"
-                  className="rounded-2xl bg-[#F59E0B] px-8 py-4 text-sm font-extrabold text-white hover:bg-[#D97706] transition-all shadow-xl hover:shadow-[#F59E0B]/30 flex items-center gap-2 group"
+                  className="rounded-2xl bg-[#F97316] px-8 py-4 text-sm font-extrabold text-white hover:bg-[#ea580c] transition-all shadow-xl hover:shadow-[#F97316]/30 flex items-center gap-2 group"
                 >
                   <Ticket className="h-5 w-5 group-hover:scale-110 transition-transform" />
                   <span>{isEnded ? 'View Event Details' : 'Book Tickets Now'}</span>
                 </a>
 
                 <div className="flex items-center gap-3 bg-white/5 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/10">
-                  <div className="w-9 h-9 rounded-full bg-[#059669] flex items-center justify-center font-bold text-white text-xs shadow ring-2 ring-[#059669]/40">
+                  <div className="w-9 h-9 rounded-full bg-[#0F766E] flex items-center justify-center font-bold text-white text-xs shadow ring-2 ring-[#0F766E]/40">
                     <Building2 className="h-4 w-4" />
                   </div>
                   <div>
@@ -516,11 +516,11 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
 
                 {/* Floating Top Badges */}
                 <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-20">
-                  <span className="rounded-full bg-[#059669]/90 backdrop-blur-md px-3.5 py-1.5 text-xs font-extrabold text-white shadow-lg border border-white/20">
+                  <span className="rounded-full bg-[#0F766E]/90 backdrop-blur-md px-3.5 py-1.5 text-xs font-extrabold text-white shadow-lg border border-white/20">
                     {event.category.name}
                   </span>
                   <span className={`rounded-full px-3.5 py-1.5 text-xs font-extrabold text-white uppercase tracking-wider shadow-lg backdrop-blur-md border border-white/20 ${
-                    event.eventType === 'physical' ? 'bg-[#059669]' : event.eventType === 'hybrid' ? 'bg-[#F59E0B]' : 'bg-blue-600'
+                    event.eventType === 'physical' ? 'bg-[#059669]' : event.eventType === 'hybrid' ? 'bg-[#F97316]' : 'bg-blue-600'
                   }`}>
                     {event.eventType}
                   </span>
@@ -535,7 +535,7 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                       <span className="text-[10px] text-emerald-400 font-semibold">Verified QR Ticket Entry</span>
                     </div>
                   </div>
-                  <span className="text-xs font-extrabold text-[#F59E0B] bg-[#F59E0B]/20 px-2.5 py-1 rounded-lg border border-[#F59E0B]/40">
+                  <span className="text-xs font-extrabold text-[#F97316] bg-[#F97316]/20 px-2.5 py-1 rounded-lg border border-[#F97316]/40">
                     {isEnded ? 'CLOSED' : 'LIVE'}
                   </span>
                 </div>
@@ -558,29 +558,29 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E2E8F0] shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-6"
+              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-6"
             >
               <div className="flex items-start gap-3">
-                <div className="p-3 bg-[#059669]/10 rounded-2xl text-[#059669] shrink-0">
+                <div className="p-3 bg-[#0F766E]/10 rounded-2xl text-[#0F766E] shrink-0">
                   <Calendar className="h-6 w-6" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Date & Time</h4>
-                  <p className="text-sm font-bold text-[#111827] mt-1">{dateRangeFormatted}</p>
-                  <p className="text-xs text-[#64748B]">{displayTimeRange} {event.timezone ? `(${event.timezone})` : ''}</p>
+                  <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Date & Time</h4>
+                  <p className="text-sm font-bold text-[#1C1917] mt-1">{dateRangeFormatted}</p>
+                  <p className="text-xs text-[#78716C]">{displayTimeRange} {event.timezone ? `(${event.timezone})` : ''}</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="p-3 bg-[#FFEDD5] rounded-2xl text-[#F59E0B] shrink-0">
+                <div className="p-3 bg-[#FFEDD5] rounded-2xl text-[#F97316] shrink-0">
                   <MapPin className="h-6 w-6" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Location & Venue</h4>
-                  <p className="text-sm font-bold text-[#111827] mt-1">
+                  <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Location & Venue</h4>
+                  <p className="text-sm font-bold text-[#1C1917] mt-1">
                     {event.venue?.name || (event.eventType === 'online' ? 'Online Virtual Event' : 'Main Venue')}
                   </p>
-                  <p className="text-xs text-[#64748B]">
+                  <p className="text-xs text-[#78716C]">
                     {[event.venue?.address, event.venue?.city].filter(Boolean).join(', ') || 'Mumbai, India'}
                   </p>
                 </div>
@@ -591,8 +591,8 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                   <Globe className="h-6 w-6" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-[#64748B] uppercase tracking-wider">Event Mode</h4>
-                  <p className="text-sm font-bold text-[#111827] mt-1 capitalize">{event.eventType} Event</p>
+                  <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider">Event Mode</h4>
+                  <p className="text-sm font-bold text-[#1C1917] mt-1 capitalize">{event.eventType} Event</p>
                   <span className="text-xs text-[#059669] font-semibold flex items-center gap-1 mt-0.5">
                     <CheckCircle2 className="h-3.5 w-3.5" /> Verified Gate Access
                   </span>
@@ -605,17 +605,17 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E2E8F0] shadow-sm space-y-4"
+              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-4"
             >
               <div className="flex items-center gap-2">
-                <span className="text-xs font-extrabold text-[#059669] uppercase tracking-widest bg-[#059669]/10 px-3 py-1 rounded-full border border-[#059669]/20">
+                <span className="text-xs font-extrabold text-[#0F766E] uppercase tracking-widest bg-[#0F766E]/10 px-3 py-1 rounded-full border border-[#0F766E]/20">
                   OVERVIEW
                 </span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight">
-                About <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#059669] to-teal-600">This Event</span>
+              <h2 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight">
+                About <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] to-teal-600">This Event</span>
               </h2>
-              <div className="prose max-w-none text-[#64748B] leading-relaxed whitespace-pre-line text-sm sm:text-base space-y-3">
+              <div className="prose max-w-none text-[#78716C] leading-relaxed whitespace-pre-line text-sm sm:text-base space-y-3">
                 {event.description}
               </div>
             </motion.section>
@@ -625,21 +625,21 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E2E8F0] shadow-sm space-y-5"
+              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-5"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-extrabold text-[#F59E0B] uppercase tracking-widest bg-[#F59E0B]/10 px-3 py-1 rounded-full border border-[#F59E0B]/20">
+                    <span className="text-xs font-extrabold text-[#F97316] uppercase tracking-widest bg-[#F97316]/10 px-3 py-1 rounded-full border border-[#F97316]/20">
                       DIRECTIONS & VENUE
                     </span>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-teal-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
+                      <span className="h-1.5 w-1.5 rounded-full bg-teal-500 animate-pulse"></span>
                       Live Coordinates Verified
                     </span>
                   </div>
-                  <h2 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight mt-2">
-                    Venue <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F59E0B] to-amber-500">Location Map</span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight mt-2">
+                    Venue <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F97316] to-amber-500">Location Map</span>
                   </h2>
                 </div>
 
@@ -648,7 +648,7 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                     href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${event.venue.name}, ${event.venue.address}, ${event.venue.city}`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs font-bold text-white bg-gradient-to-r from-[#059669] to-teal-600 hover:brightness-110 flex items-center gap-1.5 px-4 py-2.5 rounded-xl shadow-sm transition"
+                    className="text-xs font-bold text-white bg-gradient-to-r from-[#0F766E] to-teal-700 hover:brightness-110 flex items-center gap-1.5 px-4 py-2.5 rounded-xl shadow-sm transition"
                   >
                     <span>Get Turn-by-Turn Directions</span> <ExternalLink className="h-3.5 w-3.5" />
                   </a>
@@ -656,33 +656,33 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
               </div>
 
               {/* Venue details callout */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-[#F9FAFB] p-4 rounded-2xl border border-slate-200">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-[#FAFAF9] p-4 rounded-2xl border border-slate-200">
                 <div className="flex items-start gap-2.5">
                   <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 mt-0.5">
                     <MapPin className="h-4 w-4 shrink-0" />
                   </div>
                   <div>
-                    <div className="text-xs font-extrabold text-[#111827]">{event.venue.name}</div>
+                    <div className="text-xs font-extrabold text-[#1C1917]">{event.venue.name}</div>
                     <div className="text-xs text-slate-500 leading-snug mt-0.5">{event.venue.address}, {event.venue.city}</div>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2.5">
-                  <div className="p-2 rounded-xl bg-emerald-500/10 text-teal-600 mt-0.5">
+                  <div className="p-2 rounded-xl bg-teal-500/10 text-teal-600 mt-0.5">
                     <Building2 className="h-4 w-4 shrink-0" />
                   </div>
                   <div>
-                    <div className="text-xs font-extrabold text-[#111827]">City & State</div>
+                    <div className="text-xs font-extrabold text-[#1C1917]">City & State</div>
                     <div className="text-xs text-slate-500 leading-snug mt-0.5">{event.venue.city}, {event.venue.state || 'India'}</div>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2.5">
-                  <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-700 mt-0.5">
+                  <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 mt-0.5">
                     <Globe className="h-4 w-4 shrink-0" />
                   </div>
                   <div>
-                    <div className="text-xs font-extrabold text-[#111827]">Attendance Mode</div>
+                    <div className="text-xs font-extrabold text-[#1C1917]">Attendance Mode</div>
                     <div className="text-xs text-slate-500 capitalize leading-snug mt-0.5">
                       {event.eventType === 'hybrid' ? 'In-Person & Online Stream' : event.eventType === 'online' ? '100% Online Webcast' : 'In-Person Physical Summit'}
                     </div>
@@ -691,7 +691,7 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
               </div>
 
               {/* Embedded Google Map Iframe with fallbacks */}
-              <div className="w-full h-80 rounded-2xl overflow-hidden border border-[#E2E8F0] shadow-sm relative bg-slate-100 group">
+              <div className="w-full h-80 rounded-2xl overflow-hidden border border-[#E7E5E4] shadow-sm relative bg-slate-100 group">
                 <iframe
                   title={`Google Maps Location for ${event.venue.name}`}
                   width="100%"
@@ -719,15 +719,15 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E2E8F0] shadow-sm space-y-6"
+              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-6"
             >
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-xs font-extrabold text-[#059669] uppercase tracking-widest bg-[#059669]/10 px-3 py-1 rounded-full border border-[#059669]/20">
                     EVENT HOST
                   </span>
-                  <h2 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight mt-2">
-                    Hosted by <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600">{event.organization.name}</span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight mt-2">
+                    Hosted by <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-700">{event.organization.name}</span>
                   </h2>
                 </div>
 
@@ -738,9 +738,9 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                 )}
               </div>
               
-              <div className="rounded-2xl bg-gradient-to-br from-emerald-50/70 via-white to-amber-50/50 p-6 sm:p-7 text-white shadow-md relative overflow-hidden">
+              <div className="rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-teal-950 p-6 sm:p-7 text-white shadow-md relative overflow-hidden">
                 {/* Subtle decorative glow */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
 
                 <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6">
@@ -798,14 +798,14 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E2E8F0] shadow-sm space-y-6"
+                className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-6"
               >
                 <div>
-                  <span className="text-xs font-extrabold text-[#059669] uppercase tracking-widest bg-[#059669]/10 px-3 py-1 rounded-full border border-[#059669]/20">
+                  <span className="text-xs font-extrabold text-[#0F766E] uppercase tracking-widest bg-[#0F766E]/10 px-3 py-1 rounded-full border border-[#0F766E]/20">
                     FEATURED EXPERTS
                   </span>
-                  <h2 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight mt-2">
-                    Keynote <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#059669] to-teal-600">Speakers</span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight mt-2">
+                    Keynote <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] to-teal-600">Speakers</span>
                   </h2>
                 </div>
 
@@ -821,7 +821,7 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                       key={idx} 
                       variants={itemVariants} 
                       whileHover={{ y: -6 }}
-                      className="flex flex-col items-center text-center p-5 rounded-2xl bg-[#F9FAFB] border border-[#E2E8F0] hover:bg-white hover:shadow-lg hover:border-[#059669] transition-all group"
+                      className="flex flex-col items-center text-center p-5 rounded-2xl bg-[#FAFAF9] border border-[#E7E5E4] hover:bg-white hover:shadow-lg hover:border-[#0F766E] transition-all group"
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -829,12 +829,12 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                         alt={sp.name}
                         className="h-20 w-20 rounded-full object-cover mb-3 ring-4 ring-[#FFEDD5] shadow-sm group-hover:scale-105 transition-transform"
                       />
-                      <h3 className="font-bold text-[#111827] text-base">{sp.name}</h3>
-                      <p className="text-xs font-bold text-[#059669] mt-0.5">{sp.role}</p>
-                      <p className="text-xs text-[#64748B] font-medium">{sp.company}</p>
+                      <h3 className="font-bold text-[#1C1917] text-base">{sp.name}</h3>
+                      <p className="text-xs font-bold text-[#0F766E] mt-0.5">{sp.role}</p>
+                      <p className="text-xs text-[#78716C] font-medium">{sp.company}</p>
                       
                       {sp.bio && (
-                        <p className="text-[11px] text-[#64748B] mt-3 pt-3 border-t border-[#E2E8F0] leading-relaxed italic">
+                        <p className="text-[11px] text-[#78716C] mt-3 pt-3 border-t border-[#E7E5E4] leading-relaxed italic">
                           &quot;{sp.bio}&quot;
                         </p>
                       )}
@@ -850,14 +850,14 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E2E8F0] shadow-sm space-y-6"
+                className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-6"
               >
                 <div>
-                  <span className="text-xs font-extrabold text-[#F59E0B] uppercase tracking-widest bg-[#F59E0B]/10 px-3 py-1 rounded-full border border-[#F59E0B]/20">
+                  <span className="text-xs font-extrabold text-[#F97316] uppercase tracking-widest bg-[#F97316]/10 px-3 py-1 rounded-full border border-[#F97316]/20">
                     EVENT TIMELINE
                   </span>
-                  <h2 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight mt-2">
-                    Agenda & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F59E0B] to-amber-500">Session Schedule</span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight mt-2">
+                    Agenda & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F97316] to-amber-500">Session Schedule</span>
                   </h2>
                 </div>
 
@@ -866,15 +866,15 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                     <motion.div 
                       key={idx}
                       whileHover={{ x: 4 }}
-                      className="flex flex-col sm:flex-row gap-4 p-5 rounded-2xl bg-[#F9FAFB] border border-[#E2E8F0] hover:border-[#F59E0B] transition"
+                      className="flex flex-col sm:flex-row gap-4 p-5 rounded-2xl bg-[#FAFAF9] border border-[#E7E5E4] hover:border-[#F97316] transition"
                     >
-                      <div className="sm:w-48 text-xs font-bold text-[#F59E0B] flex items-center gap-2 shrink-0 bg-white p-2.5 rounded-xl border border-[#E2E8F0] h-fit">
-                        <Clock className="h-4 w-4 text-[#F59E0B]" />
+                      <div className="sm:w-48 text-xs font-bold text-[#F97316] flex items-center gap-2 shrink-0 bg-white p-2.5 rounded-xl border border-[#E7E5E4] h-fit">
+                        <Clock className="h-4 w-4 text-[#F97316]" />
                         <span>{item.time}</span>
                       </div>
                       <div className="space-y-1 flex-1">
-                        <h4 className="font-bold text-[#111827] text-base">{item.title}</h4>
-                        <p className="text-xs text-[#64748B] leading-relaxed">{item.description}</p>
+                        <h4 className="font-bold text-[#1C1917] text-base">{item.title}</h4>
+                        <p className="text-xs text-[#78716C] leading-relaxed">{item.description}</p>
                       </div>
                     </motion.div>
                   ))}
@@ -888,14 +888,14 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E2E8F0] shadow-sm space-y-6"
+              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-6"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <span className="text-xs font-extrabold text-[#059669] uppercase tracking-widest bg-[#059669]/10 px-3 py-1 rounded-full border border-[#059669]/20">
                     PASS REGISTRATION
                   </span>
-                  <h2 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight mt-2">
+                  <h2 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight mt-2">
                     Ticket Types & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#059669] to-emerald-600">Pricing Tiers</span>
                   </h2>
                 </div>
@@ -904,18 +904,18 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                 <div className="flex flex-col items-end gap-2">
                   <form onSubmit={handleApplyCoupon} className="flex items-center gap-2">
                     <div className="relative">
-                      <Tag className="h-4 w-4 text-[#64748B] absolute left-3 top-1/2 -translate-y-1/2" />
+                      <Tag className="h-4 w-4 text-[#78716C] absolute left-3 top-1/2 -translate-y-1/2" />
                       <input
                         type="text"
                         placeholder="Promo Coupon Code"
                         value={couponInput}
                         onChange={(e) => setCouponInput(e.target.value)}
-                        className="pl-9 pr-3 py-2 text-xs border border-[#E2E8F0] rounded-xl focus:outline-none focus:border-[#059669] uppercase font-mono font-bold"
+                        className="pl-9 pr-3 py-2 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E] uppercase font-mono font-bold"
                       />
                     </div>
                     <button
                       type="submit"
-                      className="px-3.5 py-2 bg-[#059669] text-white text-xs font-bold rounded-xl hover:bg-[#047857] transition cursor-pointer"
+                      className="px-3.5 py-2 bg-[#0F766E] text-white text-xs font-bold rounded-xl hover:bg-[#115E59] transition cursor-pointer"
                     >
                       Apply
                     </button>
@@ -1008,20 +1008,20 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                       onClick={() => setSelectedTicketId(tkt.id)}
                       className={`p-6 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between space-y-4 relative ${
                         isSelected
-                          ? 'border-[#059669] bg-[#F9FAFB] shadow-xl ring-2 ring-[#059669]/20'
-                          : 'border-[#E2E8F0] bg-white hover:border-slate-300'
+                          ? 'border-[#0F766E] bg-[#FAFAF9] shadow-xl ring-2 ring-[#0F766E]/20'
+                          : 'border-[#E7E5E4] bg-white hover:border-slate-300'
                       }`}
                     >
                       {tkt.isPopular && (
-                        <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#F59E0B] text-white text-[10px] font-extrabold uppercase tracking-wider shadow">
+                        <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#F97316] text-white text-[10px] font-extrabold uppercase tracking-wider shadow">
                           MOST POPULAR
                         </span>
                       )}
 
                       <div className="space-y-3">
                         <div className="flex flex-wrap items-center justify-between gap-1">
-                          <h3 className="font-extrabold text-[#111827] text-lg">{tkt.name}</h3>
-                          {isSelected && <CheckCircle2 className="h-5 w-5 text-[#059669]" />}
+                          <h3 className="font-extrabold text-[#1C1917] text-lg">{tkt.name}</h3>
+                          {isSelected && <CheckCircle2 className="h-5 w-5 text-[#0F766E]" />}
                         </div>
 
                         {/* Smart Feature Badges */}
@@ -1032,12 +1032,12 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                             </span>
                           )}
                           {tkt.category && !soldOut && (
-                            <span className="bg-slate-100 text-[#059669] border border-[#059669]/20 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                            <span className="bg-slate-100 text-[#0F766E] border border-[#0F766E]/20 text-[10px] font-bold px-2 py-0.5 rounded-md">
                               {tkt.category}
                             </span>
                           )}
                           {tkt.isEarlyBird && !soldOut && (
-                            <span className="bg-[#F59E0B] text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-xs">
+                            <span className="bg-[#F97316] text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-xs">
                               <Sparkles className="h-3 w-3" /> Early Bird Pass
                             </span>
                           )}
@@ -1053,25 +1053,25 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                           )}
                         </div>
 
-                        <p className="text-xs text-[#64748B] leading-relaxed">{tkt.description}</p>
+                        <p className="text-xs text-[#78716C] leading-relaxed">{tkt.description}</p>
 
 
 
                         <div className="pt-2 flex items-baseline gap-2">
-                          <span className="text-3xl font-black text-[#111827]">
+                          <span className="text-3xl font-black text-[#1C1917]">
                             {tierPrice === 0 ? 'FREE' : `₹${tierPrice.toLocaleString()}`}
                           </span>
                           {(tkt.originalPrice || (appliedCoupon && tkt.price > 0)) && (
-                            <span className="text-xs text-[#64748B] line-through">
+                            <span className="text-xs text-[#78716C] line-through">
                               ₹{(tkt.originalPrice || tkt.price).toLocaleString()}
                             </span>
                           )}
                         </div>
 
                         {tkt.features && tkt.features.length > 0 && (
-                          <div className="space-y-2 pt-3 border-t border-[#E2E8F0]">
+                          <div className="space-y-2 pt-3 border-t border-[#E7E5E4]">
                             {tkt.features.map((feat, fidx) => (
-                              <div key={fidx} className="flex items-center gap-2 text-xs text-[#111827] font-medium">
+                              <div key={fidx} className="flex items-center gap-2 text-xs text-[#1C1917] font-medium">
                                 <Check className="h-3.5 w-3.5 text-[#059669] shrink-0" />
                                 <span>{feat}</span>
                               </div>
@@ -1098,8 +1098,8 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                             href={`/checkout/${event.slug}?ticketId=${tkt.id}${appliedCoupon ? `&coupon=${appliedCoupon.code}` : ''}${referralParam ? `&ref=${encodeURIComponent(referralParam)}` : ''}`}
                             className={`w-full text-center block rounded-xl py-3 text-xs font-bold transition shadow-sm ${
                               isSelected
-                                ? 'bg-[#F59E0B] text-white hover:bg-[#D97706]'
-                                : 'bg-[#059669] text-white hover:bg-[#047857]'
+                                ? 'bg-[#F97316] text-white hover:bg-[#ea580c]'
+                                : 'bg-[#0F766E] text-white hover:bg-[#115E59]'
                             }`}
                           >
                             {isEnded ? 'Pass Expired' : 'Select Pass'}
@@ -1118,14 +1118,14 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E2E8F0] shadow-sm space-y-6"
+                className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-6"
               >
                 <div>
-                  <span className="text-xs font-extrabold text-[#059669] uppercase tracking-widest bg-[#059669]/10 px-3 py-1 rounded-full border border-[#059669]/20">
+                  <span className="text-xs font-extrabold text-[#0F766E] uppercase tracking-widest bg-[#0F766E]/10 px-3 py-1 rounded-full border border-[#0F766E]/20">
                     EVENT SUPPORTERS
                   </span>
-                  <h2 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight mt-2">
-                    Official <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#059669] to-teal-600">Sponsors</span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight mt-2">
+                    Official <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] to-teal-600">Sponsors</span>
                   </h2>
                 </div>
 
@@ -1136,7 +1136,7 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                       href={sp.websiteUrl || '#'}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-5 rounded-2xl border border-[#E2E8F0] bg-[#F9FAFB] flex flex-col items-center justify-center text-center hover:border-[#059669] hover:shadow-md transition group"
+                      className="p-5 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] flex flex-col items-center justify-center text-center hover:border-[#0F766E] hover:shadow-md transition group"
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -1144,8 +1144,8 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                         alt={sp.name}
                         className="h-12 w-auto object-contain mb-2 group-hover:scale-110 transition-transform"
                       />
-                      <span className="font-bold text-[#111827] text-xs mt-1">{sp.name}</span>
-                      <span className="text-[10px] text-[#64748B] font-semibold uppercase tracking-wider">{sp.tier} Sponsor</span>
+                      <span className="font-bold text-[#1C1917] text-xs mt-1">{sp.name}</span>
+                      <span className="text-[10px] text-[#78716C] font-semibold uppercase tracking-wider">{sp.tier} Sponsor</span>
                     </a>
                   ))}
                 </div>
@@ -1158,28 +1158,28 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E2E8F0] shadow-sm space-y-6"
+                className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-6"
               >
                 <div>
-                  <span className="text-xs font-extrabold text-[#F59E0B] uppercase tracking-widest bg-[#F59E0B]/10 px-3 py-1 rounded-full border border-[#F59E0B]/20">
+                  <span className="text-xs font-extrabold text-[#F97316] uppercase tracking-widest bg-[#F97316]/10 px-3 py-1 rounded-full border border-[#F97316]/20">
                     EXPO FLOOR
                   </span>
-                  <h2 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight mt-2">
-                    Exhibitors & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F59E0B] to-amber-500">Booths</span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight mt-2">
+                    Exhibitors & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F97316] to-amber-500">Booths</span>
                   </h2>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                   {event.exhibitors.map((ex, idx) => (
-                    <div key={idx} className="p-5 rounded-2xl border border-[#E2E8F0] bg-[#F9FAFB] space-y-3">
+                    <div key={idx} className="p-5 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase bg-[#059669]/10 text-[#059669] px-2.5 py-1 rounded-full">
+                        <span className="text-[10px] font-bold uppercase bg-[#0F766E]/10 text-[#0F766E] px-2.5 py-1 rounded-full">
                           {ex.boothNumber}
                         </span>
-                        <span className="text-[11px] text-[#64748B] font-semibold">{ex.category}</span>
+                        <span className="text-[11px] text-[#78716C] font-semibold">{ex.category}</span>
                       </div>
-                      <h4 className="font-extrabold text-[#111827] text-base">{ex.name}</h4>
-                      <p className="text-xs text-[#64748B] leading-relaxed">{ex.description}</p>
+                      <h4 className="font-extrabold text-[#1C1917] text-base">{ex.name}</h4>
+                      <p className="text-xs text-[#78716C] leading-relaxed">{ex.description}</p>
                     </div>
                   ))}
                 </div>
@@ -1192,29 +1192,29 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E2E8F0] shadow-sm space-y-6"
+                className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-6"
               >
                 <div>
-                  <span className="text-xs font-extrabold text-[#059669] uppercase tracking-widest bg-[#059669]/10 px-3 py-1 rounded-full border border-[#059669]/20">
+                  <span className="text-xs font-extrabold text-[#0F766E] uppercase tracking-widest bg-[#0F766E]/10 px-3 py-1 rounded-full border border-[#0F766E]/20">
                     ATTENDEE HELPDESK
                   </span>
-                  <h2 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight mt-2">
-                    Frequently Asked <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#059669] to-teal-600">Questions</span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight mt-2">
+                    Frequently Asked <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] to-teal-600">Questions</span>
                   </h2>
                 </div>
 
                 <div className="space-y-4">
                   {event.faqs.map((faq, idx) => (
-                    <div key={idx} className="border border-[#E2E8F0] rounded-2xl overflow-hidden bg-[#F9FAFB]">
+                    <div key={idx} className="border border-[#E7E5E4] rounded-2xl overflow-hidden bg-[#FAFAF9]">
                       <button
                         onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                        className="w-full text-left p-5 font-bold text-sm text-[#111827] flex justify-between items-center"
+                        className="w-full text-left p-5 font-bold text-sm text-[#1C1917] flex justify-between items-center"
                       >
                         <span>{faq.question}</span>
-                        <ChevronDown className={`h-4 w-4 text-[#64748B] transition-transform ${openFaq === idx ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`h-4 w-4 text-[#78716C] transition-transform ${openFaq === idx ? 'rotate-180' : ''}`} />
                       </button>
                       {openFaq === idx && (
-                        <div className="px-5 pb-5 text-xs sm:text-sm text-[#64748B] leading-relaxed border-t border-[#E2E8F0] pt-3 bg-white">
+                        <div className="px-5 pb-5 text-xs sm:text-sm text-[#78716C] leading-relaxed border-t border-[#E7E5E4] pt-3 bg-white">
                           {faq.answer}
                         </div>
                       )}
@@ -1236,20 +1236,20 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E2E8F0] shadow-sm space-y-4"
+              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-4"
             >
               <div className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-[#059669]" />
-                <h3 className="font-bold text-[#111827] text-lg">Terms & Refund Policy</h3>
+                <FileText className="h-5 w-5 text-[#0F766E]" />
+                <h3 className="font-bold text-[#1C1917] text-lg">Terms & Refund Policy</h3>
               </div>
-              <div className="space-y-2 text-xs text-[#64748B] leading-relaxed">
+              <div className="space-y-2 text-xs text-[#78716C] leading-relaxed">
                 {(event.termsAndPolicy || [
                   'Tickets are non-refundable within 7 days of the event start date.',
                   'Pass transfer to colleagues is allowed free of charge up to 24 hours before gate entry.',
                   'Attendees must present their digital QR pass on mobile or printed PDF at entrance gate.',
                 ]).map((term, idx) => (
                   <div key={idx} className="flex items-start gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#059669] mt-1.5 shrink-0"></span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#0F766E] mt-1.5 shrink-0"></span>
                     <span>{term}</span>
                   </div>
                 ))}
@@ -1261,16 +1261,16 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E2E8F0] shadow-sm space-y-6"
+              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-6"
             >
               <div>
-                <span className="text-xs font-extrabold text-[#F59E0B] uppercase tracking-widest bg-[#F59E0B]/10 px-3 py-1 rounded-full border border-[#F59E0B]/20">
+                <span className="text-xs font-extrabold text-[#F97316] uppercase tracking-widest bg-[#F97316]/10 px-3 py-1 rounded-full border border-[#F97316]/20">
                   DIRECT ASSISTANCE
                 </span>
-                <h2 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight mt-2">
-                  Contact <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F59E0B] to-amber-500">Organizer</span>
+                <h2 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight mt-2">
+                  Contact <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F97316] to-amber-500">Organizer</span>
                 </h2>
-                <p className="text-xs text-[#64748B] mt-1">Have a specific question about passes, speaking opportunities, or sponsorships?</p>
+                <p className="text-xs text-[#78716C] mt-1">Have a specific question about passes, speaking opportunities, or sponsorships?</p>
               </div>
 
               {contactSubmitted ? (
@@ -1331,7 +1331,7 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                         value={inquiryName}
                         onChange={(e) => setInquiryName(e.target.value)}
                         placeholder="e.g. Rahul Sharma"
-                        className="w-full p-3 text-xs border border-[#E2E8F0] rounded-xl focus:outline-none focus:border-[#059669]"
+                        className="w-full p-3 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E]"
                       />
                     </div>
                     <div>
@@ -1342,7 +1342,7 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                         value={inquiryEmail}
                         onChange={(e) => setInquiryEmail(e.target.value)}
                         placeholder="name@company.com"
-                        className="w-full p-3 text-xs border border-[#E2E8F0] rounded-xl focus:outline-none focus:border-[#059669]"
+                        className="w-full p-3 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E]"
                       />
                     </div>
                   </div>
@@ -1355,7 +1355,7 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                         value={inquiryPhone}
                         onChange={(e) => setInquiryPhone(e.target.value)}
                         placeholder="+91 98765 43210"
-                        className="w-full p-3 text-xs border border-[#E2E8F0] rounded-xl focus:outline-none focus:border-[#059669]"
+                        className="w-full p-3 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E]"
                       />
                     </div>
                     <div>
@@ -1365,7 +1365,7 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                         value={inquirySubject}
                         onChange={(e) => setInquirySubject(e.target.value)}
                         placeholder="e.g. Group Pass / Speaking / Sponsorship"
-                        className="w-full p-3 text-xs border border-[#E2E8F0] rounded-xl focus:outline-none focus:border-[#059669]"
+                        className="w-full p-3 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E]"
                       />
                     </div>
                   </div>
@@ -1378,14 +1378,14 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                       value={inquiryMessage}
                       onChange={(e) => setInquiryMessage(e.target.value)}
                       placeholder="Write your question or request for the event management team..."
-                      className="w-full p-3 text-xs border border-[#E2E8F0] rounded-xl focus:outline-none focus:border-[#059669]"
+                      className="w-full p-3 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E]"
                     ></textarea>
                   </div>
 
                   <button
                     type="submit"
                     disabled={contactSubmitting}
-                    className="rounded-xl bg-gradient-to-r from-[#F59E0B] to-amber-500 hover:brightness-110 px-6 py-3 text-xs font-bold text-white transition shadow-md flex items-center gap-2 disabled:opacity-50"
+                    className="rounded-xl bg-gradient-to-r from-[#F97316] to-amber-500 hover:brightness-110 px-6 py-3 text-xs font-bold text-white transition shadow-md flex items-center gap-2 disabled:opacity-50"
                   >
                     {contactSubmitting ? (
                       <span className="flex items-center gap-2">
@@ -1407,17 +1407,17 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E2E8F0] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4"
+              className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4"
             >
               <div>
-                <h3 className="font-extrabold text-[#111827] text-base">Share Event With Friends & Colleagues</h3>
-                <p className="text-xs text-[#64748B]">Spread the word about this summit on social networks</p>
+                <h3 className="font-extrabold text-[#1C1917] text-base">Share Event With Friends & Colleagues</h3>
+                <p className="text-xs text-[#78716C]">Spread the word about this summit on social networks</p>
               </div>
 
               <div className="flex items-center gap-3">
                 <button
                   onClick={handleCopyLink}
-                  className="p-3 bg-[#F9FAFB] border border-[#E2E8F0] hover:bg-[#059669] hover:text-white rounded-xl text-[#111827] transition flex items-center gap-1.5 text-xs font-bold"
+                  className="p-3 bg-[#FAFAF9] border border-[#E7E5E4] hover:bg-[#0F766E] hover:text-white rounded-xl text-[#1C1917] transition flex items-center gap-1.5 text-xs font-bold"
                 >
                   {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
                   <span>{copied ? 'Copied!' : 'Copy Link'}</span>
@@ -1454,7 +1454,7 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                     const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
                     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`, '_blank');
                   }}
-                  className="p-3 bg-emerald-50 text-emerald-800 hover:bg-blue-600 hover:text-white rounded-xl transition flex items-center gap-1 text-xs font-bold"
+                  className="p-3 bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white rounded-xl transition flex items-center gap-1 text-xs font-bold"
                   aria-label="Share on LinkedIn"
                 >
                   <Share2 className="h-4 w-4" />
@@ -1467,13 +1467,13 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
 
           {/* RIGHT SIDEBAR TICKET SELECTION & CHECKOUT BOX (4 COLUMNS) */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E2E8F0] shadow-xl sticky top-24 space-y-6">
-              <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-4">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-xl sticky top-24 space-y-6">
+              <div className="flex items-center justify-between border-b border-[#E7E5E4] pb-4">
                 <div>
-                  <span className="text-[10px] font-bold text-[#059669] uppercase tracking-wider block">PASS SELECTION</span>
-                  <h3 className="text-xl font-black text-[#111827]">Select Passes</h3>
+                  <span className="text-[10px] font-bold text-[#0F766E] uppercase tracking-wider block">PASS SELECTION</span>
+                  <h3 className="text-xl font-black text-[#1C1917]">Select Passes</h3>
                 </div>
-                <Ticket className="h-6 w-6 text-[#F59E0B]" />
+                <Ticket className="h-6 w-6 text-[#F97316]" />
               </div>
 
               {isEnded ? (
@@ -1492,23 +1492,23 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                       onClick={() => setSelectedTicketId(tkt.id)}
                       className={`p-4 rounded-2xl border transition-all cursor-pointer ${
                         selectedTicketId === tkt.id
-                          ? 'border-[#059669] bg-[#F9FAFB] ring-2 ring-[#059669]/20 shadow-sm'
-                          : 'border-[#E2E8F0] bg-white hover:border-slate-300'
+                          ? 'border-[#0F766E] bg-[#FAFAF9] ring-2 ring-[#0F766E]/20 shadow-sm'
+                          : 'border-[#E7E5E4] bg-white hover:border-slate-300'
                       }`}
                     >
                       <div className="flex justify-between items-start">
                         <div>
                           <div className="flex items-center gap-1.5">
-                            <h4 className="font-bold text-[#111827] text-sm">{tkt.name}</h4>
+                            <h4 className="font-bold text-[#1C1917] text-sm">{tkt.name}</h4>
                             {isTierSoldOut(tkt) && (
                               <span className="bg-purple-100 text-purple-700 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md border border-purple-200">
                                 Sold Out
                               </span>
                             )}
                           </div>
-                          <p className="text-[11px] text-[#64748B] mt-0.5 line-clamp-1">{tkt.description}</p>
+                          <p className="text-[11px] text-[#78716C] mt-0.5 line-clamp-1">{tkt.description}</p>
                         </div>
-                        <span className="font-black text-[#111827] text-base shrink-0 ml-2">
+                        <span className="font-black text-[#1C1917] text-base shrink-0 ml-2">
                           {tkt.price === 0 ? 'FREE' : `₹${tkt.price.toLocaleString()}`}
                         </span>
                       </div>
@@ -1528,7 +1528,7 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                     ) : (
                       <Link
                         href={bookHref}
-                        className="w-full text-center block rounded-2xl bg-[#F59E0B] py-3.5 text-sm font-extrabold text-white hover:bg-[#D97706] transition shadow-lg"
+                        className="w-full text-center block rounded-2xl bg-[#F97316] py-3.5 text-sm font-extrabold text-white hover:bg-[#ea580c] transition shadow-lg"
                       >
                         Book Ticket (₹{finalPrice.toLocaleString()})
                       </Link>
@@ -1537,12 +1537,12 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                 </div>
               )}
 
-              <div className="pt-4 border-t border-[#E2E8F0] space-y-3">
+              <div className="pt-4 border-t border-[#E7E5E4] space-y-3">
                 <div className="flex items-center gap-2 text-xs text-[#059669] font-bold">
                   <CheckCircle2 className="h-4 w-4" /> Instant PDF Ticket with QR Code
                 </div>
-                <div className="flex items-center gap-2 text-xs text-[#64748B]">
-                  <ShieldCheck className="h-4 w-4 text-[#64748B]" /> Encrypted UPI & Card Payment Gateway
+                <div className="flex items-center gap-2 text-xs text-[#78716C]">
+                  <ShieldCheck className="h-4 w-4 text-[#78716C]" /> Encrypted UPI & Card Payment Gateway
                 </div>
               </div>
             </div>
@@ -1556,18 +1556,18 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
         <motion.div 
           initial={{ y: 100 }}
           animate={{ y: 0 }}
-          className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-[#E2E8F0] p-4 shadow-2xl lg:hidden flex items-center justify-between"
+          className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-[#E7E5E4] p-4 shadow-2xl lg:hidden flex items-center justify-between"
         >
           <div>
-            <span className="text-[10px] text-[#64748B] font-semibold block uppercase tracking-wider">Pass starting from</span>
-            <span className="text-xl font-black text-[#111827]">
+            <span className="text-[10px] text-[#78716C] font-semibold block uppercase tracking-wider">Pass starting from</span>
+            <span className="text-xl font-black text-[#1C1917]">
               ₹{Math.min(...event.ticketTypes.map(t => t.price)).toLocaleString()}
             </span>
           </div>
 
           <a
             href="#ticket-section"
-            className="rounded-xl bg-[#F59E0B] px-6 py-3 text-xs font-extrabold text-white hover:bg-[#D97706] transition shadow-md flex items-center gap-2"
+            className="rounded-xl bg-[#F97316] px-6 py-3 text-xs font-extrabold text-white hover:bg-[#ea580c] transition shadow-md flex items-center gap-2"
           >
             <Ticket className="h-4 w-4" /> Select Tickets
           </a>

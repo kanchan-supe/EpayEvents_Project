@@ -47,7 +47,7 @@ function SignUpForm() {
 
     if (score <= 1) return { label: 'Weak', color: 'bg-red-500', score: 25 };
     if (score === 2) return { label: 'Fair', color: 'bg-amber-500', score: 50 };
-    if (score === 3) return { label: 'Good', color: 'bg-emerald-500', score: 75 };
+    if (score === 3) return { label: 'Good', color: 'bg-blue-500', score: 75 };
     return { label: 'Strong', color: 'bg-emerald-500', score: 100 };
   };
 
@@ -137,10 +137,10 @@ function SignUpForm() {
         <div className="inline-flex justify-center mb-1">
           <Logo variant="default" size="lg" />
         </div>
-        <h1 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight">
-          Create Your <span className="text-[#059669]">ePayEvents</span> Account
+        <h1 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight">
+          Create Your <span className="text-[#0F766E]">ePayEvents</span> Account
         </h1>
-        <p className="text-xs sm:text-sm text-[#64748B]">
+        <p className="text-xs sm:text-sm text-[#78716C]">
           Join thousands of attendees and event organizers across India
         </p>
 
@@ -162,26 +162,26 @@ function SignUpForm() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xl p-8 text-center space-y-4"
+          className="bg-white rounded-3xl border border-[#E7E5E4] shadow-xl p-8 text-center space-y-4"
         >
-          <div className="w-16 h-16 bg-emerald-50 text-[#059669] rounded-full flex items-center justify-center mx-auto shadow-inner">
+          <div className="w-16 h-16 bg-teal-50 text-[#0F766E] rounded-full flex items-center justify-center mx-auto shadow-inner">
             <Mail className="h-8 w-8" />
           </div>
-          <h2 className="text-xl font-bold text-[#111827]">Verify Your Email Address</h2>
-          <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed max-w-sm mx-auto">
+          <h2 className="text-xl font-bold text-[#1C1917]">Verify Your Email Address</h2>
+          <p className="text-xs sm:text-sm text-[#78716C] leading-relaxed max-w-sm mx-auto">
             We have sent an authentication verification email to <strong>{email}</strong>. Please click the link inside to activate your account.
           </p>
           <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href={redirectTarget ? `/login?redirect=${encodeURIComponent(redirectTarget)}` : '/login'}
-              className="rounded-xl bg-[#059669] hover:bg-[#047857] text-white py-2.5 px-5 text-xs font-bold transition shadow"
+              className="rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white py-2.5 px-5 text-xs font-bold transition shadow"
             >
               Go to Sign In
             </Link>
             <button
               type="button"
               onClick={() => setNeedsConfirmation(false)}
-              className="rounded-xl border border-[#E2E8F0] hover:bg-slate-50 text-[#111827] py-2.5 px-5 text-xs font-bold transition"
+              className="rounded-xl border border-[#E7E5E4] hover:bg-slate-50 text-[#1C1917] py-2.5 px-5 text-xs font-bold transition"
             >
               Edit Registration Info
             </button>
@@ -192,15 +192,15 @@ function SignUpForm() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xl p-6 sm:p-8 space-y-6 relative"
+          className="bg-white rounded-3xl border border-[#E7E5E4] shadow-xl p-6 sm:p-8 space-y-6 relative"
         >
           {/* Helpful context banner if attendee clicked View Details or Book */}
           {isEventRedirect && (
-            <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-teal-900 text-xs font-semibold flex items-start gap-2.5 shadow-sm">
-              <Ticket className="h-4 w-4 text-[#059669] shrink-0 mt-0.5" />
+            <div className="p-3.5 rounded-2xl bg-teal-50 border border-teal-200 text-teal-900 text-xs font-semibold flex items-start gap-2.5 shadow-sm">
+              <Ticket className="h-4 w-4 text-[#0F766E] shrink-0 mt-0.5" />
               <div>
-                <p className="font-extrabold text-[#059669]">Sign up to View Event Details & Book Tickets</p>
-                <p className="text-[11px] text-emerald-700 font-normal mt-0.5">
+                <p className="font-extrabold text-[#0F766E]">Sign up to View Event Details & Book Tickets</p>
+                <p className="text-[11px] text-teal-800 font-normal mt-0.5">
                   Create your free account below to view schedule details, reserve passes, and access instant QR tickets.
                 </p>
               </div>
@@ -210,21 +210,21 @@ function SignUpForm() {
           {/* Account Role Selector: Attendee vs Organizer */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-bold text-[#111827]">
+              <label className="text-xs font-bold text-[#1C1917]">
                 Choose Your Role <span className="text-red-500">*</span>
               </label>
-              <span className="text-[10px] text-[#64748B] bg-slate-100 px-2 py-0.5 rounded-full font-medium">
+              <span className="text-[10px] text-[#78716C] bg-slate-100 px-2 py-0.5 rounded-full font-medium">
                 Admin accounts are invitation-only
               </span>
             </div>
-            <div className="grid grid-cols-2 p-1 bg-[#F9FAFB] rounded-2xl border border-[#E2E8F0] text-xs font-bold">
+            <div className="grid grid-cols-2 p-1 bg-[#FAFAF9] rounded-2xl border border-[#E7E5E4] text-xs font-bold">
               <button
                 type="button"
                 onClick={() => setRole('attendee')}
                 className={`py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-2 ${
                   role === 'attendee'
-                    ? 'bg-white text-[#059669] shadow-sm font-extrabold ring-1 ring-slate-200'
-                    : 'text-[#64748B] hover:text-[#111827]'
+                    ? 'bg-white text-[#0F766E] shadow-sm font-extrabold ring-1 ring-slate-200'
+                    : 'text-[#78716C] hover:text-[#1C1917]'
                 }`}
               >
                 <User className="h-4 w-4" />
@@ -238,8 +238,8 @@ function SignUpForm() {
                 onClick={() => setRole('organizer')}
                 className={`py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-2 ${
                   role === 'organizer'
-                    ? 'bg-white text-[#F59E0B] shadow-sm font-extrabold ring-1 ring-slate-200'
-                    : 'text-[#64748B] hover:text-[#111827]'
+                    ? 'bg-white text-[#F97316] shadow-sm font-extrabold ring-1 ring-slate-200'
+                    : 'text-[#78716C] hover:text-[#1C1917]'
                 }`}
               >
                 <Building2 className="h-4 w-4" />
@@ -270,7 +270,7 @@ function SignUpForm() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* 1. Full Name */}
             <div>
-              <label className="block text-xs font-bold text-[#111827] mb-1.5">
+              <label className="block text-xs font-bold text-[#1C1917] mb-1.5">
                 Full Name <span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -281,14 +281,14 @@ function SignUpForm() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. Rajesh Sharma"
-                  className="w-full rounded-xl border border-[#E2E8F0] pl-10 pr-4 py-2.5 text-xs text-[#111827] placeholder-slate-400 focus:outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/20 transition"
+                  className="w-full rounded-xl border border-[#E7E5E4] pl-10 pr-4 py-2.5 text-xs text-[#1C1917] placeholder-slate-400 focus:outline-none focus:border-[#0F766E] focus:ring-2 focus:ring-[#0F766E]/20 transition"
                 />
               </div>
             </div>
 
             {/* 2. Email Address */}
             <div>
-              <label className="block text-xs font-bold text-[#111827] mb-1.5">
+              <label className="block text-xs font-bold text-[#1C1917] mb-1.5">
                 Email Address <span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -299,7 +299,7 @@ function SignUpForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="yourname@gmail.com"
-                  className="w-full rounded-xl border border-[#E2E8F0] pl-10 pr-4 py-2.5 text-xs text-[#111827] placeholder-slate-400 focus:outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/20 transition"
+                  className="w-full rounded-xl border border-[#E7E5E4] pl-10 pr-4 py-2.5 text-xs text-[#1C1917] placeholder-slate-400 focus:outline-none focus:border-[#0F766E] focus:ring-2 focus:ring-[#0F766E]/20 transition"
                 />
               </div>
               <p className="text-[10px] text-slate-400 mt-1">
@@ -309,7 +309,7 @@ function SignUpForm() {
 
             {/* 3. Phone Number (Optional) */}
             <div>
-              <label className="block text-xs font-bold text-[#111827] mb-1.5">
+              <label className="block text-xs font-bold text-[#1C1917] mb-1.5">
                 Phone Number <span className="text-slate-400 font-normal">(Optional, for instant WhatsApp/SMS passes)</span>
               </label>
               <div className="relative">
@@ -319,7 +319,7 @@ function SignUpForm() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+91 98765 43210"
-                  className="w-full rounded-xl border border-[#E2E8F0] pl-10 pr-4 py-2.5 text-xs text-[#111827] placeholder-slate-400 focus:outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/20 transition"
+                  className="w-full rounded-xl border border-[#E7E5E4] pl-10 pr-4 py-2.5 text-xs text-[#1C1917] placeholder-slate-400 focus:outline-none focus:border-[#0F766E] focus:ring-2 focus:ring-[#0F766E]/20 transition"
                 />
               </div>
             </div>
@@ -327,7 +327,7 @@ function SignUpForm() {
             {/* 4. Password & 5. Confirm Password */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                <label className="block text-xs font-bold text-[#1C1917] mb-1.5">
                   Password <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -338,7 +338,7 @@ function SignUpForm() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full rounded-xl border border-[#E2E8F0] pl-10 pr-10 py-2.5 text-xs text-[#111827] placeholder-slate-400 focus:outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/20 transition"
+                    className="w-full rounded-xl border border-[#E7E5E4] pl-10 pr-10 py-2.5 text-xs text-[#1C1917] placeholder-slate-400 focus:outline-none focus:border-[#0F766E] focus:ring-2 focus:ring-[#0F766E]/20 transition"
                   />
                   <button
                     type="button"
@@ -352,7 +352,7 @@ function SignUpForm() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                <label className="block text-xs font-bold text-[#1C1917] mb-1.5">
                   Confirm Password <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -363,7 +363,7 @@ function SignUpForm() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full rounded-xl border border-[#E2E8F0] pl-10 pr-10 py-2.5 text-xs text-[#111827] placeholder-slate-400 focus:outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/20 transition"
+                    className="w-full rounded-xl border border-[#E7E5E4] pl-10 pr-10 py-2.5 text-xs text-[#1C1917] placeholder-slate-400 focus:outline-none focus:border-[#0F766E] focus:ring-2 focus:ring-[#0F766E]/20 transition"
                   />
                   <button
                     type="button"
@@ -380,9 +380,9 @@ function SignUpForm() {
             {/* Password Strength Meter */}
             {password && (
               <div className="space-y-1">
-                <div className="flex justify-between items-center text-[10px] text-[#64748B] font-semibold">
+                <div className="flex justify-between items-center text-[10px] text-[#78716C] font-semibold">
                   <span>Password Strength</span>
-                  <span className="font-bold text-[#111827]">{strength.label}</span>
+                  <span className="font-bold text-[#1C1917]">{strength.label}</span>
                 </div>
                 <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                   <div
@@ -400,12 +400,12 @@ function SignUpForm() {
                 id="signup-terms"
                 checked={agreeTerms}
                 onChange={(e) => setAgreeTerms(e.target.checked)}
-                className="mt-0.5 rounded border-slate-300 text-[#059669] focus:ring-[#059669] h-4 w-4"
+                className="mt-0.5 rounded border-slate-300 text-[#0F766E] focus:ring-[#0F766E] h-4 w-4"
               />
-              <label htmlFor="signup-terms" className="text-xs text-[#64748B] leading-snug cursor-pointer">
+              <label htmlFor="signup-terms" className="text-xs text-[#78716C] leading-snug cursor-pointer">
                 I agree to the{' '}
-                <span className="text-[#059669] font-bold">Terms of Service</span> and{' '}
-                <span className="text-[#059669] font-bold">Privacy Policy</span>.
+                <span className="text-[#0F766E] font-bold">Terms of Service</span> and{' '}
+                <span className="text-[#0F766E] font-bold">Privacy Policy</span>.
               </label>
             </div>
 
@@ -415,8 +415,8 @@ function SignUpForm() {
               disabled={loading}
               className={`w-full rounded-xl text-white py-3 px-4 font-bold text-xs shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-60 ${
                 role === 'organizer'
-                  ? 'bg-[#F59E0B] hover:bg-[#D97706]'
-                  : 'bg-[#059669] hover:bg-[#047857]'
+                  ? 'bg-[#F97316] hover:bg-[#EA580C]'
+                  : 'bg-[#0F766E] hover:bg-[#115E59]'
               }`}
             >
               {loading ? (
@@ -434,7 +434,7 @@ function SignUpForm() {
 
           {/* Divider */}
           <div className="relative flex items-center justify-center">
-            <div className="border-t border-[#E2E8F0] w-full" />
+            <div className="border-t border-[#E7E5E4] w-full" />
             <span className="bg-white px-3 text-[10px] text-slate-400 font-bold uppercase tracking-wider absolute">
               Or Sign Up With
             </span>
@@ -446,10 +446,10 @@ function SignUpForm() {
               type="button"
               onClick={() => handleOAuth('google')}
               disabled={Boolean(oauthLoading)}
-              className="rounded-xl border border-[#E2E8F0] hover:bg-slate-50 py-2.5 px-3 text-xs font-bold text-[#111827] transition flex items-center justify-center gap-2 shadow-sm"
+              className="rounded-xl border border-[#E7E5E4] hover:bg-slate-50 py-2.5 px-3 text-xs font-bold text-[#1C1917] transition flex items-center justify-center gap-2 shadow-sm"
             >
               {oauthLoading === 'google' ? (
-                <div className="h-3.5 w-3.5 border-2 border-[#111827] border-t-transparent rounded-full animate-spin" />
+                <div className="h-3.5 w-3.5 border-2 border-[#1C1917] border-t-transparent rounded-full animate-spin" />
               ) : (
                 <svg className="h-4 w-4" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -465,10 +465,10 @@ function SignUpForm() {
               type="button"
               onClick={() => handleOAuth('github')}
               disabled={Boolean(oauthLoading)}
-              className="rounded-xl border border-[#E2E8F0] hover:bg-slate-50 py-2.5 px-3 text-xs font-bold text-[#111827] transition flex items-center justify-center gap-2 shadow-sm"
+              className="rounded-xl border border-[#E7E5E4] hover:bg-slate-50 py-2.5 px-3 text-xs font-bold text-[#1C1917] transition flex items-center justify-center gap-2 shadow-sm"
             >
               {oauthLoading === 'github' ? (
-                <div className="h-3.5 w-3.5 border-2 border-[#111827] border-t-transparent rounded-full animate-spin" />
+                <div className="h-3.5 w-3.5 border-2 border-[#1C1917] border-t-transparent rounded-full animate-spin" />
               ) : (
                 <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                   <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
@@ -479,11 +479,11 @@ function SignUpForm() {
           </div>
 
           {/* Already registered */}
-          <div className="pt-2 text-center text-xs text-[#64748B]">
+          <div className="pt-2 text-center text-xs text-[#78716C]">
             Already have an ePayEvents account?{' '}
             <Link 
               href={redirectTarget ? `/login?redirect=${encodeURIComponent(redirectTarget)}` : '/login'} 
-              className="font-extrabold text-[#059669] hover:underline"
+              className="font-extrabold text-[#0F766E] hover:underline"
             >
               Sign in to your account
             </Link>
@@ -492,7 +492,7 @@ function SignUpForm() {
       )}
 
       {/* Security Guarantee Note */}
-      <div className="flex items-center justify-center gap-2 text-[11px] text-[#64748B]">
+      <div className="flex items-center justify-center gap-2 text-[11px] text-[#78716C]">
         <ShieldCheck className="h-3.5 w-3.5 text-[#059669]" />
         <span>Encrypted credentials protected by Supabase Row Level Security</span>
       </div>
@@ -502,17 +502,17 @@ function SignUpForm() {
 
 export default function SignUpPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F9FAFB] text-[#111827] font-sans">
+    <div className="min-h-screen flex flex-col bg-[#FAFAF9] text-[#1C1917] font-sans">
       <Navbar />
 
       <main className="flex-1 relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Deep Teal & Coral Ambient Lighting */}
-        <div className="absolute top-1/4 -right-20 w-96 h-96 bg-[#059669]/15 rounded-full blur-[130px] pointer-events-none" />
-        <div className="absolute bottom-1/4 -left-20 w-96 h-96 bg-[#F59E0B]/15 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute top-1/4 -right-20 w-96 h-96 bg-[#0F766E]/15 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute bottom-1/4 -left-20 w-96 h-96 bg-[#F97316]/15 rounded-full blur-[130px] pointer-events-none" />
 
         <Suspense fallback={
           <div className="w-full max-w-lg p-8 bg-white rounded-3xl border border-slate-200 text-center">
-            <div className="h-6 w-6 border-2 border-[#059669] border-t-transparent rounded-full animate-spin mx-auto" />
+            <div className="h-6 w-6 border-2 border-[#0F766E] border-t-transparent rounded-full animate-spin mx-auto" />
             <p className="mt-3 text-xs text-slate-500 font-bold">Loading Sign Up Form...</p>
           </div>
         }>

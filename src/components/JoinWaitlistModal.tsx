@@ -129,7 +129,7 @@ export function JoinWaitlistModal({
           className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full overflow-hidden text-slate-900 relative"
         >
           {/* Top Banner Gradient */}
-          <div className="bg-gradient-to-r from-[#111827] via-[#059669] to-[#111827] p-5 text-white flex items-center justify-between">
+          <div className="bg-gradient-to-r from-[#0F172A] via-[#0F766E] to-[#0F172A] p-5 text-white flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="p-2 rounded-xl bg-amber-400/20 text-amber-300 border border-amber-300/30">
                 <Bell className="h-5 w-5 animate-bounce" />
@@ -159,7 +159,7 @@ export function JoinWaitlistModal({
                 {/* Event & Tier Context Box */}
                 <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-[#059669] uppercase tracking-wider">
+                    <span className="text-[11px] font-bold text-[#0F766E] uppercase tracking-wider">
                       {ticketTierName}
                     </span>
                     <span className="text-xs font-black text-slate-900">
@@ -195,7 +195,7 @@ export function JoinWaitlistModal({
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="e.g. Rahul Sharma"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white font-medium focus:outline-none focus:border-[#059669] focus:ring-1 focus:ring-[#059669]"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white font-medium focus:outline-none focus:border-[#0F766E] focus:ring-1 focus:ring-[#0F766E]"
                       />
                     </div>
                   </div>
@@ -212,7 +212,7 @@ export function JoinWaitlistModal({
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="e.g. rahul@example.com"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white font-medium focus:outline-none focus:border-[#059669] focus:ring-1 focus:ring-[#059669]"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white font-medium focus:outline-none focus:border-[#0F766E] focus:ring-1 focus:ring-[#0F766E]"
                       />
                     </div>
                   </div>
@@ -229,7 +229,7 @@ export function JoinWaitlistModal({
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
                           placeholder="+91 98765 43210"
-                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white font-medium focus:outline-none focus:border-[#059669] focus:ring-1 focus:ring-[#059669]"
+                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white font-medium focus:outline-none focus:border-[#0F766E] focus:ring-1 focus:ring-[#0F766E]"
                         />
                       </div>
                     </div>
@@ -241,7 +241,7 @@ export function JoinWaitlistModal({
                       <select
                         value={quantity}
                         onChange={(e) => setQuantity(Number(e.target.value))}
-                        className="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white font-bold text-slate-800 focus:outline-none focus:border-[#059669]"
+                        className="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white font-bold text-slate-800 focus:outline-none focus:border-[#0F766E]"
                       >
                         <option value={1}>1 Ticket</option>
                         <option value={2}>2 Tickets</option>
@@ -276,7 +276,7 @@ export function JoinWaitlistModal({
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#059669] to-teal-600 hover:from-[#047857] hover:to-teal-600 text-xs font-black text-white transition shadow-md flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
+                    className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#0F766E] to-teal-600 hover:from-[#115E59] hover:to-teal-700 text-xs font-black text-white transition shadow-md flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
                   >
                     {isSubmitting ? (
                       <span>Joining Queue...</span>
@@ -297,7 +297,7 @@ export function JoinWaitlistModal({
                 </div>
 
                 <div className="space-y-1.5">
-                  <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#059669] bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                  <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#0F766E] bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
                     Queue Position Confirmed
                   </span>
                   <h3 className="text-xl font-black text-slate-900 tracking-tight pt-1">
@@ -315,7 +315,7 @@ export function JoinWaitlistModal({
                   </div>
                   <div className="flex items-center justify-between text-[11px]">
                     <span className="text-slate-400 font-semibold uppercase">Pass Tier</span>
-                    <span className="font-bold text-[#059669]">{ticketTierName}</span>
+                    <span className="font-bold text-[#0F766E]">{ticketTierName}</span>
                   </div>
                   <div className="flex items-center justify-between text-[11px]">
                     <span className="text-slate-400 font-semibold uppercase">Hold Window</span>
@@ -327,7 +327,7 @@ export function JoinWaitlistModal({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="w-full py-3 rounded-xl bg-[#059669] hover:bg-[#047857] text-white text-xs font-bold transition shadow-md"
+                    className="w-full py-3 rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white text-xs font-bold transition shadow-md"
                   >
                     Got It, Thank You!
                   </button>

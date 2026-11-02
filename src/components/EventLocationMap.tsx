@@ -92,11 +92,11 @@ export function EventLocationMap({ events, currentCity = 'all' }: EventLocationM
   return (
     <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden mb-8">
       {/* Header Bar */}
-      <div className="p-6 sm:p-7 border-b border-slate-100 bg-gradient-to-r from-slate-900 via-slate-800 to-teal-950 text-white space-y-4">
+      <div className="p-6 sm:p-7 border-b border-slate-100 bg-gradient-to-r from-emerald-50/70 via-white to-amber-50/50 text-white space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black tracking-widest uppercase bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+              <span className="text-[10px] font-black tracking-widest uppercase bg-emerald-500/20 text-teal-300 border border-teal-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1">
                 <Compass className="h-3 w-3 animate-spin text-teal-400" style={{ animationDuration: '6s' }} />
                 GEOLOCATION RADAR
               </span>
@@ -105,7 +105,7 @@ export function EventLocationMap({ events, currentCity = 'all' }: EventLocationM
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-white mt-1.5 tracking-tight">
-              Explore Events by <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-300 to-[#F97316]">City & Venue</span>
+              Explore Events by <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-emerald-300 to-[#F59E0B]">City & Venue</span>
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
               Select your metro hub below to view venue clusters, check starting pass pricing, and launch turn-by-turn navigation.
@@ -227,16 +227,16 @@ export function EventLocationMap({ events, currentCity = 'all' }: EventLocationM
                     onClick={() => setActivePinEvent(evt)}
                     className={`p-3.5 rounded-2xl border transition cursor-pointer ${
                       isSelected
-                        ? 'bg-teal-50 border-teal-500 shadow-md ring-2 ring-teal-200'
+                        ? 'bg-emerald-50 border-teal-500 shadow-md ring-2 ring-teal-200'
                         : 'bg-white border-slate-200 hover:border-slate-300 shadow-sm'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <span className="inline-block text-[10px] font-bold text-teal-700 bg-teal-100/70 px-2 py-0.5 rounded-md mb-1 uppercase tracking-wider">
+                        <span className="inline-block text-[10px] font-bold text-teal-600 bg-teal-100/70 px-2 py-0.5 rounded-md mb-1 uppercase tracking-wider">
                           {evt.venue.city || 'Online'}
                         </span>
-                        <h4 className="text-xs font-extrabold text-slate-900 truncate leading-snug hover:text-teal-700 transition">
+                        <h4 className="text-xs font-extrabold text-slate-900 truncate leading-snug hover:text-teal-600 transition">
                           {evt.title}
                         </h4>
                         <div className="text-[11px] text-slate-500 flex items-center gap-1 mt-1 truncate">
@@ -261,7 +261,7 @@ export function EventLocationMap({ events, currentCity = 'all' }: EventLocationM
 
                       <Link
                         href={`/events/${evt.slug || evt.id}`}
-                        className="font-bold text-teal-700 hover:text-teal-900 flex items-center gap-0.5 group"
+                        className="font-bold text-teal-600 hover:text-teal-900 flex items-center gap-0.5 group"
                       >
                         <span>Details</span>
                         <span className="group-hover:translate-x-0.5 transition-transform">→</span>
@@ -278,7 +278,7 @@ export function EventLocationMap({ events, currentCity = 'all' }: EventLocationM
             <span className="text-slate-500 text-[11px]">Looking for another hub?</span>
             <Link
               href={`/events?location=${selectedCity !== 'all' ? selectedCity : ''}`}
-              className="font-bold text-teal-700 hover:underline flex items-center gap-1 text-[11px]"
+              className="font-bold text-teal-600 hover:underline flex items-center gap-1 text-[11px]"
             >
               <span>Apply &quot;{activeCoord.label}&quot; filter</span>
               <Ticket className="h-3 w-3" />

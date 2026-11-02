@@ -142,7 +142,7 @@ export function DigitalCertificateModal({
             h1 {
               font-size: 26px;
               font-weight: 900;
-              color: #0f172a;
+              color: #111827;
               letter-spacing: 1.5px;
               text-transform: uppercase;
               font-family: Georgia, serif;
@@ -163,7 +163,7 @@ export function DigitalCertificateModal({
             .name {
               font-size: 28px;
               font-weight: 900;
-              color: #0f766e;
+              color: #059669;
               font-family: Georgia, serif;
             }
             .desc {
@@ -176,7 +176,7 @@ export function DigitalCertificateModal({
             .event-title {
               font-size: 17px;
               font-weight: 800;
-              color: #0f172a;
+              color: #111827;
               margin: 4px 0 2px 0;
             }
             .event-venue {
@@ -194,7 +194,7 @@ export function DigitalCertificateModal({
             .b-col { text-align: left; min-width: 140px; }
             .b-col.right { text-align: right; }
             .b-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; font-weight: 700; margin-bottom: 2px; }
-            .b-val { font-family: monospace; font-size: 11px; font-weight: 700; color: #0f172a; }
+            .b-val { font-family: monospace; font-size: 11px; font-weight: 700; color: #111827; }
             .b-date { font-size: 9px; color: #64748b; }
             .verified-badge {
               border: 2px solid #d97706;
@@ -212,7 +212,7 @@ export function DigitalCertificateModal({
               font-style: italic;
               font-size: 13px;
               font-weight: 700;
-              color: #0f172a;
+              color: #111827;
             }
             .sig-bar {
               width: 120px;
@@ -297,7 +297,7 @@ export function DigitalCertificateModal({
           className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-2xl w-full overflow-hidden text-slate-900 my-8"
         >
           {/* Modal Top Bar */}
-          <div className="bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F766E] p-4 text-white flex items-center justify-between">
+          <div className="bg-gradient-to-r from-[#111827] via-[#1E293B] to-[#059669] p-4 text-white flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="p-1.5 rounded-lg bg-amber-400/20 text-amber-300 border border-amber-400/30">
                 <Award className="h-5 w-5" />
@@ -348,7 +348,7 @@ export function DigitalCertificateModal({
 
               {/* Attendee Name */}
               <div className="relative z-10 py-1 border-b-2 border-amber-400/80 max-w-sm mx-auto">
-                <h3 className="text-2xl sm:text-3xl font-black text-[#0F766E] tracking-tight font-serif">
+                <h3 className="text-2xl sm:text-3xl font-black text-[#059669] tracking-tight font-serif">
                   {certificate.attendeeName}
                 </h3>
               </div>

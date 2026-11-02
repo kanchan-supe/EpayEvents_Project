@@ -31,7 +31,7 @@ export function QRCodeImage({
         width: Math.max(size * 2, 300),
         margin: 1,
         color: {
-          dark: '#0f172a',
+          dark: '#111827',
           light: '#ffffff',
         },
         errorCorrectionLevel: 'M',

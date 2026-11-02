@@ -111,31 +111,31 @@ function OrderSuccessContent() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-8">
-      <div className="bg-white p-8 sm:p-10 rounded-3xl border border-[#E7E5E4] shadow-sm text-center">
+      <div className="bg-white p-8 sm:p-10 rounded-3xl border border-[#E2E8F0] shadow-sm text-center">
         
         {/* Brand Logo Header */}
         <div className="flex justify-center mb-6">
           <Logo variant="default" size="md" />
         </div>
 
-        <div className="w-16 h-16 bg-[#CCFBF1] text-[#0F766E] rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+        <div className="w-16 h-16 bg-[#CCFBF1] text-[#059669] rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
           <CheckCircle2 className="h-10 w-10" />
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-black text-[#1C1917]">
+        <h1 className="text-2xl sm:text-3xl font-black text-[#111827]">
           {approvalRequired ? 'Application Submitted & Provisional Pass Issued!' : 'Payment Confirmed & Smart Ticket Issued!'}
         </h1>
-        <p className="text-[#78716C] text-sm mt-1">
-          Thank you, <strong className="text-[#1C1917]">{buyerName}</strong>. Your QR Pass & order confirmation have been dispatched to <strong className="text-[#1C1917]">{buyerEmail}</strong>.
+        <p className="text-[#64748B] text-sm mt-1">
+          Thank you, <strong className="text-[#111827]">{buyerName}</strong>. Your QR Pass & order confirmation have been dispatched to <strong className="text-[#111827]">{buyerEmail}</strong>.
         </p>
 
         <div className="mt-4 flex flex-wrap justify-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FAFAF9] border border-[#E7E5E4] px-3.5 py-1 text-xs font-semibold text-[#1C1917]">
-            <Mail className="h-3.5 w-3.5 text-[#0F766E]" /> Order ID: {orderId}
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F9FAFB] border border-[#E2E8F0] px-3.5 py-1 text-xs font-semibold text-[#111827]">
+            <Mail className="h-3.5 w-3.5 text-[#059669]" /> Order ID: {orderId}
           </span>
           <button
             onClick={handleCopyTicketId}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[#0F766E]/10 border border-[#0F766E]/30 px-3.5 py-1 text-xs font-bold text-[#0F766E] hover:bg-[#0F766E]/20 transition"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#059669]/10 border border-[#059669]/30 px-3.5 py-1 text-xs font-bold text-[#059669] hover:bg-[#059669]/20 transition"
           >
             {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
             {ticketCode}
@@ -144,22 +144,22 @@ function OrderSuccessContent() {
 
         {/* Transfer Confirmation Notice */}
         {transferSuccess && (
-          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-900 font-semibold text-left flex items-start gap-2">
-            <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
+          <div className="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-blue-900 font-semibold text-left flex items-start gap-2">
+            <CheckCircle2 className="h-4 w-4 text-emerald-700 shrink-0 mt-0.5" />
             <span>{transferSuccess}</span>
           </div>
         )}
 
         {/* Refund Confirmation Notice */}
         {refundStatus && (
-          <div className="mt-4 p-3 bg-teal-50 border border-teal-200 rounded-xl text-xs text-teal-900 font-semibold text-left flex items-start gap-2">
+          <div className="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-teal-900 font-semibold text-left flex items-start gap-2">
             <Undo2 className="h-4 w-4 text-teal-600 shrink-0 mt-0.5" />
             <span>{refundStatus}</span>
           </div>
         )}
 
         {/* Digital QR Ticket Pass Card */}
-        <div className="mt-8 bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A] text-white rounded-3xl p-6 sm:p-8 text-left shadow-2xl relative overflow-hidden border border-slate-700">
+        <div className="mt-8 bg-gradient-to-br from-[#111827] via-[#1E293B] to-[#111827] text-white rounded-3xl p-6 sm:p-8 text-left shadow-2xl relative overflow-hidden border border-slate-700">
           
           {/* Ticket Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-700/80 pb-6">
@@ -172,12 +172,12 @@ function OrderSuccessContent() {
               </div>
               <h3 className="text-xl font-black text-white mt-2">{eventTitle}</h3>
               <p className="text-xs text-slate-300 mt-1 flex items-center gap-1">
-                <MapPin className="h-3.5 w-3.5 text-[#F97316]" /> {venue}
+                <MapPin className="h-3.5 w-3.5 text-[#F59E0B]" /> {venue}
               </p>
             </div>
             
             <div className="text-right">
-              <span className="bg-[#F97316] text-white px-3 py-1 rounded-xl font-black text-xs uppercase tracking-wider block">
+              <span className="bg-[#F59E0B] text-white px-3 py-1 rounded-xl font-black text-xs uppercase tracking-wider block">
                 {ticketName}
               </span>
               <span className="text-[10px] text-slate-400 font-medium block mt-1">Tier: {category}</span>
@@ -226,7 +226,7 @@ function OrderSuccessContent() {
               <button
                 type="button"
                 onClick={handleCopyPayload}
-                className="text-[9px] text-[#0F766E] hover:underline font-semibold mt-1 flex items-center gap-1"
+                className="text-[9px] text-[#059669] hover:underline font-semibold mt-1 flex items-center gap-1"
               >
                 <QrCode className="h-2.5 w-2.5" />
                 <span>{copiedPayload ? 'Payload Copied!' : 'Copy Raw QR Payload'}</span>
@@ -239,35 +239,35 @@ function OrderSuccessContent() {
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <button
             onClick={handleDownloadPDF}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F766E] px-5 py-3 font-bold text-xs sm:text-sm text-white shadow hover:bg-[#115E59] transition"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#059669] px-5 py-3 font-bold text-xs sm:text-sm text-white shadow hover:bg-[#047857] transition"
           >
             <Download className="h-4 w-4" /> Download PDF Ticket
           </button>
 
           <button
             onClick={() => setShowTransferModal(true)}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#F97316] px-5 py-3 font-bold text-xs sm:text-sm text-white shadow hover:bg-[#ea580c] transition"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#F59E0B] px-5 py-3 font-bold text-xs sm:text-sm text-white shadow hover:bg-[#D97706] transition"
           >
             <ArrowRightLeft className="h-4 w-4" /> Transfer Ticket
           </button>
 
           <button
             onClick={() => setShowRefundModal(true)}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#E7E5E4] px-5 py-3 font-bold text-xs sm:text-sm text-[#1C1917] hover:bg-slate-50 transition"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#E2E8F0] px-5 py-3 font-bold text-xs sm:text-sm text-[#111827] hover:bg-slate-50 transition"
           >
             <Undo2 className="h-4 w-4 text-red-500" /> Cancel & Refund
           </button>
           
           <Link
             href="/my-tickets"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F766E]/10 hover:bg-[#0F766E]/20 text-[#0F766E] border border-[#0F766E]/30 px-5 py-3 font-bold text-xs sm:text-sm transition shadow-sm"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#059669]/10 hover:bg-[#059669]/20 text-[#059669] border border-[#059669]/30 px-5 py-3 font-bold text-xs sm:text-sm transition shadow-sm"
           >
             <Ticket className="h-4 w-4" /> Go to My Tickets
           </Link>
 
           <Link
             href="/events"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#E7E5E4] px-5 py-3 font-bold text-xs sm:text-sm text-[#78716C] hover:bg-slate-50 transition"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#E2E8F0] px-5 py-3 font-bold text-xs sm:text-sm text-[#64748B] hover:bg-slate-50 transition"
           >
             Explore Events <ArrowRight className="h-4 w-4" />
           </Link>
@@ -277,54 +277,54 @@ function OrderSuccessContent() {
       {/* Modal: Transfer Ticket Workflow */}
       {showTransferModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-[#E7E5E4] space-y-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-[#E2E8F0] space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
-              <h3 className="font-bold text-base text-[#1C1917] flex items-center gap-2">
-                <ArrowRightLeft className="h-5 w-5 text-[#F97316]" /> Transfer Ticket Ownership
+              <h3 className="font-bold text-base text-[#111827] flex items-center gap-2">
+                <ArrowRightLeft className="h-5 w-5 text-[#F59E0B]" /> Transfer Ticket Ownership
               </h3>
               <button onClick={() => setShowTransferModal(false)} className="text-slate-400 hover:text-slate-700 text-lg">✕</button>
             </div>
             
-            <p className="text-xs text-[#78716C] leading-relaxed">
-              Transfer pass <strong className="text-[#1C1917]">#{ticketCode}</strong> to another attendee. A new unique QR code will be generated and issued to the recipient.
+            <p className="text-xs text-[#64748B] leading-relaxed">
+              Transfer pass <strong className="text-[#111827]">#{ticketCode}</strong> to another attendee. A new unique QR code will be generated and issued to the recipient.
             </p>
 
             <form onSubmit={handleTransferSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-[#1C1917] mb-1">Recipient Full Name *</label>
+                <label className="block text-xs font-bold text-[#111827] mb-1">Recipient Full Name *</label>
                 <input
                   type="text"
                   required
                   value={transferRecipient.name}
                   onChange={e => setTransferRecipient({ ...transferRecipient, name: e.target.value })}
                   placeholder="e.g. Rohini Deshmukh"
-                  className="w-full px-3 py-2 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E]"
+                  className="w-full px-3 py-2 text-xs border border-[#E2E8F0] rounded-xl focus:outline-none focus:border-[#059669]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#1C1917] mb-1">Recipient Email Address *</label>
+                <label className="block text-xs font-bold text-[#111827] mb-1">Recipient Email Address *</label>
                 <input
                   type="email"
                   required
                   value={transferRecipient.email}
                   onChange={e => setTransferRecipient({ ...transferRecipient, email: e.target.value })}
                   placeholder="recipient@example.com"
-                  className="w-full px-3 py-2 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E]"
+                  className="w-full px-3 py-2 text-xs border border-[#E2E8F0] rounded-xl focus:outline-none focus:border-[#059669]"
                 />
               </div>
 
               <div className="pt-2 flex gap-3">
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 bg-[#F97316] text-white rounded-xl text-xs font-bold hover:bg-[#ea580c] transition shadow"
+                  className="flex-1 py-2.5 bg-[#F59E0B] text-white rounded-xl text-xs font-bold hover:bg-[#D97706] transition shadow"
                 >
                   Confirm Transfer
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowTransferModal(false)}
-                  className="px-4 py-2.5 border border-[#E7E5E4] text-[#1C1917] rounded-xl text-xs font-bold hover:bg-slate-100"
+                  className="px-4 py-2.5 border border-[#E2E8F0] text-[#111827] rounded-xl text-xs font-bold hover:bg-slate-100"
                 >
                   Cancel
                 </button>
@@ -337,25 +337,25 @@ function OrderSuccessContent() {
       {/* Modal: Cancellation & Refund Workflow */}
       {showRefundModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-[#E7E5E4] space-y-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-[#E2E8F0] space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
-              <h3 className="font-bold text-base text-[#1C1917] flex items-center gap-2">
+              <h3 className="font-bold text-base text-[#111827] flex items-center gap-2">
                 <Undo2 className="h-5 w-5 text-red-500" /> Cancel Ticket & Request Refund
               </h3>
               <button onClick={() => setShowRefundModal(false)} className="text-slate-400 hover:text-slate-700 text-lg">✕</button>
             </div>
             
-            <p className="text-xs text-[#78716C] leading-relaxed">
-              Ticket <strong className="text-[#1C1917]">#{ticketCode}</strong> will be invalidated immediately. Standard refund of <strong>₹{total}</strong> will be processed to the original payment mode.
+            <p className="text-xs text-[#64748B] leading-relaxed">
+              Ticket <strong className="text-[#111827]">#{ticketCode}</strong> will be invalidated immediately. Standard refund of <strong>₹{total}</strong> will be processed to the original payment mode.
             </p>
 
             <form onSubmit={handleRefundSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-[#1C1917] mb-1">Reason for Cancellation</label>
+                <label className="block text-xs font-bold text-[#111827] mb-1">Reason for Cancellation</label>
                 <select
                   value={refundReason}
                   onChange={e => setRefundReason(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border border-[#E7E5E4] rounded-xl focus:outline-none focus:border-[#0F766E] bg-white text-[#1C1917]"
+                  className="w-full px-3 py-2 text-xs border border-[#E2E8F0] rounded-xl focus:outline-none focus:border-[#059669] bg-white text-[#111827]"
                 >
                   <option value="Schedule Conflict">Schedule Conflict / Cannot Attend</option>
                   <option value="Booked by Mistake">Booked Duplicate / Incorrect Pass</option>
@@ -374,7 +374,7 @@ function OrderSuccessContent() {
                 <button
                   type="button"
                   onClick={() => setShowRefundModal(false)}
-                  className="px-4 py-2.5 border border-[#E7E5E4] text-[#1C1917] rounded-xl text-xs font-bold hover:bg-slate-100"
+                  className="px-4 py-2.5 border border-[#E2E8F0] text-[#111827] rounded-xl text-xs font-bold hover:bg-slate-100"
                 >
                   Keep Ticket
                 </button>
@@ -389,7 +389,7 @@ function OrderSuccessContent() {
 
 export default function OrderSuccessPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
+    <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
       <Navbar />
       <main className="container mx-auto px-4 md:px-8 py-12 flex-1">
         <Suspense fallback={<div className="text-center py-12">Loading ticket confirmation...</div>}>

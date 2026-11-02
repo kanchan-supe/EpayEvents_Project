@@ -23,30 +23,30 @@ export function Logo({
   const currentDim = dimensions[size] || dimensions.md;
 
   // Colors mapping based on variant specifications
-  // Variant 1: default -> Deep Teal (#0F766E) icon + dark text
-  // Variant 2: teal-coral -> Deep Teal (#0F766E) icon + Warm Coral (#F97316) pulse line + dark text
+  // Variant 1: default -> Deep Teal (#059669) icon + dark text
+  // Variant 2: teal-coral -> Deep Teal (#059669) icon + Warm Coral (#F59E0B) pulse line + dark text
   // Variant 3: white -> Full white version (for dark backgrounds)
   // Variant 4: dark -> Full dark version (for light backgrounds)
 
-  let iconBgColor = '#0F766E'; // Deep Teal default
+  let iconBgColor = '#059669'; // Deep Teal default
   let pulseColor = '#FFFFFF';   // White pulse by default
-  let ePayTextColor = '#1C1917'; // Dark text
-  let eventsTextColor = '#0F766E'; // Deep Teal
+  let ePayTextColor = '#111827'; // Dark text
+  let eventsTextColor = '#059669'; // Deep Teal
 
   if (variant === 'teal-coral') {
-    iconBgColor = '#0F766E';
-    pulseColor = '#F97316'; // Warm Coral pulse
-    ePayTextColor = '#1C1917';
-    eventsTextColor = '#F97316';
+    iconBgColor = '#059669';
+    pulseColor = '#F59E0B'; // Warm Coral pulse
+    ePayTextColor = '#111827';
+    eventsTextColor = '#F59E0B';
   } else if (variant === 'white') {
     iconBgColor = '#FFFFFF';
-    pulseColor = '#0F766E';
+    pulseColor = '#059669';
     ePayTextColor = '#FFFFFF';
-    eventsTextColor = '#F97316';
+    eventsTextColor = '#F59E0B';
   } else if (variant === 'dark') {
-    iconBgColor = '#0F172A';
+    iconBgColor = '#111827';
     pulseColor = '#38BDF8';
-    ePayTextColor = '#0F172A';
+    ePayTextColor = '#111827';
     eventsTextColor = '#475569';
   }
 

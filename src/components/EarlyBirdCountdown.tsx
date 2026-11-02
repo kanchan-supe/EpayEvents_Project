@@ -67,7 +67,7 @@ export function EarlyBirdCountdown({
   return (
     <div className="rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border border-orange-200/90 p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs">
       <div className="flex items-center gap-3">
-        <div className="p-2.5 rounded-xl bg-gradient-to-br from-[#F97316] to-amber-500 text-white shadow-sm shrink-0">
+        <div className="p-2.5 rounded-xl bg-gradient-to-br from-[#F59E0B] to-amber-500 text-white shadow-sm shrink-0">
           <Flame className="h-5 w-5" />
         </div>
         <div>
@@ -76,7 +76,7 @@ export function EarlyBirdCountdown({
               Early Bird Tier Discount Ending Soon!
             </h4>
             {seatsRemaining !== undefined && (
-              <span className="text-[10px] font-extrabold bg-[#F97316] text-white px-2 py-0.5 rounded-full shadow-2xs">
+              <span className="text-[10px] font-extrabold bg-[#F59E0B] text-white px-2 py-0.5 rounded-full shadow-2xs">
                 {seatsRemaining} Seats Remaining
               </span>
             )}
@@ -114,7 +114,7 @@ export function EarlyBirdCountdown({
           <span className="text-xs font-bold text-orange-400">:</span>
 
           <div className="bg-white border border-orange-200/80 px-2.5 py-1.5 rounded-xl shadow-2xs min-w-[42px]">
-            <span className="text-sm sm:text-base font-black text-[#F97316] block leading-none animate-pulse">
+            <span className="text-sm sm:text-base font-black text-[#F59E0B] block leading-none animate-pulse">
               {String(timeLeft.seconds).padStart(2, '0')}
             </span>
             <span className="text-[8px] font-bold text-slate-400 uppercase">Secs</span>

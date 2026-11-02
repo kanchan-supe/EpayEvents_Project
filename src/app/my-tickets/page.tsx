@@ -22,6 +22,7 @@ import { Award } from 'lucide-react';
 interface AttendeeTicketItem {
   id: string;
   orderId: string;
+  bookingId?: string;
   ticketCode: string;
   eventId: string;
   eventTitle: string;
@@ -932,7 +933,7 @@ export default function MyTicketsPage() {
                     </button>
 
                     <a
-                      href={'/api/admin/tickets/' + encodeURIComponent(tkt.ticketCode || tkt.bookingId) + '/download'}
+                      href={'/api/admin/tickets/' + encodeURIComponent(tkt.ticketCode || tkt.bookingId || tkt.orderId || tkt.id) + '/download'}
                       download={'ePayEvents-Pass-' + tkt.ticketCode + '.pdf'}
                       className="rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 py-2.5 px-3 text-xs font-bold transition flex items-center justify-center gap-1.5"
                       title="Download Official PDF Pass with QR Scanner"
@@ -1134,7 +1135,7 @@ export default function MyTicketsPage() {
                   <span>Print Pass</span>
                 </button>
                 <a
-                  href={'/api/admin/tickets/' + encodeURIComponent(selectedTicket.ticketCode || selectedTicket.bookingId) + '/download'}
+                  href={'/api/admin/tickets/' + encodeURIComponent(selectedTicket.ticketCode || selectedTicket.bookingId || selectedTicket.orderId || selectedTicket.id) + '/download'}
                   download={'ePayEvents-Pass-' + selectedTicket.ticketCode + '.pdf'}
                   className="flex-1 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 font-bold text-xs text-emerald-800 transition flex items-center justify-center gap-1.5 cursor-pointer text-center"
                 >

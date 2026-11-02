@@ -253,15 +253,15 @@ export default function HomePage() {
               <img
                 src={heroBackgroundImages[currentBg]}
                 alt="Live Event Atmosphere"
-                className="w-full h-full object-cover object-center brightness-[0.62] contrast-[1.15]"
+                className="w-full h-full object-cover object-center brightness-[0.88] contrast-[1.05]"
               />
             </motion.div>
           </AnimatePresence>
 
-          {/* Darkening Tint & Smooth Contrast Veil */}
-          <div className="absolute inset-0 bg-slate-950/45 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/78 via-white/30 to-black/40 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/15 via-transparent to-[#F9FAFB] pointer-events-none" />
+          {/* Soft Light Tint & Smooth Atmospheric Veil */}
+          <div className="absolute inset-0 bg-slate-900/12 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/92 via-white/60 to-white/30 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-[#F9FAFB] pointer-events-none" />
         </div>
 
         {/* Ambient Top Glow */}

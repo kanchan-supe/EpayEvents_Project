@@ -128,15 +128,15 @@ export function PromotionsManagerModal({
       <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-5xl w-full overflow-hidden text-slate-900 my-8">
         
         {/* Top Header */}
-        <div className="bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#F97316]/90 p-6 text-white flex items-center justify-between">
+        <div className="bg-gradient-to-r from-teal-500 via-teal-600 to-rose-400 p-6 text-white flex items-center justify-between">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-white/10 text-orange-300 text-[11px] font-bold border border-white/10 uppercase tracking-wider mb-1.5">
               <Sparkles className="h-3.5 w-3.5 text-amber-400" /> Affiliate & Referral Tracking
             </div>
             <h3 className="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
-              <Link2 className="h-6 w-6 text-[#F97316]" /> Referral Links & Affiliates
+              <Link2 className="h-6 w-6 text-[#F59E0B]" /> Referral Links & Affiliates
             </h3>
-            <p className="text-xs text-slate-300 mt-0.5">
+            <p className="text-xs text-teal-50 mt-0.5">
               Generate custom referral tracking links for partners, speakers, and campus ambassadors with attendee discounts and automated commission metrics.
             </p>
           </div>
@@ -161,7 +161,7 @@ export function PromotionsManagerModal({
               <button
                 type="button"
                 onClick={() => setShowNewRefModal(true)}
-                className="rounded-xl bg-[#F97316] hover:bg-[#ea580c] text-white px-4 py-2.5 text-xs font-bold transition flex items-center gap-1.5 shadow-md cursor-pointer"
+                className="rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-white px-4 py-2.5 text-xs font-bold transition flex items-center gap-1.5 shadow-md cursor-pointer"
               >
                 <Plus className="h-4 w-4" />
                 <span>Create Referral Partner Link</span>
@@ -303,7 +303,7 @@ export function PromotionsManagerModal({
                             <button
                               type="button"
                               onClick={() => handleUpdateDiscount(r.id, editingDiscountVal)}
-                              className="px-3 py-1.5 bg-[#F97316] text-white rounded-lg font-bold text-xs hover:bg-[#ea580c] transition cursor-pointer shadow-2xs"
+                              className="px-3 py-1.5 bg-[#F59E0B] text-white rounded-lg font-bold text-xs hover:bg-[#D97706] transition cursor-pointer shadow-2xs"
                             >
                               Save Discount %
                             </button>
@@ -334,12 +334,12 @@ export function PromotionsManagerModal({
                           </div>
 
                           {/* 2. Ticket Sales */}
-                          <div className="bg-teal-50/40 hover:bg-teal-50/70 p-3 rounded-xl border border-teal-200/60 flex flex-col justify-between transition">
+                          <div className="bg-emerald-50/40 hover:bg-emerald-50/70 p-3 rounded-xl border border-emerald-200/60 flex flex-col justify-between transition">
                             <div className="flex items-center justify-between gap-1 mb-1">
-                              <span className="text-[10px] uppercase font-bold tracking-wider text-teal-700/80">Ticket Sales</span>
-                              <ShoppingBag className="h-3.5 w-3.5 text-[#0F766E]" />
+                              <span className="text-[10px] uppercase font-bold tracking-wider text-teal-600/80">Ticket Sales</span>
+                              <ShoppingBag className="h-3.5 w-3.5 text-[#059669]" />
                             </div>
-                            <div className="text-lg font-black text-[#0F766E] tracking-tight">
+                            <div className="text-lg font-black text-[#059669] tracking-tight">
                               {r.conversionsCount} <span className="text-xs font-bold font-sans">passes</span>
                             </div>
                             <span className="text-[10px] text-teal-600/80 mt-0.5">Successful orders</span>
@@ -451,7 +451,7 @@ export function PromotionsManagerModal({
                 placeholder="e.g. Dr. Rajesh Verma or IIT Campus Club"
                 value={affiliateName}
                 onChange={e => setAffiliateName(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-[#F97316]"
+                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-[#F59E0B]"
               />
             </div>
 
@@ -464,7 +464,7 @@ export function PromotionsManagerModal({
                   placeholder="e.g. CAMPUS-PUNE"
                   value={refCode}
                   onChange={e => setRefCode(e.target.value.toUpperCase())}
-                  className="w-full px-3 py-2 text-xs font-mono font-bold uppercase rounded-xl border border-slate-300 focus:outline-none focus:border-[#F97316]"
+                  className="w-full px-3 py-2 text-xs font-mono font-bold uppercase rounded-xl border border-slate-300 focus:outline-none focus:border-[#F59E0B]"
                 />
               </div>
 
@@ -473,7 +473,7 @@ export function PromotionsManagerModal({
                 <select
                   value={refType}
                   onChange={e => setRefType(e.target.value as any)}
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-[#F97316]"
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-[#F59E0B]"
                 >
                   <option value="campus_ambassador">Campus Ambassador</option>
                   <option value="speaker">Keynote Speaker</option>
@@ -493,7 +493,7 @@ export function PromotionsManagerModal({
                   required
                   value={commissionPercent}
                   onChange={e => setCommissionPercent(Number(e.target.value))}
-                  className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-300 focus:outline-none focus:border-[#F97316]"
+                  className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-300 focus:outline-none focus:border-[#F59E0B]"
                 />
               </div>
 
@@ -506,7 +506,7 @@ export function PromotionsManagerModal({
                   required
                   value={refDiscountPercent}
                   onChange={e => setRefDiscountPercent(Number(e.target.value))}
-                  className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-300 focus:outline-none focus:border-[#F97316]"
+                  className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-300 focus:outline-none focus:border-[#F59E0B]"
                 />
                 <p className="text-[10px] text-slate-500 mt-0.5">Applied to ticket price on link booking</p>
               </div>
@@ -517,7 +517,7 @@ export function PromotionsManagerModal({
               <select
                 value={refEventId}
                 onChange={e => setRefEventId(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-[#F97316]"
+                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-[#F59E0B]"
               >
                 {events.map((ev) => (
                   <option key={ev.id} value={ev.id}>
@@ -534,7 +534,7 @@ export function PromotionsManagerModal({
                 placeholder="ambassador@campus.edu"
                 value={affiliateEmail}
                 onChange={e => setAffiliateEmail(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-[#F97316]"
+                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-[#F59E0B]"
               />
             </div>
 
@@ -548,7 +548,7 @@ export function PromotionsManagerModal({
               </button>
               <button
                 type="submit"
-                className="flex-1 py-2.5 rounded-xl bg-[#F97316] hover:bg-[#ea580c] text-xs font-bold text-white transition shadow-sm"
+                className="flex-1 py-2.5 rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-xs font-bold text-white transition shadow-sm"
               >
                 Generate Referral Link
               </button>

@@ -160,15 +160,15 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
   const isOrganizer = profile?.role === 'organizer' || profile?.role === 'admin';
 
   return (
-    <section id="reviews-section" className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-8">
+    <section id="reviews-section" className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E2E8F0] shadow-sm space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-[#E7E5E4] pb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-[#E2E8F0] pb-6">
         <div>
-          <span className="text-xs font-extrabold text-[#F97316] uppercase tracking-widest bg-[#F97316]/10 px-3 py-1 rounded-full border border-[#F97316]/20 inline-flex items-center gap-1.5">
-            <Star className="h-3.5 w-3.5 fill-[#F97316] text-[#F97316]" /> VERIFIED TESTIMONIALS
+          <span className="text-xs font-extrabold text-[#F59E0B] uppercase tracking-widest bg-[#F59E0B]/10 px-3 py-1 rounded-full border border-[#F59E0B]/20 inline-flex items-center gap-1.5">
+            <Star className="h-3.5 w-3.5 fill-[#F59E0B] text-[#F59E0B]" /> VERIFIED TESTIMONIALS
           </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight mt-2">
-            Attendee <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F97316] via-amber-500 to-teal-600">Reviews & Ratings</span>
+          <h2 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight mt-2">
+            Attendee <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F59E0B] via-amber-500 to-teal-600">Reviews & Ratings</span>
           </h2>
           <p className="text-xs text-slate-500 mt-1">
             Real feedback from verified badge and pass holders who attended {eventTitle}.
@@ -177,7 +177,7 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
 
         <button
           onClick={() => setShowWriteModal(true)}
-          className="rounded-2xl bg-gradient-to-r from-[#0F766E] to-teal-600 hover:from-[#115E59] hover:to-teal-700 text-white px-5 py-3 text-xs md:text-sm font-bold shadow-md hover:shadow-teal-600/25 transition-all flex items-center gap-2"
+          className="rounded-2xl bg-gradient-to-r from-[#059669] to-teal-600 hover:from-[#047857] hover:to-teal-600 text-white px-5 py-3 text-xs md:text-sm font-bold shadow-md hover:shadow-teal-600/25 transition-all flex items-center gap-2"
         >
           <Sparkles className="h-4 w-4" />
           <span>Write a Review</span>
@@ -192,9 +192,9 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
       )}
 
       {/* Aggregate Rating Scoreboard & Star Breakdown */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-[#FAFAF9] p-6 rounded-2xl border border-[#E7E5E4]">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-[#F9FAFB] p-6 rounded-2xl border border-[#E2E8F0]">
         {/* Left: Big Score */}
-        <div className="flex flex-col items-center justify-center text-center p-4 border-b md:border-b-0 md:border-r border-[#E7E5E4]">
+        <div className="flex flex-col items-center justify-center text-center p-4 border-b md:border-b-0 md:border-r border-[#E2E8F0]">
           <span className="text-5xl font-black text-slate-900 tracking-tight">
             {stats.averageRating.toFixed(1)}
           </span>
@@ -204,7 +204,7 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
                 key={star}
                 className={`h-5 w-5 ${
                   star <= Math.round(stats.averageRating)
-                    ? 'fill-[#F97316] text-[#F97316]'
+                    ? 'fill-[#F59E0B] text-[#F59E0B]'
                     : 'text-slate-300'
                 }`}
               />
@@ -233,11 +233,11 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
               >
                 <div className="flex items-center gap-1 w-12 font-bold text-slate-700 shrink-0">
                   <span>{s}</span>
-                  <Star className="h-3.5 w-3.5 fill-[#F97316] text-[#F97316]" />
+                  <Star className="h-3.5 w-3.5 fill-[#F59E0B] text-[#F59E0B]" />
                 </div>
                 <div className="flex-1 bg-slate-200 rounded-full h-2.5 overflow-hidden">
                   <div
-                    className="bg-gradient-to-r from-teal-500 to-[#F97316] h-full rounded-full transition-all duration-500"
+                    className="bg-gradient-to-r from-teal-500 to-[#F59E0B] h-full rounded-full transition-all duration-500"
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -260,7 +260,7 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
               onClick={() => setStarFilter(filterVal)}
               className={`px-3 py-1 rounded-lg transition ${
                 starFilter === filterVal
-                  ? 'bg-[#0F766E] text-white shadow-xs font-extrabold'
+                  ? 'bg-[#059669] text-white shadow-xs font-extrabold'
                   : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
               }`}
             >
@@ -287,7 +287,7 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
               key={rev.id}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-6 rounded-2xl border border-slate-200 bg-[#FAFAF9] hover:border-slate-300 transition space-y-4"
+              className="p-6 rounded-2xl border border-slate-200 bg-[#F9FAFB] hover:border-slate-300 transition space-y-4"
             >
               {/* Reviewer Header */}
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -322,7 +322,7 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
                       key={star}
                       className={`h-4 w-4 ${
                         star <= rev.rating
-                          ? 'fill-[#F97316] text-[#F97316]'
+                          ? 'fill-[#F59E0B] text-[#F59E0B]'
                           : 'text-slate-200'
                       }`}
                     />
@@ -342,9 +342,9 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
 
               {/* Organizer Official Reply Block */}
               {rev.organizerReply ? (
-                <div className="mt-4 p-4 rounded-xl bg-teal-50/70 border border-teal-200/80 space-y-1.5">
-                  <div className="flex items-center gap-2 text-xs font-bold text-[#0F766E]">
-                    <CornerDownRight className="h-3.5 w-3.5 text-[#0F766E]" />
+                <div className="mt-4 p-4 rounded-xl bg-emerald-50/70 border border-emerald-200/80 space-y-1.5">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#059669]">
+                    <CornerDownRight className="h-3.5 w-3.5 text-[#059669]" />
                     <span>Response from {rev.organizerReply.repliedBy || organizerName}</span>
                     <span className="text-[10px] text-teal-600 font-normal">
                       • {rev.organizerReply.repliedAt.split('T')[0]}
@@ -359,13 +359,13 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
                 isOrganizer && (
                   <div className="pt-2">
                     {replyingReviewId === rev.id ? (
-                      <div className="p-3 bg-white rounded-xl border border-teal-200 space-y-2 mt-2">
+                      <div className="p-3 bg-white rounded-xl border border-emerald-200 space-y-2 mt-2">
                         <textarea
                           rows={2}
                           placeholder={`Write a public response as ${organizerName}...`}
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
-                          className="w-full text-xs p-2.5 rounded-lg border border-slate-200 focus:outline-none focus:border-[#0F766E]"
+                          className="w-full text-xs p-2.5 rounded-lg border border-slate-200 focus:outline-none focus:border-[#059669]"
                         />
                         <div className="flex justify-end gap-2">
                           <button
@@ -379,7 +379,7 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
                             type="button"
                             onClick={() => handleOrganizerReply(rev.id)}
                             disabled={isSubmittingReply || !replyText.trim()}
-                            className="px-3.5 py-1.5 bg-[#0F766E] text-white text-xs font-bold rounded-lg hover:bg-[#115E59] disabled:opacity-50"
+                            className="px-3.5 py-1.5 bg-[#059669] text-white text-xs font-bold rounded-lg hover:bg-[#047857] disabled:opacity-50"
                           >
                             {isSubmittingReply ? 'Posting...' : 'Post Reply'}
                           </button>
@@ -392,7 +392,7 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
                           setReplyingReviewId(rev.id);
                           setReplyText('');
                         }}
-                        className="text-xs font-bold text-[#0F766E] hover:text-[#115E59] flex items-center gap-1.5 hover:underline"
+                        className="text-xs font-bold text-[#059669] hover:text-[#047857] flex items-center gap-1.5 hover:underline"
                       >
                         <CornerDownRight className="h-3 w-3" />
                         <span>Reply as Host Organizer</span>
@@ -447,14 +447,14 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
                         <Star
                           className={`h-7 w-7 ${
                             star <= (hoverRating || rating)
-                              ? 'fill-[#F97316] text-[#F97316]'
+                              ? 'fill-[#F59E0B] text-[#F59E0B]'
                               : 'text-slate-300'
                           }`}
                         />
                       </button>
                     ))}
                   </div>
-                  <span className="text-xs font-extrabold text-[#F97316]">
+                  <span className="text-xs font-extrabold text-[#F59E0B]">
                     {rating === 5 ? '🌟 Exceptional 5/5' : rating === 4 ? 'Great 4/5' : rating === 3 ? 'Average 3/5' : `${rating}/5 Stars`}
                   </span>
                 </div>
@@ -468,7 +468,7 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
                       value={reviewerName}
                       onChange={(e) => setReviewerName(e.target.value)}
                       placeholder="e.g. Aditya Verma"
-                      className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0F766E]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#059669]"
                     />
                   </div>
                   <div>
@@ -476,7 +476,7 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
                     <select
                       value={ticketTier}
                       onChange={(e) => setTicketTier(e.target.value)}
-                      className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-[#0F766E]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-[#059669]"
                     >
                       <option value="VIP Masterclass Pass">VIP Masterclass Pass</option>
                       <option value="General Admission">General Admission</option>
@@ -494,7 +494,7 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
                     value={reviewTitle}
                     onChange={(e) => setReviewTitle(e.target.value)}
                     placeholder="e.g. Incredible speaker panels and seamless gate check-in!"
-                    className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0F766E]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#059669]"
                   />
                 </div>
 
@@ -506,7 +506,7 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
                     value={reviewContent}
                     onChange={(e) => setReviewContent(e.target.value)}
                     placeholder="Share details about the venue, speaker insights, networking opportunities, and organization..."
-                    className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0F766E]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#059669]"
                   />
                 </div>
 
@@ -521,7 +521,7 @@ export function EventReviewsSection({ eventId, eventTitle, organizerName }: Even
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-6 py-2.5 bg-gradient-to-r from-[#0F766E] to-teal-600 hover:from-[#115E59] hover:to-teal-700 text-white text-xs font-bold rounded-xl shadow-md transition disabled:opacity-50"
+                    className="px-6 py-2.5 bg-gradient-to-r from-[#059669] to-teal-600 hover:from-[#047857] hover:to-teal-600 text-white text-xs font-bold rounded-xl shadow-md transition disabled:opacity-50"
                   >
                     {isSubmitting ? 'Publishing...' : 'Publish Verified Review'}
                   </button>

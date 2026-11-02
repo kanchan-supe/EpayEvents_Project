@@ -595,13 +595,13 @@ function CreateEventWizardInner() {
   // Loading State: Fetching event data for editing
   if (isLoadingExisting) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
+      <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
         <Navbar />
         <main className="flex-1 flex items-center justify-center p-6">
-          <div className="bg-white rounded-3xl border border-[#E7E5E4] shadow-sm p-8 text-center max-w-sm w-full space-y-4">
-            <div className="h-8 w-8 border-3 border-[#0F766E] border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-xs font-bold text-[#1C1917]">Loading Event Data for Editing...</p>
-            <p className="text-[11px] text-[#78716C]">Fetching latest schedule, ticket tiers, and event settings</p>
+          <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-sm p-8 text-center max-w-sm w-full space-y-4">
+            <div className="h-8 w-8 border-3 border-[#059669] border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-xs font-bold text-[#111827]">Loading Event Data for Editing...</p>
+            <p className="text-[11px] text-[#64748B]">Fetching latest schedule, ticket tiers, and event settings</p>
           </div>
         </main>
         <Footer />
@@ -612,12 +612,12 @@ function CreateEventWizardInner() {
   // Auth State 1: Checking Authentication
   if (authLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
+      <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
         <Navbar />
         <main className="flex-1 flex items-center justify-center p-6">
-          <div className="bg-white rounded-3xl border border-[#E7E5E4] shadow-sm p-8 text-center max-w-sm w-full space-y-4">
-            <div className="h-8 w-8 border-3 border-[#0F766E] border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-xs font-bold text-[#1C1917]">Verifying Organizer Access...</p>
+          <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-sm p-8 text-center max-w-sm w-full space-y-4">
+            <div className="h-8 w-8 border-3 border-[#059669] border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-xs font-bold text-[#111827]">Verifying Organizer Access...</p>
           </div>
         </main>
         <Footer />
@@ -628,12 +628,12 @@ function CreateEventWizardInner() {
   // Auth State 2: Unauthenticated
   if (!user) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
+      <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
         <Navbar />
         <main className="flex-1 flex items-center justify-center p-6">
-          <div className="bg-white rounded-3xl border border-[#E7E5E4] shadow-sm p-8 text-center max-w-sm w-full space-y-4">
-            <div className="h-8 w-8 border-3 border-[#F97316] border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-xs font-bold text-[#1C1917]">Redirecting to Sign In...</p>
+          <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-sm p-8 text-center max-w-sm w-full space-y-4">
+            <div className="h-8 w-8 border-3 border-[#F59E0B] border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-xs font-bold text-[#111827]">Redirecting to Sign In...</p>
           </div>
         </main>
         <Footer />
@@ -644,10 +644,10 @@ function CreateEventWizardInner() {
   // Auth State 3: User is logged in as Attendee
   if (role === 'attendee') {
     return (
-      <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
+      <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
         <Navbar />
 
-        <div className="bg-gradient-to-r from-[#0F172A] via-[#0F766E] to-[#0F172A] text-white py-10 shadow-md">
+        <div className="bg-gradient-to-r from-emerald-50/70 via-white to-amber-50/50 text-slate-800 py-10 shadow-md">
           <div className="container mx-auto px-4 md:px-8 max-w-3xl">
             <span className="inline-block px-3 py-1 bg-amber-500 text-white text-xs font-bold rounded-full mb-2">
               Organizer Role Required
@@ -660,16 +660,16 @@ function CreateEventWizardInner() {
         </div>
 
         <main className="container mx-auto px-4 md:px-8 py-10 flex-1 max-w-3xl">
-          <div className="bg-white rounded-3xl border border-[#E7E5E4] shadow-xl p-8 sm:p-10 space-y-6">
+          <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xl p-8 sm:p-10 space-y-6">
             <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
               <ShieldAlert className="h-8 w-8" />
             </div>
 
             <div className="text-center space-y-2">
-              <h2 className="text-xl sm:text-2xl font-black text-[#1C1917]">
+              <h2 className="text-xl sm:text-2xl font-black text-[#111827]">
                 Only organizers can create events
               </h2>
-              <p className="text-xs sm:text-sm text-[#78716C] max-w-md mx-auto leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#64748B] max-w-md mx-auto leading-relaxed">
                 You are currently signed in as <strong>{user.email}</strong> with the <strong>Attendee</strong> role.
                 Publishing tech summits, masterclasses, and conferences requires host privileges.
               </p>
@@ -704,7 +704,7 @@ function CreateEventWizardInner() {
                 type="button"
                 onClick={handleUpgradeToOrganizer}
                 disabled={upgradingRole}
-                className="w-full rounded-2xl bg-[#F97316] hover:bg-[#EA580C] text-white py-3.5 px-4 font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 disabled:opacity-60"
+                className="w-full rounded-2xl bg-[#F59E0B] hover:bg-[#D97706] text-white py-3.5 px-4 font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 disabled:opacity-60"
               >
                 {upgradingRole ? (
                   <>
@@ -722,18 +722,18 @@ function CreateEventWizardInner() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Link
                   href="/login?redirect=/create-event"
-                  className="rounded-2xl border border-[#E7E5E4] hover:bg-slate-50 text-[#1C1917] py-3 px-4 font-bold text-xs transition text-center flex items-center justify-center gap-2"
+                  className="rounded-2xl border border-[#E2E8F0] hover:bg-slate-50 text-[#111827] py-3 px-4 font-bold text-xs transition text-center flex items-center justify-center gap-2"
                 >
-                  <Lock className="h-3.5 w-3.5 text-[#0F766E]" />
+                  <Lock className="h-3.5 w-3.5 text-[#059669]" />
                   <span>Sign in as Different User</span>
                 </Link>
 
                 <Link
                   href="/events"
-                  className="rounded-2xl border border-[#E7E5E4] hover:bg-slate-50 text-[#1C1917] py-3 px-4 font-bold text-xs transition text-center flex items-center justify-center gap-2"
+                  className="rounded-2xl border border-[#E2E8F0] hover:bg-slate-50 text-[#111827] py-3 px-4 font-bold text-xs transition text-center flex items-center justify-center gap-2"
                 >
                   <span>Browse Events Catalog</span>
-                  <ArrowRight className="h-3.5 w-3.5 text-[#78716C]" />
+                  <ArrowRight className="h-3.5 w-3.5 text-[#64748B]" />
                 </Link>
               </div>
             </div>
@@ -747,14 +747,14 @@ function CreateEventWizardInner() {
 
   // Auth State 4: User is logged in as Organizer or Admin -> Render Wizard!
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
+    <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
       <Navbar />
 
-      <div className="bg-gradient-to-r from-[#0F172A] via-[#0F766E] to-[#0F172A] text-white py-10 shadow-md">
+      <div className="bg-gradient-to-r from-emerald-50/70 via-white to-amber-50/50 text-slate-800 py-10 shadow-md">
         <div className="container mx-auto px-4 md:px-8 max-w-6xl">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <span className="inline-block px-3 py-1 bg-[#F97316] text-white text-xs font-bold rounded-full mb-2">
+              <span className="inline-block px-3 py-1 bg-[#F59E0B] text-white text-xs font-bold rounded-full mb-2">
                 {isEditMode ? '✏️ Event Edit Mode' : 'Organizer Portal'}
               </span>
               <h1 className="text-3xl font-black tracking-tight">
@@ -795,21 +795,21 @@ function CreateEventWizardInner() {
                       onClick={() => setCurrentStep(step.id)}
                       className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs transition-all ${
                         isCompleted 
-                          ? 'bg-[#0F766E] text-white' 
+                          ? 'bg-[#059669] text-white' 
                           : isCurrent 
-                          ? 'bg-[#F97316] text-white ring-4 ring-[#FFEDD5]' 
-                          : 'bg-white border border-[#E7E5E4] text-[#78716C]'
+                          ? 'bg-[#F59E0B] text-white ring-4 ring-[#FFEDD5]' 
+                          : 'bg-white border border-[#E2E8F0] text-[#64748B]'
                       }`}
                     >
                       {isCompleted ? <Check className="h-5 w-5" /> : <IconComponent className="h-4 w-4" />}
                     </button>
-                    <span className={`text-[11px] font-bold mt-2 whitespace-nowrap ${isCurrent ? 'text-[#F97316]' : 'text-[#78716C]'}`}>
+                    <span className={`text-[11px] font-bold mt-2 whitespace-nowrap ${isCurrent ? 'text-[#F59E0B]' : 'text-[#64748B]'}`}>
                       {step.title}
                     </span>
                   </div>
 
                   {idx < STEPS.length - 1 && (
-                    <div className={`h-1 flex-1 mx-2 rounded ${isCompleted ? 'bg-[#0F766E]' : 'bg-[#E7E5E4]'}`} />
+                    <div className={`h-1 flex-1 mx-2 rounded ${isCompleted ? 'bg-[#059669]' : 'bg-[#E2E8F0]'}`} />
                   )}
                 </div>
               );
@@ -832,8 +832,8 @@ function CreateEventWizardInner() {
 
         {/* Wizard Form Body */}
         {isPublished ? (
-          <div className="bg-white p-8 md:p-10 rounded-3xl border border-[#E7E5E4] shadow-xl text-center max-w-2xl mx-auto">
-            <div className="w-16 h-16 bg-[#CCFBF1] text-[#0F766E] rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+          <div className="bg-white p-8 md:p-10 rounded-3xl border border-[#E2E8F0] shadow-xl text-center max-w-2xl mx-auto">
+            <div className="w-16 h-16 bg-[#CCFBF1] text-[#059669] rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
               <Check className="h-8 w-8" />
             </div>
             
@@ -842,12 +842,12 @@ function CreateEventWizardInner() {
               <span>Saved to Supabase & Live on Catalog</span>
             </div>
 
-            <h2 className="text-2xl font-black text-[#1C1917]">
+            <h2 className="text-2xl font-black text-[#111827]">
               {isEditMode 
                 ? (formData.status === 'published' ? 'Event Updated & Live Successfully!' : 'Event Changes Saved as Draft!')
                 : (formData.status === 'published' ? 'Event Published Live Successfully!' : 'Saved as Draft!')}
             </h2>
-            <p className="text-[#78716C] text-sm mt-2">
+            <p className="text-[#64748B] text-sm mt-2">
               {isEditMode 
                 ? <>Your modifications to <strong>&quot;{formData.title || 'Untitled Event'}&quot;</strong> have been saved and updated live across the platform.</>
                 : <>Your event <strong>&quot;{formData.title || 'Untitled Event'}&quot;</strong> has been published and is now discoverable on the homepage and catalog.</>}
@@ -869,9 +869,9 @@ function CreateEventWizardInner() {
               </div>
             )}
 
-            <div className="mt-6 bg-[#FAFAF9] p-5 rounded-2xl border border-[#E7E5E4] text-left space-y-2 text-xs text-[#1C1917]">
+            <div className="mt-6 bg-[#F9FAFB] p-5 rounded-2xl border border-[#E2E8F0] text-left space-y-2 text-xs text-[#111827]">
               {publishedSlug && (
-                <p><strong>Event Slug:</strong> <code className="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-[#0F766E]">/events/{publishedSlug}</code></p>
+                <p><strong>Event Slug:</strong> <code className="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-[#059669]">/events/{publishedSlug}</code></p>
               )}
               <p><strong>Organizer:</strong> {formData.organizerName || 'ePay Organizer'} ({formData.organizerEmail || 'N/A'})</p>
               <p><strong>Category:</strong> {formData.categorySlug}</p>
@@ -885,61 +885,61 @@ function CreateEventWizardInner() {
               {publishedSlug && (
                 <a
                   href={`/events/${publishedSlug}`}
-                  className="rounded-xl bg-[#0F766E] px-6 py-3 text-sm font-bold text-white hover:bg-[#115E59] transition shadow-md flex items-center gap-2"
+                  className="rounded-xl bg-[#059669] px-6 py-3 text-sm font-bold text-white hover:bg-[#047857] transition shadow-md flex items-center gap-2"
                 >
                   <span>🎉 View Event Page</span>
                 </a>
               )}
               <Link
                 href="/organizer/dashboard"
-                className="rounded-xl bg-[#F97316] px-6 py-3 text-sm font-bold text-white hover:bg-[#ea580c] transition shadow-md flex items-center gap-2"
+                className="rounded-xl bg-[#F59E0B] px-6 py-3 text-sm font-bold text-white hover:bg-[#D97706] transition shadow-md flex items-center gap-2"
               >
                 <span>📊 Organizer Dashboard</span>
               </Link>
               <Link
                 href="/events"
-                className="rounded-xl border border-[#E7E5E4] bg-white px-5 py-3 text-sm font-bold text-[#1C1917] hover:bg-slate-100 transition"
+                className="rounded-xl border border-[#E2E8F0] bg-white px-5 py-3 text-sm font-bold text-[#111827] hover:bg-slate-100 transition"
               >
                 Browse All Events
               </Link>
               <button 
                 type="button"
                 onClick={() => { setIsPublished(false); setAutoRedirectTimer(null); setCurrentStep(1); setFormData(initialFormData); setPublishedSlug(''); }}
-                className="rounded-xl border border-[#E7E5E4] px-5 py-3 text-sm font-bold text-[#78716C] hover:bg-slate-100 transition"
+                className="rounded-xl border border-[#E2E8F0] px-5 py-3 text-sm font-bold text-[#64748B] hover:bg-slate-100 transition"
               >
                 Create Another Event
               </button>
             </div>
           </div>
         ) : (
-          <div className="bg-white p-8 md:p-10 rounded-3xl border border-[#E7E5E4] shadow-sm">
+          <div className="bg-white p-8 md:p-10 rounded-3xl border border-[#E2E8F0] shadow-sm">
             
             {/* Step 1: Basic Info */}
             {currentStep === 1 && (
               <div className="space-y-6">
-                <div className="border-b border-[#E7E5E4] pb-4">
-                  <h2 className="text-xl font-black text-[#1C1917]">Step 1: Event Basic Information</h2>
-                  <p className="text-xs text-[#78716C]">Define your event title, category, and main banner image</p>
+                <div className="border-b border-[#E2E8F0] pb-4">
+                  <h2 className="text-xl font-black text-[#111827]">Step 1: Event Basic Information</h2>
+                  <p className="text-xs text-[#64748B]">Define your event title, category, and main banner image</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-[#1C1917] mb-1">Event Title *</label>
+                  <label className="block text-sm font-bold text-[#111827] mb-1">Event Title *</label>
                   <input
                     type="text"
                     value={formData.title}
                     onChange={e => updateField('title', e.target.value)}
                     placeholder="e.g. National AI & FinTech Developers Summit 2026"
-                    className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
+                    className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-bold text-[#1C1917] mb-1">Category *</label>
+                    <label className="block text-sm font-bold text-[#111827] mb-1">Category *</label>
                     <select
                       value={formData.categorySlug}
                       onChange={e => updateField('categorySlug', e.target.value)}
-                      className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none bg-white"
+                      className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none bg-white"
                     >
                       {mockCategories.map(cat => (
                         <option key={cat.id} value={cat.slug}>{cat.name}</option>
@@ -948,36 +948,36 @@ function CreateEventWizardInner() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-bold text-[#1C1917] mb-1">Short Tagline / Catchphrase</label>
+                    <label className="block text-sm font-bold text-[#111827] mb-1">Short Tagline / Catchphrase</label>
                     <input
                       type="text"
                       value={formData.shortDescription}
                       onChange={e => updateField('shortDescription', e.target.value)}
                       placeholder="e.g. Empowering 1,000+ developers with Next.js & AI"
-                      className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
+                      className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-[#1C1917] mb-1">Detailed About Event Description</label>
+                  <label className="block text-sm font-bold text-[#111827] mb-1">Detailed About Event Description</label>
                   <textarea
                     rows={4}
                     value={formData.description}
                     onChange={e => updateField('description', e.target.value)}
                     placeholder="Write a comprehensive overview of what attendees will experience..."
-                    className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
+                    className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-[#1C1917] mb-1">Cover Banner Image URL</label>
+                  <label className="block text-sm font-bold text-[#111827] mb-1">Cover Banner Image URL</label>
                   <input
                     type="text"
                     value={formData.bannerUrl}
                     onChange={e => updateField('bannerUrl', e.target.value)}
                     placeholder="https://images.unsplash.com/photo-1540575467063-178a50c2df87"
-                    className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
+                    className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none"
                   />
                 </div>
               </div>
@@ -986,67 +986,67 @@ function CreateEventWizardInner() {
             {/* Step 2: Organizer Contact Details */}
             {currentStep === 2 && (
               <div className="space-y-6">
-                <div className="border-b border-[#E7E5E4] pb-4">
-                  <h2 className="text-xl font-black text-[#1C1917]">Step 2: Organizer Contact & Bio</h2>
-                  <p className="text-xs text-[#78716C]">Shown on the Event Detail page to build trust with attendees</p>
+                <div className="border-b border-[#E2E8F0] pb-4">
+                  <h2 className="text-xl font-black text-[#111827]">Step 2: Organizer Contact & Bio</h2>
+                  <p className="text-xs text-[#64748B]">Shown on the Event Detail page to build trust with attendees</p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-bold text-[#1C1917] mb-1">Organizer / Host Name *</label>
+                    <label className="block text-sm font-bold text-[#111827] mb-1">Organizer / Host Name *</label>
                     <input
                       type="text"
                       value={formData.organizerName}
                       onChange={e => updateField('organizerName', e.target.value)}
                       placeholder="e.g. TechEvents Pvt Ltd"
-                      className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
+                      className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-bold text-[#1C1917] mb-1">Official Support Email *</label>
+                    <label className="block text-sm font-bold text-[#111827] mb-1">Official Support Email *</label>
                     <input
                       type="email"
                       value={formData.organizerEmail}
                       onChange={e => updateField('organizerEmail', e.target.value)}
                       placeholder="support@techevents.com"
-                      className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
+                      className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-bold text-[#1C1917] mb-1">Organizer Contact Phone</label>
+                    <label className="block text-sm font-bold text-[#111827] mb-1">Organizer Contact Phone</label>
                     <input
                       type="text"
                       value={formData.organizerPhone}
                       onChange={e => updateField('organizerPhone', e.target.value)}
                       placeholder="+91 98765 43210"
-                      className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
+                      className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-bold text-[#1C1917] mb-1">Organizer Logo / Photo URL</label>
+                    <label className="block text-sm font-bold text-[#111827] mb-1">Organizer Logo / Photo URL</label>
                     <input
                       type="text"
                       value={formData.organizerAvatar}
                       onChange={e => updateField('organizerAvatar', e.target.value)}
                       placeholder="/organizers/organizer_workspace.jpg"
-                      className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
+                      className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-[#1C1917] mb-1">Organizer Short Bio</label>
+                  <label className="block text-sm font-bold text-[#111827] mb-1">Organizer Short Bio</label>
                   <textarea
                     rows={3}
                     value={formData.organizerBio}
                     onChange={e => updateField('organizerBio', e.target.value)}
                     placeholder="Brief background of your organization or track record..."
-                    className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
+                    className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none"
                   />
                 </div>
               </div>
@@ -1055,15 +1055,15 @@ function CreateEventWizardInner() {
             {/* Step 3: Date & Venue */}
             {currentStep === 3 && (
               <div className="space-y-6">
-                <div className="border-b border-[#E7E5E4] pb-4">
-                  <h2 className="text-xl font-black text-[#1C1917]">Step 3: Date, Time & Venue Details</h2>
-                  <p className="text-xs text-[#78716C]">Set your event format and physical address or streaming URL</p>
+                <div className="border-b border-[#E2E8F0] pb-4">
+                  <h2 className="text-xl font-black text-[#111827]">Step 3: Date, Time & Venue Details</h2>
+                  <p className="text-xs text-[#64748B]">Set your event format and physical address or streaming URL</p>
                 </div>
 
-                <div className="bg-[#FAFAF9] p-5 rounded-2xl border border-[#E7E5E4] space-y-4">
+                <div className="bg-[#F9FAFB] p-5 rounded-2xl border border-[#E2E8F0] space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-bold text-[#1C1917] mb-1">Start Date *</label>
+                      <label className="block text-sm font-bold text-[#111827] mb-1">Start Date *</label>
                       <input
                         type="date"
                         value={formData.startDate}
@@ -1074,45 +1074,45 @@ function CreateEventWizardInner() {
                             updateField('endDate', val);
                           }
                         }}
-                        className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none bg-white"
+                        className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none bg-white"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-[#1C1917] mb-1">Start Time *</label>
+                      <label className="block text-sm font-bold text-[#111827] mb-1">Start Time *</label>
                       <input
                         type="time"
                         value={formData.startTime}
                         onChange={e => updateField('startTime', e.target.value)}
-                        className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none bg-white"
+                        className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none bg-white"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-bold text-[#1C1917] mb-1">End Date *</label>
+                      <label className="block text-sm font-bold text-[#111827] mb-1">End Date *</label>
                       <input
                         type="date"
                         value={formData.endDate}
                         min={formData.startDate}
                         onChange={e => updateField('endDate', e.target.value)}
-                        className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none bg-white"
+                        className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none bg-white"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-[#1C1917] mb-1">End Time *</label>
+                      <label className="block text-sm font-bold text-[#111827] mb-1">End Time *</label>
                       <input
                         type="time"
                         value={formData.endTime}
                         onChange={e => updateField('endTime', e.target.value)}
-                        className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none bg-white"
+                        className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none bg-white"
                       />
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-[#1C1917] mb-2">Event Format</label>
+                  <label className="block text-sm font-bold text-[#111827] mb-2">Event Format</label>
                   <div className="grid grid-cols-3 gap-4">
                     {(
                       [
@@ -1126,7 +1126,7 @@ function CreateEventWizardInner() {
                         type="button"
                         onClick={() => updateField('eventType', fmt.id)}
                         className={`p-3 rounded-xl border font-bold text-xs transition ${
-                          formData.eventType === fmt.id ? 'border-[#0F766E] bg-[#CCFBF1]/30 text-[#0F766E]' : 'border-[#E7E5E4] text-[#78716C]'
+                          formData.eventType === fmt.id ? 'border-[#059669] bg-[#CCFBF1]/30 text-[#059669]' : 'border-[#E2E8F0] text-[#64748B]'
                         }`}
                       >
                         {fmt.label}
@@ -1139,35 +1139,35 @@ function CreateEventWizardInner() {
                   <div className="space-y-4 pt-2">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-bold text-[#1C1917] mb-1">Venue Name *</label>
+                        <label className="block text-sm font-bold text-[#111827] mb-1">Venue Name *</label>
                         <input
                           type="text"
                           value={formData.venueName}
                           onChange={e => updateField('venueName', e.target.value)}
                           placeholder="e.g. Grand Hyatt Convention Center"
-                          className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
+                          className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-[#1C1917] mb-1">City *</label>
+                        <label className="block text-sm font-bold text-[#111827] mb-1">City *</label>
                         <input
                           type="text"
                           value={formData.city}
                           onChange={e => updateField('city', e.target.value)}
                           placeholder="e.g. Mumbai, Bengaluru, Pune"
-                          className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
+                          className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-bold text-[#1C1917] mb-1">Full Street Address (Optional)</label>
+                      <label className="block text-sm font-bold text-[#111827] mb-1">Full Street Address (Optional)</label>
                       <input
                         type="text"
                         value={formData.address}
                         onChange={e => updateField('address', e.target.value)}
                         placeholder="e.g. Santacruz East, Western Express Highway"
-                        className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
+                        className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none"
                       />
                     </div>
                   </div>
@@ -1178,23 +1178,23 @@ function CreateEventWizardInner() {
             {/* Step 4: Speakers & Agenda */}
             {currentStep === 4 && (
               <div className="space-y-6">
-                <div className="flex justify-between items-center border-b border-[#E7E5E4] pb-4">
+                <div className="flex justify-between items-center border-b border-[#E2E8F0] pb-4">
                   <div>
-                    <h2 className="text-xl font-black text-[#1C1917]">Step 4: Speakers & Agenda Schedule</h2>
-                    <p className="text-xs text-[#78716C]">Add featured speakers and timeline sessions</p>
+                    <h2 className="text-xl font-black text-[#111827]">Step 4: Speakers & Agenda Schedule</h2>
+                    <p className="text-xs text-[#64748B]">Add featured speakers and timeline sessions</p>
                   </div>
                   <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={addSpeaker}
-                      className="inline-flex items-center gap-1 rounded-xl bg-[#0F766E] text-white px-3 py-2 text-xs font-bold hover:bg-[#115E59]"
+                      className="inline-flex items-center gap-1 rounded-xl bg-[#059669] text-white px-3 py-2 text-xs font-bold hover:bg-[#047857]"
                     >
                       <Plus className="h-4 w-4" /> Add Speaker
                     </button>
                     <button
                       type="button"
                       onClick={addAgendaItem}
-                      className="inline-flex items-center gap-1 rounded-xl bg-[#F97316] text-white px-3 py-2 text-xs font-bold hover:bg-[#ea580c]"
+                      className="inline-flex items-center gap-1 rounded-xl bg-[#F59E0B] text-white px-3 py-2 text-xs font-bold hover:bg-[#D97706]"
                     >
                       <Plus className="h-4 w-4" /> Add Agenda Session
                     </button>
@@ -1203,11 +1203,11 @@ function CreateEventWizardInner() {
 
                 {/* Speakers Section */}
                 <div className="space-y-4">
-                  <h3 className="font-bold text-sm text-[#1C1917]">Featured Speakers ({formData.speakers.length})</h3>
+                  <h3 className="font-bold text-sm text-[#111827]">Featured Speakers ({formData.speakers.length})</h3>
                   {formData.speakers.map((sp, idx) => (
-                    <div key={sp.id} className="p-4 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] space-y-3">
+                    <div key={sp.id} className="p-4 rounded-2xl border border-[#E2E8F0] bg-[#F9FAFB] space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="font-bold text-xs text-[#0F766E]">Speaker #{idx + 1}</span>
+                        <span className="font-bold text-xs text-[#059669]">Speaker #{idx + 1}</span>
                         {formData.speakers.length > 1 && (
                           <button type="button" onClick={() => removeSpeaker(sp.id)} className="text-red-500 text-xs font-bold">Remove</button>
                         )}
@@ -1222,7 +1222,7 @@ function CreateEventWizardInner() {
                             updateField('speakers', updated);
                           }}
                           placeholder="Speaker Name"
-                          className="rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs font-bold"
+                          className="rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs font-bold"
                         />
                         <input
                           type="text"
@@ -1233,7 +1233,7 @@ function CreateEventWizardInner() {
                             updateField('speakers', updated);
                           }}
                           placeholder="Designation / Role"
-                          className="rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs"
+                          className="rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs"
                         />
                         <input
                           type="text"
@@ -1244,7 +1244,7 @@ function CreateEventWizardInner() {
                             updateField('speakers', updated);
                           }}
                           placeholder="Company Name"
-                          className="rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs"
+                          className="rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs"
                         />
                       </div>
                     </div>
@@ -1252,12 +1252,12 @@ function CreateEventWizardInner() {
                 </div>
 
                 {/* Agenda Section */}
-                <div className="space-y-4 pt-4 border-t border-[#E7E5E4]">
-                  <h3 className="font-bold text-sm text-[#1C1917]">Event Agenda Schedule ({formData.agenda.length})</h3>
+                <div className="space-y-4 pt-4 border-t border-[#E2E8F0]">
+                  <h3 className="font-bold text-sm text-[#111827]">Event Agenda Schedule ({formData.agenda.length})</h3>
                   {formData.agenda.map((ag, idx) => (
-                    <div key={ag.id} className="p-4 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] space-y-3">
+                    <div key={ag.id} className="p-4 rounded-2xl border border-[#E2E8F0] bg-[#F9FAFB] space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="font-bold text-xs text-[#F97316]">Session #{idx + 1}</span>
+                        <span className="font-bold text-xs text-[#F59E0B]">Session #{idx + 1}</span>
                         {formData.agenda.length > 1 && (
                           <button type="button" onClick={() => removeAgendaItem(ag.id)} className="text-red-500 text-xs font-bold">Remove</button>
                         )}
@@ -1272,7 +1272,7 @@ function CreateEventWizardInner() {
                             updateField('agenda', updated);
                           }}
                           placeholder="Time slot (e.g. 10:00 AM - 11:00 AM)"
-                          className="rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs font-bold"
+                          className="rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs font-bold"
                         />
                         <input
                           type="text"
@@ -1283,7 +1283,7 @@ function CreateEventWizardInner() {
                             updateField('agenda', updated);
                           }}
                           placeholder="Session Title"
-                          className="rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs font-bold"
+                          className="rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs font-bold"
                         />
                       </div>
                     </div>
@@ -1295,23 +1295,23 @@ function CreateEventWizardInner() {
             {/* Step 5: Sponsors & Exhibitors */}
             {currentStep === 5 && (
               <div className="space-y-6">
-                <div className="flex justify-between items-center border-b border-[#E7E5E4] pb-4">
+                <div className="flex justify-between items-center border-b border-[#E2E8F0] pb-4">
                   <div>
-                    <h2 className="text-xl font-black text-[#1C1917]">Step 5: Sponsors & Exhibitor Partners</h2>
-                    <p className="text-xs text-[#78716C]">Showcase supporting brands and booth exhibitors</p>
+                    <h2 className="text-xl font-black text-[#111827]">Step 5: Sponsors & Exhibitor Partners</h2>
+                    <p className="text-xs text-[#64748B]">Showcase supporting brands and booth exhibitors</p>
                   </div>
                   <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={addSponsor}
-                      className="inline-flex items-center gap-1 rounded-xl bg-[#0F766E] text-white px-3 py-2 text-xs font-bold"
+                      className="inline-flex items-center gap-1 rounded-xl bg-[#059669] text-white px-3 py-2 text-xs font-bold"
                     >
                       <Plus className="h-4 w-4" /> Add Sponsor
                     </button>
                     <button
                       type="button"
                       onClick={addExhibitor}
-                      className="inline-flex items-center gap-1 rounded-xl bg-[#F97316] text-white px-3 py-2 text-xs font-bold"
+                      className="inline-flex items-center gap-1 rounded-xl bg-[#F59E0B] text-white px-3 py-2 text-xs font-bold"
                     >
                       <Plus className="h-4 w-4" /> Add Exhibitor
                     </button>
@@ -1320,9 +1320,9 @@ function CreateEventWizardInner() {
 
                 {/* Sponsors List */}
                 <div className="space-y-3">
-                  <h3 className="font-bold text-sm text-[#1C1917]">Sponsors ({formData.sponsors.length})</h3>
+                  <h3 className="font-bold text-sm text-[#111827]">Sponsors ({formData.sponsors.length})</h3>
                   {formData.sponsors.map((sp, idx) => (
-                    <div key={sp.id} className="flex gap-3 items-center p-4 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9]">
+                    <div key={sp.id} className="flex gap-3 items-center p-4 rounded-2xl border border-[#E2E8F0] bg-[#F9FAFB]">
                       <input
                         type="text"
                         value={sp.name}
@@ -1332,7 +1332,7 @@ function CreateEventWizardInner() {
                           updateField('sponsors', updated);
                         }}
                         placeholder="Sponsor Name"
-                        className="flex-1 rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs font-bold"
+                        className="flex-1 rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs font-bold"
                       />
                       <select
                         value={sp.tier}
@@ -1341,7 +1341,7 @@ function CreateEventWizardInner() {
                           updated[idx].tier = e.target.value as SponsorForm['tier'];
                           updateField('sponsors', updated);
                         }}
-                        className="rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs font-bold bg-white"
+                        className="rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs font-bold bg-white"
                       >
                         <option value="Title">Title Sponsor</option>
                         <option value="Platinum">Platinum</option>
@@ -1357,10 +1357,10 @@ function CreateEventWizardInner() {
                 </div>
 
                 {/* Exhibitors List */}
-                <div className="space-y-3 pt-4 border-t border-[#E7E5E4]">
-                  <h3 className="font-bold text-sm text-[#1C1917]">Exhibitors ({formData.exhibitors.length})</h3>
+                <div className="space-y-3 pt-4 border-t border-[#E2E8F0]">
+                  <h3 className="font-bold text-sm text-[#111827]">Exhibitors ({formData.exhibitors.length})</h3>
                   {formData.exhibitors.map((ex, idx) => (
-                    <div key={ex.id} className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9]">
+                    <div key={ex.id} className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 rounded-2xl border border-[#E2E8F0] bg-[#F9FAFB]">
                       <input
                         type="text"
                         value={ex.name}
@@ -1370,7 +1370,7 @@ function CreateEventWizardInner() {
                           updateField('exhibitors', updated);
                         }}
                         placeholder="Exhibitor Name"
-                        className="rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs font-bold"
+                        className="rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs font-bold"
                       />
                       <input
                         type="text"
@@ -1381,7 +1381,7 @@ function CreateEventWizardInner() {
                           updateField('exhibitors', updated);
                         }}
                         placeholder="Booth Number (e.g. A-12)"
-                        className="rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs"
+                        className="rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs"
                       />
                       <div className="flex items-center gap-2">
                         <input
@@ -1393,7 +1393,7 @@ function CreateEventWizardInner() {
                             updateField('exhibitors', updated);
                           }}
                           placeholder="Category"
-                          className="flex-1 rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs"
+                          className="flex-1 rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs"
                         />
                         {formData.exhibitors.length > 1 && (
                           <button type="button" onClick={() => removeExhibitor(ex.id)} className="text-red-500 text-xs font-bold">Remove</button>
@@ -1408,23 +1408,23 @@ function CreateEventWizardInner() {
             {/* Step 6: Tickets & Offers */}
             {currentStep === 6 && (
               <div className="space-y-6">
-                <div className="flex justify-between items-center border-b border-[#E7E5E4] pb-4">
+                <div className="flex justify-between items-center border-b border-[#E2E8F0] pb-4">
                   <div>
-                    <h2 className="text-xl font-black text-[#1C1917]">Step 6: Ticket Tiers & Promotional Coupons</h2>
-                    <p className="text-xs text-[#78716C]">Configure ticket pricing, seat quantities, and promo discount codes</p>
+                    <h2 className="text-xl font-black text-[#111827]">Step 6: Ticket Tiers & Promotional Coupons</h2>
+                    <p className="text-xs text-[#64748B]">Configure ticket pricing, seat quantities, and promo discount codes</p>
                   </div>
                   <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={addTicketType}
-                      className="inline-flex items-center gap-1 rounded-xl bg-[#0F766E] text-white px-3 py-2 text-xs font-bold"
+                      className="inline-flex items-center gap-1 rounded-xl bg-[#059669] text-white px-3 py-2 text-xs font-bold"
                     >
                       <Plus className="h-4 w-4" /> Add Ticket Tier
                     </button>
                     <button
                       type="button"
                       onClick={addCoupon}
-                      className="inline-flex items-center gap-1 rounded-xl bg-[#F97316] text-white px-3 py-2 text-xs font-bold"
+                      className="inline-flex items-center gap-1 rounded-xl bg-[#F59E0B] text-white px-3 py-2 text-xs font-bold"
                     >
                       <Plus className="h-4 w-4" /> Add Promo Coupon
                     </button>
@@ -1434,10 +1434,10 @@ function CreateEventWizardInner() {
                 {/* Ticket Tiers */}
                 <div className="space-y-4">
                   {formData.ticketTypes.map((tkt, idx) => (
-                    <div key={tkt.id} className="p-5 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] space-y-4">
+                    <div key={tkt.id} className="p-5 rounded-2xl border border-[#E2E8F0] bg-[#F9FAFB] space-y-4">
                       <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-xs text-[#0F766E]">Ticket Tier #{idx + 1}</span>
+                          <span className="font-bold text-xs text-[#059669]">Ticket Tier #{idx + 1}</span>
                           <span className="text-[10px] bg-slate-200 text-slate-700 font-mono px-2 py-0.5 rounded">
                             {tkt.category || 'General'}
                           </span>
@@ -1449,7 +1449,7 @@ function CreateEventWizardInner() {
 
                       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                         <div className="sm:col-span-2">
-                          <label className="block text-[11px] font-bold text-[#1C1917] mb-1">Ticket Name *</label>
+                          <label className="block text-[11px] font-bold text-[#111827] mb-1">Ticket Name *</label>
                           <input
                             type="text"
                             value={tkt.name}
@@ -1459,12 +1459,12 @@ function CreateEventWizardInner() {
                               updateField('ticketTypes', updated);
                             }}
                             placeholder="e.g. VIP Developer Pass"
-                            className="w-full rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs font-bold"
+                            className="w-full rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs font-bold"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-[11px] font-bold text-[#1C1917] mb-1">Category</label>
+                          <label className="block text-[11px] font-bold text-[#111827] mb-1">Category</label>
                           <select
                             value={tkt.category || 'General'}
                             onChange={e => {
@@ -1472,7 +1472,7 @@ function CreateEventWizardInner() {
                               updated[idx].category = e.target.value as TicketTypeForm['category'];
                               updateField('ticketTypes', updated);
                             }}
-                            className="w-full rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs font-bold bg-white text-[#1C1917]"
+                            className="w-full rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs font-bold bg-white text-[#111827]"
                           >
                             <option value="General">General</option>
                             <option value="VIP">VIP</option>
@@ -1484,7 +1484,7 @@ function CreateEventWizardInner() {
                         </div>
 
                         <div>
-                          <label className="block text-[11px] font-bold text-[#1C1917] mb-1">Price (₹, 0 for Free)</label>
+                          <label className="block text-[11px] font-bold text-[#111827] mb-1">Price (₹, 0 for Free)</label>
                           <input
                             type="number"
                             value={tkt.price}
@@ -1494,14 +1494,14 @@ function CreateEventWizardInner() {
                               updateField('ticketTypes', updated);
                             }}
                             placeholder="Price (₹)"
-                            className="w-full rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs font-bold"
+                            className="w-full rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs font-bold"
                           />
                         </div>
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
-                          <label className="block text-[11px] font-bold text-[#1C1917] mb-1">Total Seat Quantity</label>
+                          <label className="block text-[11px] font-bold text-[#111827] mb-1">Total Seat Quantity</label>
                           <input
                             type="number"
                             value={tkt.quantity}
@@ -1511,12 +1511,12 @@ function CreateEventWizardInner() {
                               updateField('ticketTypes', updated);
                             }}
                             placeholder="Seats count"
-                            className="w-full rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs"
+                            className="w-full rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-[11px] font-bold text-[#1C1917] mb-1">Min Per Order Limit</label>
+                          <label className="block text-[11px] font-bold text-[#111827] mb-1">Min Per Order Limit</label>
                           <input
                             type="number"
                             value={tkt.minPerOrder || 1}
@@ -1525,12 +1525,12 @@ function CreateEventWizardInner() {
                               updated[idx].minPerOrder = Number(e.target.value);
                               updateField('ticketTypes', updated);
                             }}
-                            className="w-full rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs"
+                            className="w-full rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-[11px] font-bold text-[#1C1917] mb-1">Max Per Order Limit</label>
+                          <label className="block text-[11px] font-bold text-[#111827] mb-1">Max Per Order Limit</label>
                           <input
                             type="number"
                             value={tkt.maxPerOrder || 5}
@@ -1539,14 +1539,14 @@ function CreateEventWizardInner() {
                               updated[idx].maxPerOrder = Number(e.target.value);
                               updateField('ticketTypes', updated);
                             }}
-                            className="w-full rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs"
+                            className="w-full rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs"
                           />
                         </div>
                       </div>
 
                       {/* Smart Features Toggles */}
-                      <div className="p-3 bg-white rounded-xl border border-[#E7E5E4] space-y-2">
-                        <span className="text-[11px] font-bold text-[#0F766E] uppercase tracking-wider block">
+                      <div className="p-3 bg-white rounded-xl border border-[#E2E8F0] space-y-2">
+                        <span className="text-[11px] font-bold text-[#059669] uppercase tracking-wider block">
                           Smart Ticketing Module Settings
                         </span>
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-slate-700">
@@ -1559,7 +1559,7 @@ function CreateEventWizardInner() {
                                 updated[idx].isEarlyBird = e.target.checked;
                                 updateField('ticketTypes', updated);
                               }}
-                              className="rounded text-[#0F766E]"
+                              className="rounded text-[#059669]"
                             />
                             <span>Early-Bird Tier</span>
                           </label>
@@ -1573,7 +1573,7 @@ function CreateEventWizardInner() {
                                 updated[idx].isGroupDiscount = e.target.checked;
                                 updateField('ticketTypes', updated);
                               }}
-                              className="rounded text-[#0F766E]"
+                              className="rounded text-[#059669]"
                             />
                             <span>Group Discount (4+)</span>
                           </label>
@@ -1587,7 +1587,7 @@ function CreateEventWizardInner() {
                                 updated[idx].isApprovalRequired = e.target.checked;
                                 updateField('ticketTypes', updated);
                               }}
-                              className="rounded text-[#0F766E]"
+                              className="rounded text-[#059669]"
                             />
                             <span>Approval Required</span>
                           </label>
@@ -1601,7 +1601,7 @@ function CreateEventWizardInner() {
                                 updated[idx].isWaitlist = e.target.checked;
                                 updateField('ticketTypes', updated);
                               }}
-                              className="rounded text-[#0F766E]"
+                              className="rounded text-[#059669]"
                             />
                             <span>Enable Waitlist</span>
                           </label>
@@ -1615,7 +1615,7 @@ function CreateEventWizardInner() {
                                 updated[idx].isComplimentary = e.target.checked;
                                 updateField('ticketTypes', updated);
                               }}
-                              className="rounded text-[#0F766E]"
+                              className="rounded text-[#059669]"
                             />
                             <span>Complimentary Pass</span>
                           </label>
@@ -1629,7 +1629,7 @@ function CreateEventWizardInner() {
                                 updated[idx].isHidden = e.target.checked;
                                 updateField('ticketTypes', updated);
                               }}
-                              className="rounded text-[#0F766E]"
+                              className="rounded text-[#059669]"
                             />
                             <span>Hidden (Passcode)</span>
                           </label>
@@ -1643,7 +1643,7 @@ function CreateEventWizardInner() {
                                 updated[idx].isTransferrable = e.target.checked;
                                 updateField('ticketTypes', updated);
                               }}
-                              className="rounded text-[#0F766E]"
+                              className="rounded text-[#059669]"
                             />
                             <span>Transfer Allowed</span>
                           </label>
@@ -1657,7 +1657,7 @@ function CreateEventWizardInner() {
                                 updated[idx].isRefundable = e.target.checked;
                                 updateField('ticketTypes', updated);
                               }}
-                              className="rounded text-[#0F766E]"
+                              className="rounded text-[#059669]"
                             />
                             <span>Refund Allowed</span>
                           </label>
@@ -1668,10 +1668,10 @@ function CreateEventWizardInner() {
                 </div>
 
                 {/* Coupon Codes */}
-                <div className="space-y-3 pt-4 border-t border-[#E7E5E4]">
-                  <h3 className="font-bold text-sm text-[#1C1917]">Promotional Coupons ({formData.couponCodes.length})</h3>
+                <div className="space-y-3 pt-4 border-t border-[#E2E8F0]">
+                  <h3 className="font-bold text-sm text-[#111827]">Promotional Coupons ({formData.couponCodes.length})</h3>
                   {formData.couponCodes.map((cp, idx) => (
-                    <div key={cp.id} className="flex gap-3 items-center p-4 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9]">
+                    <div key={cp.id} className="flex gap-3 items-center p-4 rounded-2xl border border-[#E2E8F0] bg-[#F9FAFB]">
                       <input
                         type="text"
                         value={cp.code}
@@ -1681,7 +1681,7 @@ function CreateEventWizardInner() {
                           updateField('couponCodes', updated);
                         }}
                         placeholder="COUPON CODE (e.g. EPAY20)"
-                        className="rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs font-bold tracking-wider uppercase"
+                        className="rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs font-bold tracking-wider uppercase"
                       />
                       <input
                         type="number"
@@ -1692,7 +1692,7 @@ function CreateEventWizardInner() {
                           updateField('couponCodes', updated);
                         }}
                         placeholder="Discount %"
-                        className="w-28 rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs font-bold"
+                        className="w-28 rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs font-bold"
                       />
                       <input
                         type="text"
@@ -1703,7 +1703,7 @@ function CreateEventWizardInner() {
                           updateField('couponCodes', updated);
                         }}
                         placeholder="Description"
-                        className="flex-1 rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs"
+                        className="flex-1 rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs"
                       />
                       {formData.couponCodes.length > 0 && (
                         <button type="button" onClick={() => removeCoupon(cp.id)} className="text-red-500 text-xs font-bold">Remove</button>
@@ -1717,15 +1717,15 @@ function CreateEventWizardInner() {
             {/* Step 7: FAQs & Terms Policy */}
             {currentStep === 7 && (
               <div className="space-y-6">
-                <div className="flex justify-between items-center border-b border-[#E7E5E4] pb-4">
+                <div className="flex justify-between items-center border-b border-[#E2E8F0] pb-4">
                   <div>
-                    <h2 className="text-xl font-black text-[#1C1917]">Step 7: FAQs & Terms / Refund Policy</h2>
-                    <p className="text-xs text-[#78716C]">Provide clear answers to frequent questions and event guidelines</p>
+                    <h2 className="text-xl font-black text-[#111827]">Step 7: FAQs & Terms / Refund Policy</h2>
+                    <p className="text-xs text-[#64748B]">Provide clear answers to frequent questions and event guidelines</p>
                   </div>
                   <button
                     type="button"
                     onClick={addFaq}
-                    className="inline-flex items-center gap-1 rounded-xl bg-[#0F766E] text-white px-3 py-2 text-xs font-bold"
+                    className="inline-flex items-center gap-1 rounded-xl bg-[#059669] text-white px-3 py-2 text-xs font-bold"
                   >
                     <Plus className="h-4 w-4" /> Add FAQ
                   </button>
@@ -1733,11 +1733,11 @@ function CreateEventWizardInner() {
 
                 {/* FAQs */}
                 <div className="space-y-3">
-                  <h3 className="font-bold text-sm text-[#1C1917]">Frequently Asked Questions ({formData.faqs.length})</h3>
+                  <h3 className="font-bold text-sm text-[#111827]">Frequently Asked Questions ({formData.faqs.length})</h3>
                   {formData.faqs.map((faq, idx) => (
-                    <div key={faq.id} className="p-4 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] space-y-2">
+                    <div key={faq.id} className="p-4 rounded-2xl border border-[#E2E8F0] bg-[#F9FAFB] space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="font-bold text-xs text-[#0F766E]">FAQ #{idx + 1}</span>
+                        <span className="font-bold text-xs text-[#059669]">FAQ #{idx + 1}</span>
                         {formData.faqs.length > 1 && (
                           <button type="button" onClick={() => removeFaq(faq.id)} className="text-red-500 text-xs font-bold">Delete</button>
                         )}
@@ -1751,7 +1751,7 @@ function CreateEventWizardInner() {
                           updateField('faqs', updated);
                         }}
                         placeholder="Question (e.g. Is food included in the VIP ticket?)"
-                        className="w-full rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs font-bold"
+                        className="w-full rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs font-bold"
                       />
                       <textarea
                         rows={2}
@@ -1762,21 +1762,21 @@ function CreateEventWizardInner() {
                           updateField('faqs', updated);
                         }}
                         placeholder="Answer details..."
-                        className="w-full rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs"
+                        className="w-full rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs"
                       />
                     </div>
                   ))}
                 </div>
 
                 {/* Terms Policy */}
-                <div className="pt-4 border-t border-[#E7E5E4]">
-                  <label className="block text-sm font-bold text-[#1C1917] mb-1">Terms & Refund Policy Guidelines</label>
+                <div className="pt-4 border-t border-[#E2E8F0]">
+                  <label className="block text-sm font-bold text-[#111827] mb-1">Terms & Refund Policy Guidelines</label>
                   <textarea
                     rows={4}
                     value={formData.termsAndPolicy}
                     onChange={e => updateField('termsAndPolicy', e.target.value)}
                     placeholder="Enter terms, entry restrictions, and refund policies line by line..."
-                    className="w-full rounded-xl border border-[#E7E5E4] px-4 py-3 text-sm focus:border-[#0F766E] focus:outline-none"
+                    className="w-full rounded-xl border border-[#E2E8F0] px-4 py-3 text-sm focus:border-[#059669] focus:outline-none"
                   />
                 </div>
               </div>
@@ -1785,15 +1785,15 @@ function CreateEventWizardInner() {
             {/* Step 8: Custom Registration Form */}
             {currentStep === 8 && (
               <div className="space-y-6">
-                <div className="flex justify-between items-center border-b border-[#E7E5E4] pb-4">
+                <div className="flex justify-between items-center border-b border-[#E2E8F0] pb-4">
                   <div>
-                    <h2 className="text-xl font-black text-[#1C1917]">Step 8: Custom Registration Form Questions</h2>
-                    <p className="text-xs text-[#78716C]">Ask custom attendee questions during checkout</p>
+                    <h2 className="text-xl font-black text-[#111827]">Step 8: Custom Registration Form Questions</h2>
+                    <p className="text-xs text-[#64748B]">Ask custom attendee questions during checkout</p>
                   </div>
                   <button
                     type="button"
                     onClick={addRegistrationField}
-                    className="inline-flex items-center gap-1 rounded-xl bg-[#0F766E] text-white px-3 py-2 text-xs font-bold"
+                    className="inline-flex items-center gap-1 rounded-xl bg-[#059669] text-white px-3 py-2 text-xs font-bold"
                   >
                     <Plus className="h-4 w-4" /> Add Field
                   </button>
@@ -1801,9 +1801,9 @@ function CreateEventWizardInner() {
 
                 <div className="space-y-3">
                   {formData.registrationFields.map((rf, idx) => (
-                    <div key={rf.id} className="flex items-center gap-4 p-4 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9]">
+                    <div key={rf.id} className="flex items-center gap-4 p-4 rounded-2xl border border-[#E2E8F0] bg-[#F9FAFB]">
                       <div className="flex-1">
-                        <label className="block text-xs font-bold text-[#78716C]">Question Label</label>
+                        <label className="block text-xs font-bold text-[#64748B]">Question Label</label>
                         <input
                           type="text"
                           value={rf.label}
@@ -1812,11 +1812,11 @@ function CreateEventWizardInner() {
                             updated[idx].label = e.target.value;
                             updateField('registrationFields', updated);
                           }}
-                          className="w-full rounded-xl border border-[#E7E5E4] px-3 py-2 text-xs font-bold"
+                          className="w-full rounded-xl border border-[#E2E8F0] px-3 py-2 text-xs font-bold"
                         />
                       </div>
                       <div className="w-36">
-                        <label className="block text-xs font-bold text-[#78716C]">Field Type</label>
+                        <label className="block text-xs font-bold text-[#64748B]">Field Type</label>
                         <select
                           value={rf.fieldType}
                           onChange={e => {
@@ -1824,7 +1824,7 @@ function CreateEventWizardInner() {
                             updated[idx].fieldType = e.target.value as RegistrationField['fieldType'];
                             updateField('registrationFields', updated);
                           }}
-                          className="w-full rounded-xl border border-[#E7E5E4] px-2 py-2 text-xs font-bold bg-white"
+                          className="w-full rounded-xl border border-[#E2E8F0] px-2 py-2 text-xs font-bold bg-white"
                         >
                           <option value="text">Text Input</option>
                           <option value="email">Email</option>
@@ -1847,23 +1847,23 @@ function CreateEventWizardInner() {
             {/* Step 9: Final Publish */}
             {currentStep === 9 && (
               <div className="space-y-6">
-                <div className="border-b border-[#E7E5E4] pb-4">
-                  <h2 className="text-xl font-black text-[#1C1917]">
+                <div className="border-b border-[#E2E8F0] pb-4">
+                  <h2 className="text-xl font-black text-[#111827]">
                     {isEditMode ? 'Step 9: Review & Save Modifications' : 'Step 9: Final Review & Live Publish'}
                   </h2>
-                  <p className="text-xs text-[#78716C]">
+                  <p className="text-xs text-[#64748B]">
                     {isEditMode 
                       ? 'Verify your event changes before updating the live catalog and Supabase database' 
                       : 'Verify all details before publishing your event to ePayEvents'}
                   </p>
                 </div>
 
-                <div className="bg-[#FAFAF9] p-6 rounded-2xl border border-[#E7E5E4] space-y-3 text-xs text-[#1C1917]">
+                <div className="bg-[#F9FAFB] p-6 rounded-2xl border border-[#E2E8F0] space-y-3 text-xs text-[#111827]">
                   <p><strong>Title:</strong> {formData.title || 'Untitled Event'}</p>
-                  <div className="bg-white p-3 rounded-xl border border-[#E7E5E4] space-y-1">
+                  <div className="bg-white p-3 rounded-xl border border-[#E2E8F0] space-y-1">
                     <p><strong>Start Date & Time:</strong> {formData.startDate || 'TBD'} at {formData.startTime || '10:00'}</p>
                     <p><strong>End Date & Time:</strong> {formData.endDate || formData.startDate || 'TBD'} at {formData.endTime || '18:00'}</p>
-                    <p className="text-[11px] text-[#78716C]">Timezone: {formData.timezone || 'IST'}</p>
+                    <p className="text-[11px] text-[#64748B]">Timezone: {formData.timezone || 'IST'}</p>
                   </div>
                   <p><strong>Venue / Location:</strong> {formData.venueName || 'Virtual Online'}, {formData.city}</p>
                   <p><strong>Speakers Configured:</strong> {formData.speakers.length} speakers</p>
@@ -1886,8 +1886,8 @@ function CreateEventWizardInner() {
                     type="button"
                     disabled={isSubmitting}
                     onClick={() => handlePublish('published')}
-                    className={`flex-1 rounded-xl bg-[#0F766E] py-3.5 text-sm font-bold text-white transition shadow-lg flex items-center justify-center gap-2 ${
-                      isSubmitting ? 'opacity-60 cursor-not-allowed' : 'hover:bg-[#115E59]'
+                    className={`flex-1 rounded-xl bg-[#059669] py-3.5 text-sm font-bold text-white transition shadow-lg flex items-center justify-center gap-2 ${
+                      isSubmitting ? 'opacity-60 cursor-not-allowed' : 'hover:bg-[#047857]'
                     }`}
                   >
                     {isSubmitting ? (
@@ -1903,7 +1903,7 @@ function CreateEventWizardInner() {
                     type="button"
                     disabled={isSubmitting}
                     onClick={() => handlePublish('draft')}
-                    className="rounded-xl border border-[#E7E5E4] bg-white px-6 py-3.5 text-sm font-bold text-[#1C1917] hover:bg-slate-100 transition disabled:opacity-60"
+                    className="rounded-xl border border-[#E2E8F0] bg-white px-6 py-3.5 text-sm font-bold text-[#111827] hover:bg-slate-100 transition disabled:opacity-60"
                   >
                     Save as Draft
                   </button>
@@ -1912,13 +1912,13 @@ function CreateEventWizardInner() {
             )}
 
             {/* Navigation controls */}
-            <div className="mt-8 pt-6 border-t border-[#E7E5E4] flex justify-between">
+            <div className="mt-8 pt-6 border-t border-[#E2E8F0] flex justify-between">
               <button
                 type="button"
                 onClick={handlePrev}
                 disabled={currentStep === 1}
                 className={`inline-flex items-center gap-1 text-xs font-bold rounded-xl px-4 py-2.5 border transition ${
-                  currentStep === 1 ? 'opacity-40 cursor-not-allowed border-[#E7E5E4] text-[#78716C]' : 'border-[#E7E5E4] text-[#1C1917] hover:bg-slate-100'
+                  currentStep === 1 ? 'opacity-40 cursor-not-allowed border-[#E2E8F0] text-[#64748B]' : 'border-[#E2E8F0] text-[#111827] hover:bg-slate-100'
                 }`}
               >
                 <ChevronLeft className="h-4 w-4" /> Previous
@@ -1928,7 +1928,7 @@ function CreateEventWizardInner() {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="inline-flex items-center gap-1 text-xs font-bold rounded-xl bg-[#F97316] text-white px-5 py-2.5 hover:bg-[#ea580c] transition shadow"
+                  className="inline-flex items-center gap-1 text-xs font-bold rounded-xl bg-[#F59E0B] text-white px-5 py-2.5 hover:bg-[#D97706] transition shadow"
                 >
                   Next Step <ChevronRight className="h-4 w-4" />
                 </button>
@@ -1947,12 +1947,12 @@ export default function CreateEventWizard() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
+        <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
           <Navbar />
           <main className="flex-1 flex items-center justify-center p-6">
-            <div className="bg-white rounded-3xl border border-[#E7E5E4] shadow-sm p-8 text-center max-w-sm w-full space-y-4">
-              <div className="h-8 w-8 border-3 border-[#0F766E] border-t-transparent rounded-full animate-spin mx-auto" />
-              <p className="text-xs font-bold text-[#1C1917]">Loading Event Studio...</p>
+            <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-sm p-8 text-center max-w-sm w-full space-y-4">
+              <div className="h-8 w-8 border-3 border-[#059669] border-t-transparent rounded-full animate-spin mx-auto" />
+              <p className="text-xs font-bold text-[#111827]">Loading Event Studio...</p>
             </div>
           </main>
           <Footer />

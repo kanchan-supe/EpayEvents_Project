@@ -379,64 +379,64 @@ export function CheckoutForm({
         <form onSubmit={handleCompletePayment} className="space-y-6">
           
           {/* Smart Ticketing Feature Highlights Ribbon */}
-          <div className="bg-gradient-to-r from-[#0F766E]/10 via-[#0F766E]/5 to-[#F97316]/10 border border-[#0F766E]/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="bg-gradient-to-r from-[#059669]/10 via-[#059669]/5 to-[#F59E0B]/10 border border-[#059669]/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-[#F97316]" />
-              <span className="font-bold text-[#1C1917]">Smart Ticketing Engine Active</span>
+              <Sparkles className="h-4 w-4 text-[#F59E0B]" />
+              <span className="font-bold text-[#111827]">Smart Ticketing Engine Active</span>
             </div>
-            <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold text-[#78716C]">
+            <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold text-[#64748B]">
               <span className="flex items-center gap-1 text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-md">
                 <CheckCircle2 className="h-3 w-3 text-emerald-600" /> Instant QR ID
               </span>
-              <span className="flex items-center gap-1 text-blue-700 bg-blue-100/70 px-2 py-0.5 rounded-md">
-                <ArrowRightLeft className="h-3 w-3 text-blue-600" /> Free Pass Transfer
+              <span className="flex items-center gap-1 text-emerald-800 bg-blue-100/70 px-2 py-0.5 rounded-md">
+                <ArrowRightLeft className="h-3 w-3 text-emerald-700" /> Free Pass Transfer
               </span>
-              <span className="flex items-center gap-1 text-teal-700 bg-teal-100/70 px-2 py-0.5 rounded-md">
+              <span className="flex items-center gap-1 text-teal-600 bg-teal-100/70 px-2 py-0.5 rounded-md">
                 <Undo2 className="h-3 w-3 text-teal-600" /> Instant Refund Policy
               </span>
             </div>
           </div>
 
           {/* Attendee Details */}
-          <div className="bg-white p-6 rounded-2xl border border-[#E7E5E4] shadow-sm space-y-4">
-            <h2 className="text-lg font-bold text-[#1C1917] flex items-center gap-2 border-b border-[#E7E5E4] pb-3">
-              <User className="h-5 w-5 text-[#0F766E]" /> Attendee & Registration Information
+          <div className="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm space-y-4">
+            <h2 className="text-lg font-bold text-[#111827] flex items-center gap-2 border-b border-[#E2E8F0] pb-3">
+              <User className="h-5 w-5 text-[#059669]" /> Attendee & Registration Information
             </h2>
 
             <div>
-              <label className="block text-xs font-semibold text-[#1C1917] mb-1">Full Legal Name *</label>
+              <label className="block text-xs font-semibold text-[#111827] mb-1">Full Legal Name *</label>
               <input
                 type="text"
                 required
                 value={buyerName}
                 onChange={e => setBuyerName(e.target.value)}
                 placeholder="e.g. Alex Morgan"
-                className="w-full rounded-xl border border-[#E7E5E4] px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#0F766E] focus:outline-none text-[#1C1917]"
+                className="w-full rounded-xl border border-[#E2E8F0] px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#059669] focus:outline-none text-[#111827]"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#1C1917] mb-1">Email Address (For Encrypted QR Ticket) *</label>
+                <label className="block text-xs font-semibold text-[#111827] mb-1">Email Address (For Encrypted QR Ticket) *</label>
                 <input
                   type="email"
                   required
                   value={buyerEmail}
                   onChange={e => setBuyerEmail(e.target.value)}
                   placeholder="alex@example.com"
-                  className="w-full rounded-xl border border-[#E7E5E4] px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#0F766E] focus:outline-none text-[#1C1917]"
+                  className="w-full rounded-xl border border-[#E2E8F0] px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#059669] focus:outline-none text-[#111827]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#1C1917] mb-1">Mobile Phone (For WhatsApp Pass Delivery) *</label>
+                <label className="block text-xs font-semibold text-[#111827] mb-1">Mobile Phone (For WhatsApp Pass Delivery) *</label>
                 <input
                   type="tel"
                   required
                   value={buyerPhone}
                   onChange={e => setBuyerPhone(e.target.value)}
                   placeholder="+91 9876543210"
-                  className="w-full rounded-xl border border-[#E7E5E4] px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#0F766E] focus:outline-none text-[#1C1917]"
+                  className="w-full rounded-xl border border-[#E2E8F0] px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#059669] focus:outline-none text-[#111827]"
                 />
               </div>
             </div>
@@ -453,20 +453,20 @@ export function CheckoutForm({
                   value={approvalNote}
                   onChange={e => setApprovalNote(e.target.value)}
                   placeholder="Provide your company/startup URL, LinkedIn profile, or reason for complimentary pass application..."
-                  className="w-full rounded-lg border border-amber-300 bg-white p-2 text-xs text-[#1C1917] focus:outline-none"
+                  className="w-full rounded-lg border border-amber-300 bg-white p-2 text-xs text-[#111827] focus:outline-none"
                 />
               </div>
             )}
           </div>
 
           {/* Ticket Selection with Smart Engine Tiers */}
-          <div className="bg-white p-6 rounded-2xl border border-[#E7E5E4] shadow-sm space-y-5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E7E5E4] pb-3">
+          <div className="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E2E8F0] pb-3">
               <div>
-                <h2 className="text-lg font-bold text-[#1C1917] flex items-center gap-2">
-                  <Ticket className="h-5 w-5 text-[#0F766E]" /> Select Ticket Categories & Limits
+                <h2 className="text-lg font-bold text-[#111827] flex items-center gap-2">
+                  <Ticket className="h-5 w-5 text-[#059669]" /> Select Ticket Categories & Limits
                 </h2>
-                <p className="text-xs text-[#78716C] mt-0.5">Choose ticket quantities across available tiers with real-time dynamic pricing</p>
+                <p className="text-xs text-[#64748B] mt-0.5">Choose ticket quantities across available tiers with real-time dynamic pricing</p>
               </div>
 
               {/* Unlock Hidden Passes Form */}
@@ -476,7 +476,7 @@ export function CheckoutForm({
                   placeholder="Passcode for VIP"
                   value={passcodeInput}
                   onChange={e => setPasscodeInput(e.target.value)}
-                  className="w-32 uppercase text-[11px] font-mono px-2.5 py-1.5 rounded-lg border border-[#E7E5E4] focus:outline-none"
+                  className="w-32 uppercase text-[11px] font-mono px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] focus:outline-none"
                 />
                 <button
                   type="button"
@@ -509,7 +509,7 @@ export function CheckoutForm({
                 // If tier is hidden and passcode not unlocked, show passcode placeholder
                 if (tkt.isHidden && unlockedPasscode !== tkt.accessPasscode) {
                   return (
-                    <div key={tkt.id} className="p-4 rounded-xl border border-dashed border-slate-300 bg-slate-50 flex items-center justify-between text-xs text-[#78716C]">
+                    <div key={tkt.id} className="p-4 rounded-xl border border-dashed border-slate-300 bg-slate-50 flex items-center justify-between text-xs text-[#64748B]">
                       <div className="flex items-center gap-2">
                         <Lock className="h-4 w-4 text-slate-400" />
                         <span className="font-semibold italic">Hidden VIP Pass (Passcode Protected)</span>
@@ -528,26 +528,26 @@ export function CheckoutForm({
                     key={tkt.id}
                     className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border transition gap-4 ${
                       isSelected 
-                        ? 'border-[#0F766E] bg-[#0F766E]/5 shadow-sm ring-1 ring-[#0F766E]/30' 
+                        ? 'border-[#059669] bg-[#059669]/5 shadow-sm ring-1 ring-[#059669]/30' 
                         : isWaitlist
                         ? 'border-purple-200 bg-purple-50/40'
-                        : 'border-[#E7E5E4] bg-white hover:bg-[#FAFAF9]'
+                        : 'border-[#E2E8F0] bg-white hover:bg-[#F9FAFB]'
                     }`}
                   >
                     <div className="flex-1 space-y-1.5">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h4 className="font-bold text-[#1C1917] text-base">{tkt.name}</h4>
+                        <h4 className="font-bold text-[#111827] text-base">{tkt.name}</h4>
                         
                         {/* Category Badge */}
                         {tkt.category && (
-                          <span className="bg-slate-100 text-[#0F766E] border border-[#0F766E]/30 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                          <span className="bg-slate-100 text-[#059669] border border-[#059669]/30 text-[10px] font-bold px-2 py-0.5 rounded-md">
                             {tkt.category}
                           </span>
                         )}
 
                         {/* Early Bird Badge */}
                         {tkt.isEarlyBird && (
-                          <span className="bg-[#F97316] text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase flex items-center gap-1 shadow-xs">
+                          <span className="bg-[#F59E0B] text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase flex items-center gap-1 shadow-xs">
                             <Clock className="h-3 w-3" /> {tkt.earlyBirdDeadline || 'Early Bird'}
                           </span>
                         )}
@@ -574,11 +574,11 @@ export function CheckoutForm({
                         )}
                       </div>
 
-                      <p className="text-xs text-[#78716C] leading-relaxed">{tkt.description}</p>
+                      <p className="text-xs text-[#64748B] leading-relaxed">{tkt.description}</p>
                       
                       {/* Price Display with Original / Discounted Cross-through */}
                       <div className="flex items-center gap-2 pt-0.5">
-                        <span className="font-extrabold text-[#1C1917] text-base">
+                        <span className="font-extrabold text-[#111827] text-base">
                           {tkt.price === 0 ? 'FREE' : `₹${tkt.price.toLocaleString()}`}
                         </span>
                         {tkt.originalPrice && tkt.originalPrice > tkt.price && (
@@ -586,14 +586,14 @@ export function CheckoutForm({
                             ₹{tkt.originalPrice.toLocaleString()}
                           </span>
                         )}
-                        <span className="text-[11px] text-[#78716C]">
+                        <span className="text-[11px] text-[#64748B]">
                           (Max {tkt.maxPerOrder || 6} per order)
                         </span>
                       </div>
                     </div>
 
                     {/* Quantity or Waitlist Action Controls */}
-                    <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#E7E5E4]">
+                    <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#E2E8F0]">
                       {isWaitlist ? (
                         <button
                           type="button"
@@ -603,7 +603,7 @@ export function CheckoutForm({
                           Join Waitlist
                         </button>
                       ) : (
-                        <div className="flex items-center gap-3 bg-[#FAFAF9] border border-[#E7E5E4] rounded-xl p-1">
+                        <div className="flex items-center gap-3 bg-[#F9FAFB] border border-[#E2E8F0] rounded-xl p-1">
                           <button
                             type="button"
                             onClick={() => updateQuantity(tkt.id, -1)}
@@ -611,14 +611,14 @@ export function CheckoutForm({
                             className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-base transition ${
                               qty === 0
                                 ? 'text-slate-300 cursor-not-allowed'
-                                : 'bg-white text-[#1C1917] hover:bg-slate-200 shadow-sm'
+                                : 'bg-white text-[#111827] hover:bg-slate-200 shadow-sm'
                             }`}
                             title="Decrease Quantity"
                           >
                             -
                           </button>
                           
-                          <span className="w-6 text-center font-extrabold text-[#1C1917] text-sm">
+                          <span className="w-6 text-center font-extrabold text-[#111827] text-sm">
                             {qty}
                           </span>
 
@@ -626,7 +626,7 @@ export function CheckoutForm({
                             type="button"
                             onClick={() => updateQuantity(tkt.id, 1)}
                             disabled={qty >= (tkt.maxPerOrder || 6)}
-                            className="w-8 h-8 rounded-lg bg-[#0F766E] text-white flex items-center justify-center font-bold text-base hover:bg-[#115E59] shadow-sm transition disabled:opacity-40"
+                            className="w-8 h-8 rounded-lg bg-[#059669] text-white flex items-center justify-center font-bold text-base hover:bg-[#047857] shadow-sm transition disabled:opacity-40"
                             title="Increase Quantity"
                           >
                             +
@@ -652,44 +652,44 @@ export function CheckoutForm({
           )}
 
           {/* Ticket Transfer & Refund Policy Protection Options */}
-          <div className="bg-white p-6 rounded-2xl border border-[#E7E5E4] shadow-sm space-y-3">
-            <h3 className="font-bold text-[#1C1917] text-sm flex items-center gap-2">
+          <div className="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm space-y-3">
+            <h3 className="font-bold text-[#111827] text-sm flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-[#059669]" /> Ticket Flexibility & Cancellation Guarantees
             </h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-              <label className="p-3 rounded-xl border border-[#E7E5E4] flex items-start gap-3 bg-[#FAFAF9] cursor-pointer">
+              <label className="p-3 rounded-xl border border-[#E2E8F0] flex items-start gap-3 bg-[#F9FAFB] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={enableTransferProtection}
                   onChange={e => setEnableTransferProtection(e.target.checked)}
-                  className="mt-0.5 rounded text-[#0F766E]"
+                  className="mt-0.5 rounded text-[#059669]"
                 />
                 <div>
-                  <span className="block text-xs font-bold text-[#1C1917]">Free Ticket Transfer Protection</span>
-                  <span className="block text-[11px] text-[#78716C] mt-0.5">Transfer pass to a colleague or friend anytime before event gate check-in</span>
+                  <span className="block text-xs font-bold text-[#111827]">Free Ticket Transfer Protection</span>
+                  <span className="block text-[11px] text-[#64748B] mt-0.5">Transfer pass to a colleague or friend anytime before event gate check-in</span>
                 </div>
               </label>
 
-              <label className="p-3 rounded-xl border border-[#E7E5E4] flex items-start gap-3 bg-[#FAFAF9] cursor-pointer">
+              <label className="p-3 rounded-xl border border-[#E2E8F0] flex items-start gap-3 bg-[#F9FAFB] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={enableRefundGuarantee}
                   onChange={e => setEnableRefundGuarantee(e.target.checked)}
-                  className="mt-0.5 rounded text-[#0F766E]"
+                  className="mt-0.5 rounded text-[#059669]"
                 />
                 <div>
-                  <span className="block text-xs font-bold text-[#1C1917]">Standard Refund Workflow Included</span>
-                  <span className="block text-[11px] text-[#78716C] mt-0.5">Full refund processing allowed up to 48 hours prior to start date</span>
+                  <span className="block text-xs font-bold text-[#111827]">Standard Refund Workflow Included</span>
+                  <span className="block text-[11px] text-[#64748B] mt-0.5">Full refund processing allowed up to 48 hours prior to start date</span>
                 </div>
               </label>
             </div>
           </div>
 
           {/* Payment Gateway Option */}
-          <div className="bg-white p-6 rounded-2xl border border-[#E7E5E4] shadow-sm space-y-4">
-            <h2 className="text-lg font-bold text-[#1C1917] flex items-center gap-2 border-b border-[#E7E5E4] pb-3">
-              <CreditCard className="h-5 w-5 text-[#0F766E]" /> Payment Gateway Integration
+          <div className="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm space-y-4">
+            <h2 className="text-lg font-bold text-[#111827] flex items-center gap-2 border-b border-[#E2E8F0] pb-3">
+              <CreditCard className="h-5 w-5 text-[#059669]" /> Payment Gateway Integration
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -703,11 +703,11 @@ export function CheckoutForm({
                 <label
                   key={pm.id}
                   className={`p-3.5 rounded-xl border cursor-pointer flex flex-col justify-between transition ${
-                    paymentMethod === pm.id ? 'border-[#0F766E] bg-[#0F766E]/5 text-[#0F766E]' : 'border-[#E7E5E4] text-[#78716C] hover:bg-[#FAFAF9]'
+                    paymentMethod === pm.id ? 'border-[#059669] bg-[#059669]/5 text-[#059669]' : 'border-[#E2E8F0] text-[#64748B] hover:bg-[#F9FAFB]'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-xs text-[#1C1917]">{pm.label}</span>
+                    <span className="font-bold text-xs text-[#111827]">{pm.label}</span>
                     <input
                       type="radio"
                       name="paymentMethod"
@@ -716,7 +716,7 @@ export function CheckoutForm({
                       className="sr-only"
                     />
                   </div>
-                  <span className="text-[10px] text-[#78716C]">{pm.desc}</span>
+                  <span className="text-[10px] text-[#64748B]">{pm.desc}</span>
                 </label>
               ))}
             </div>
@@ -727,7 +727,7 @@ export function CheckoutForm({
               className={`w-full mt-4 rounded-xl py-3.5 font-bold text-white shadow transition flex items-center justify-center gap-2 ${
                 totalTicketsSelected === 0
                   ? 'bg-slate-300 cursor-not-allowed'
-                  : 'bg-[#F97316] hover:bg-[#ea580c]'
+                  : 'bg-[#F59E0B] hover:bg-[#D97706]'
               }`}
             >
               {isProcessing ? (
@@ -752,8 +752,8 @@ export function CheckoutForm({
 
       {/* Summary Sidebar */}
       <div className="space-y-6">
-        <div className="bg-white p-6 rounded-2xl border border-[#E7E5E4] shadow-sm sticky top-24 space-y-6">
-          <h3 className="font-bold text-[#1C1917] text-base border-b border-[#E7E5E4] pb-3">
+        <div className="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm sticky top-24 space-y-6">
+          <h3 className="font-bold text-[#111827] text-base border-b border-[#E2E8F0] pb-3">
             Smart Ticket Summary
           </h3>
 
@@ -761,12 +761,12 @@ export function CheckoutForm({
             {event.ticketTypes.filter(t => (ticketQuantities[t.id] || 0) > 0).map(t => {
               const qty = ticketQuantities[t.id] || 0;
               return (
-                <div key={t.id} className="flex justify-between text-[#78716C]">
+                <div key={t.id} className="flex justify-between text-[#64748B]">
                   <div>
-                    <span className="font-medium text-[#1C1917] block">{t.name} (x{qty})</span>
+                    <span className="font-medium text-[#111827] block">{t.name} (x{qty})</span>
                     <span className="text-[10px] text-slate-400">Category: {t.category || 'General'}</span>
                   </div>
-                  <span className="font-semibold text-[#1C1917]">
+                  <span className="font-semibold text-[#111827]">
                     {t.price === 0 ? 'FREE' : `₹${(t.price * qty).toLocaleString()}`}
                   </span>
                 </div>
@@ -779,14 +779,14 @@ export function CheckoutForm({
 
             {/* Selected Seats summary tag */}
             {selectedSeats.length > 0 && (
-              <div className="bg-teal-50 border border-teal-200/80 p-2.5 rounded-xl text-xs space-y-1">
-                <div className="flex items-center justify-between text-[#0F766E] font-bold">
+              <div className="bg-emerald-50 border border-emerald-200/80 p-2.5 rounded-xl text-xs space-y-1">
+                <div className="flex items-center justify-between text-[#059669] font-bold">
                   <span>Reserved Seats:</span>
                   <span className="font-mono text-[11px]">{selectedSeats.length} Seat{selectedSeats.length > 1 ? 's' : ''}</span>
                 </div>
                 <div className="flex flex-wrap gap-1 pt-0.5">
                   {selectedSeats.map(s => (
-                    <span key={s} className="px-1.5 py-0.5 rounded bg-white text-[#0F766E] border border-teal-300 font-mono text-[10px] font-bold">
+                    <span key={s} className="px-1.5 py-0.5 rounded bg-white text-[#059669] border border-teal-300 font-mono text-[10px] font-bold">
                       {s.replace('VIP-', '').replace('PREM-', '').replace('STD-', '')}
                     </span>
                   ))}
@@ -808,19 +808,19 @@ export function CheckoutForm({
               </div>
             )}
 
-            <div className="flex justify-between text-[#78716C] text-xs">
+            <div className="flex justify-between text-[#64748B] text-xs">
               <span>GST Tax (18%)</span>
               <span>₹{tax.toLocaleString()}</span>
             </div>
 
-            <div className="flex justify-between text-[#78716C] text-xs">
+            <div className="flex justify-between text-[#64748B] text-xs">
               <span>ePay Platform Fee</span>
               <span>₹{platformFee.toLocaleString()}</span>
             </div>
 
-            <div className="pt-3 border-t border-[#E7E5E4] flex justify-between font-extrabold text-[#1C1917] text-lg">
+            <div className="pt-3 border-t border-[#E2E8F0] flex justify-between font-extrabold text-[#111827] text-lg">
               <span>Total Due</span>
-              <span className="text-[#F97316]">
+              <span className="text-[#F59E0B]">
                 {total === 0 ? 'FREE' : `₹${total.toLocaleString()}`}
               </span>
             </div>
@@ -831,7 +831,7 @@ export function CheckoutForm({
             <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-3.5 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                  <Tag className="h-3.5 w-3.5 text-[#0F766E]" />
+                  <Tag className="h-3.5 w-3.5 text-[#059669]" />
                   Have a Coupon or Promo Code?
                 </span>
                 {appliedDiscount > 0 && (
@@ -848,12 +848,12 @@ export function CheckoutForm({
                   value={couponCode}
                   onChange={e => setCouponCode(e.target.value)}
                   placeholder="Enter code (e.g. EARLYBIRD20)"
-                  className="w-full rounded-xl border border-slate-300 bg-white pl-3.5 pr-20 py-2.5 text-xs font-mono font-bold uppercase tracking-wider placeholder:normal-case placeholder:font-sans placeholder:font-normal placeholder:text-slate-400 focus:outline-none focus:border-[#0F766E] focus:ring-2 focus:ring-[#0F766E]/20 text-slate-900 shadow-2xs"
+                  className="w-full rounded-xl border border-slate-300 bg-white pl-3.5 pr-20 py-2.5 text-xs font-mono font-bold uppercase tracking-wider placeholder:normal-case placeholder:font-sans placeholder:font-normal placeholder:text-slate-400 focus:outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/20 text-slate-900 shadow-2xs"
                 />
                 <button
                   type="button"
                   onClick={handleApplyCoupon}
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-lg bg-[#0F766E] hover:bg-[#115E59] text-white px-3.5 py-1.5 text-xs font-bold transition shadow-xs cursor-pointer active:scale-95"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-lg bg-[#059669] hover:bg-[#047857] text-white px-3.5 py-1.5 text-xs font-bold transition shadow-xs cursor-pointer active:scale-95"
                 >
                   Apply
                 </button>
@@ -875,7 +875,7 @@ export function CheckoutForm({
                       className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-emerald-500 hover:text-emerald-700 transition text-[11px] font-bold cursor-pointer shadow-2xs active:scale-95 group"
                     >
                       <span className="font-mono text-emerald-700 group-hover:underline">{code}</span>
-                      <span className="text-[10px] font-extrabold text-white bg-[#0F766E] px-1.5 py-0.2 rounded">
+                      <span className="text-[10px] font-extrabold text-white bg-[#059669] px-1.5 py-0.2 rounded">
                         20% OFF
                       </span>
                     </button>

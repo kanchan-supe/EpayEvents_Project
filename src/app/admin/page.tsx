@@ -312,7 +312,7 @@ export default function SuperAdminPage() {
   // Auth gate with Super Admin Testing Mode
   if (!isAuthorized && !authLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+      <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
         <Navbar />
         <main className="flex-1 flex items-center justify-center p-6">
           <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-10 text-center max-w-md w-full space-y-5">
@@ -360,12 +360,12 @@ export default function SuperAdminPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC] text-slate-800 font-sans">
+    <div className="min-h-screen flex flex-col bg-[#F9FAFB] text-slate-800 font-sans">
       <Navbar />
 
       {/* Cyber/Gaming-Accented Hero Header */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-[#0B0F19] via-[#0F172A] to-[#0B0F19] text-white py-10 md:py-14 border-b border-slate-800 shadow-xl">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#0F766E]/20 rounded-full blur-[130px] pointer-events-none" />
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#0B0F19] via-[#111827] to-[#0B0F19] text-white py-10 md:py-14 border-b border-slate-800 shadow-xl">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#059669]/20 rounded-full blur-[130px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[130px] pointer-events-none" />
 
         <div className="container mx-auto px-4 md:px-8 max-w-7xl relative z-10">
@@ -383,7 +383,7 @@ export default function SuperAdminPage() {
               
               <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white flex items-center gap-3">
                 <span>Super Admin</span>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-emerald-300 to-[#F97316]">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-emerald-300 to-[#F59E0B]">
                   Control Console
                 </span>
               </h1>
@@ -395,7 +395,7 @@ export default function SuperAdminPage() {
             <div className="flex items-center gap-3">
               <Link
                 href="/admin/attendees"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#F97316] to-amber-500 hover:from-[#ea580c] hover:to-amber-600 text-white text-xs font-bold shadow-md transition"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#F59E0B] to-amber-500 hover:from-[#D97706] hover:to-amber-600 text-white text-xs font-bold shadow-md transition"
               >
                 <Users className="h-4 w-4" />
                 <span>Attendees & Bookings</span>
@@ -413,7 +413,7 @@ export default function SuperAdminPage() {
 
               <Link
                 href="/organizer/dashboard"
-                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white text-xs font-bold shadow-md transition"
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#059669] hover:bg-[#047857] text-white text-xs font-bold shadow-md transition"
               >
                 <span>Organizer View</span>
                 <ArrowRight className="h-3.5 w-3.5" />
@@ -479,13 +479,13 @@ export default function SuperAdminPage() {
           >
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider">TOTAL HOSTED EVENTS</span>
-              <div className="p-2.5 rounded-xl bg-teal-50 text-[#0F766E]">
+              <div className="p-2.5 rounded-xl bg-emerald-50 text-[#059669]">
                 <Calendar className="h-5 w-5" />
               </div>
             </div>
             <div className="mt-4">
               <h3 className="text-3xl font-black text-slate-900 tracking-tight">{events.length} Events</h3>
-              <p className="text-xs text-[#0F766E] font-bold mt-1">
+              <p className="text-xs text-[#059669] font-bold mt-1">
                 {events.filter(e => e.status === 'published').length} Live Published across India
               </p>
             </div>
@@ -498,13 +498,13 @@ export default function SuperAdminPage() {
           >
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider">USER ECOSYSTEM</span>
-              <div className="p-2.5 rounded-xl bg-orange-50 text-[#F97316]">
+              <div className="p-2.5 rounded-xl bg-orange-50 text-[#F59E0B]">
                 <Users className="h-5 w-5" />
               </div>
             </div>
             <div className="mt-4">
               <h3 className="text-3xl font-black text-slate-900 tracking-tight">{usersList.length} Accounts</h3>
-              <p className="text-xs text-[#F97316] font-bold mt-1">
+              <p className="text-xs text-[#F59E0B] font-bold mt-1">
                 {usersList.filter(u => u.role === 'organizer').length} Host Organizers
               </p>
             </div>
@@ -580,16 +580,16 @@ export default function SuperAdminPage() {
                     <span className="text-[10px] text-purple-600 block">5.0% Net Commission</span>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-teal-50 border border-teal-100 space-y-1">
+                  <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 space-y-1">
                     <span className="text-[11px] text-teal-600 block font-semibold uppercase">Organizer Payout Pool</span>
-                    <span className="text-2xl font-black text-teal-800">₹{organizerPayoutPool.toLocaleString()}</span>
-                    <span className="text-[10px] text-teal-700 block">95.0% Disbursable</span>
+                    <span className="text-2xl font-black text-emerald-700">₹{organizerPayoutPool.toLocaleString()}</span>
+                    <span className="text-[10px] text-teal-600 block">95.0% Disbursable</span>
                   </div>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-3">
                   <h4 className="font-bold text-slate-800 flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-[#F97316]" /> Super Admin Settlement Engine
+                    <Sparkles className="h-4 w-4 text-[#F59E0B]" /> Super Admin Settlement Engine
                   </h4>
                   <p className="text-slate-600 leading-relaxed text-[11px]">
                     Automatic T+2 settlement cycle initiates post-event conclusion. Organizers receive bank deposits directly into verified accounts minus gateway and platform processing fees.
@@ -646,7 +646,7 @@ export default function SuperAdminPage() {
                       <p className="font-bold text-slate-800">Dynamic QR Refresh</p>
                       <p className="text-[11px] text-slate-400">Prevents screenshot pass sharing</p>
                     </div>
-                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-teal-100 text-teal-800">
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-teal-100 text-emerald-700">
                       ENABLED
                     </span>
                   </div>
@@ -687,7 +687,7 @@ export default function SuperAdminPage() {
                     value={eventSearch}
                     onChange={e => setEventSearch(e.target.value)}
                     placeholder="Search by event title, city..."
-                    className="w-full rounded-xl bg-slate-50 border border-slate-200 pl-10 pr-4 py-2 text-xs focus:outline-none focus:border-[#0F766E]"
+                    className="w-full rounded-xl bg-slate-50 border border-slate-200 pl-10 pr-4 py-2 text-xs focus:outline-none focus:border-[#059669]"
                   />
                 </div>
 
@@ -707,7 +707,7 @@ export default function SuperAdminPage() {
             {/* Events Table */}
             <div className="overflow-x-auto rounded-2xl border border-slate-100">
               <table className="w-full text-left text-xs text-slate-600">
-                <thead className="bg-[#FAFAF9] text-slate-700 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
+                <thead className="bg-[#F9FAFB] text-slate-700 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
                   <tr>
                     <th className="p-3.5">Event Details</th>
                     <th className="p-3.5">Category</th>
@@ -735,7 +735,7 @@ export default function SuperAdminPage() {
                             <div>
                               <Link
                                 href={`/events/${evt.slug}`}
-                                className="font-extrabold text-slate-900 text-sm hover:text-[#0F766E] transition line-clamp-1 flex items-center gap-1"
+                                className="font-extrabold text-slate-900 text-sm hover:text-[#059669] transition line-clamp-1 flex items-center gap-1"
                               >
                                 <span>{evt.title}</span>
                                 <ExternalLink className="h-3 w-3 text-slate-400" />
@@ -835,7 +835,7 @@ export default function SuperAdminPage() {
                     value={userSearch}
                     onChange={e => setUserSearch(e.target.value)}
                     placeholder="Search user by name or email..."
-                    className="w-full rounded-xl bg-slate-50 border border-slate-200 pl-10 pr-4 py-2 text-xs focus:outline-none focus:border-[#0F766E]"
+                    className="w-full rounded-xl bg-slate-50 border border-slate-200 pl-10 pr-4 py-2 text-xs focus:outline-none focus:border-[#059669]"
                   />
                 </div>
 
@@ -855,7 +855,7 @@ export default function SuperAdminPage() {
             {/* Users Table */}
             <div className="overflow-x-auto rounded-2xl border border-slate-100">
               <table className="w-full text-left text-xs text-slate-600">
-                <thead className="bg-[#FAFAF9] text-slate-700 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
+                <thead className="bg-[#F9FAFB] text-slate-700 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
                   <tr>
                     <th className="p-3.5">User Identity</th>
                     <th className="p-3.5">Assigned Role</th>
@@ -886,7 +886,7 @@ export default function SuperAdminPage() {
                               ? 'bg-purple-100 text-purple-800 border-purple-200'
                               : u.role === 'organizer'
                               ? 'bg-orange-100 text-orange-800 border-orange-200'
-                              : 'bg-teal-100 text-teal-800 border-teal-200'
+                              : 'bg-teal-100 text-emerald-700 border-emerald-200'
                           }`}>
                             {u.role}
                           </span>
@@ -898,7 +898,7 @@ export default function SuperAdminPage() {
                             onClick={() => handleToggleUserVerification(u)}
                             className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition flex items-center gap-1 ${
                               u.verified
-                                ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                                 : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
                             }`}
                           >
@@ -964,7 +964,7 @@ export default function SuperAdminPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-4">
               <div>
                 <h3 className="text-xl font-black text-slate-900 flex items-center gap-2">
-                  <Star className="h-5 w-5 text-[#F97316] fill-[#F97316]" />
+                  <Star className="h-5 w-5 text-[#F59E0B] fill-[#F59E0B]" />
                   <span>Attendee Reviews & Testimonials Backend</span>
                 </h3>
                 <p className="text-xs text-slate-500">
@@ -1046,7 +1046,7 @@ export default function SuperAdminPage() {
 
                         <td className="p-3.5">
                           <div className="font-bold text-slate-800 line-clamp-1">{rev.eventTitle}</div>
-                          <span className="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-bold bg-teal-50 text-[#0F766E] border border-teal-200/50">
+                          <span className="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-[#059669] border border-emerald-200/50">
                             {rev.ticketTierName || 'General Admission'}
                           </span>
                         </td>
@@ -1058,7 +1058,7 @@ export default function SuperAdminPage() {
                                 key={s}
                                 className={`h-3.5 w-3.5 ${
                                   s <= rev.rating
-                                    ? 'fill-[#F97316] text-[#F97316]'
+                                    ? 'fill-[#F59E0B] text-[#F59E0B]'
                                     : 'text-slate-200'
                                 }`}
                               />
@@ -1163,7 +1163,7 @@ export default function SuperAdminPage() {
 
                     <div>
                       <span className="text-[10px] text-teal-600 block uppercase">Net Payout</span>
-                      <span className="font-black text-teal-800 text-sm">{s.net}</span>
+                      <span className="font-black text-emerald-700 text-sm">{s.net}</span>
                     </div>
 
                     <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
@@ -1197,7 +1197,7 @@ export default function SuperAdminPage() {
               {auditLogs.map((log) => (
                 <div key={log.id} className="p-3.5 rounded-xl bg-slate-50 border border-slate-100 font-mono text-xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                   <div className="flex items-center gap-3">
-                    <span className="text-[#0F766E] font-bold">{log.id}</span>
+                    <span className="text-[#059669] font-bold">{log.id}</span>
                     <span className="px-2 py-0.5 rounded bg-slate-200 text-slate-800 text-[10px] font-bold">{log.action}</span>
                     <span className="text-slate-700">{log.target}</span>
                   </div>

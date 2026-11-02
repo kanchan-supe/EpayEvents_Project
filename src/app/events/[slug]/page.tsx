@@ -119,7 +119,7 @@ export default async function EventDetailPage({ params }: PageProps) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
+    <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

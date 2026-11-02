@@ -97,32 +97,32 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
+    <div className="min-h-screen flex flex-col bg-[#FAFAF9]">
       <Navbar />
 
-      <div className="bg-gradient-to-r from-emerald-50/70 via-white to-amber-50/50 text-slate-800 py-12 border-b border-slate-200 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-teal-950 text-white py-12 border-b border-slate-800 relative overflow-hidden">
         {/* Ambient subtle glow */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="container mx-auto px-4 md:px-8 relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-teal-500/30 text-teal-300 text-xs font-bold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-300 text-xs font-bold uppercase tracking-wider mb-2">
               <span className="h-2 w-2 rounded-full bg-teal-400 animate-pulse"></span>
               LIVE EVENT CATALOG
             </div>
-            <h1 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">
-              Discover <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-emerald-300 to-[#F59E0B]">Upcoming Events</span>
+            <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+              Discover <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-emerald-300 to-[#F97316]">Upcoming Events</span>
             </h1>
-            <p className="text-slate-600 text-sm mt-1 max-w-xl">
+            <p className="text-slate-300 text-sm mt-1 max-w-xl">
               Search and explore tech summits, developer conferences, masterclasses, and music festivals across India.
             </p>
           </div>
 
           <div className="flex items-center gap-4 text-xs">
-            <div className="bg-white border border-slate-200 px-4 py-2.5 rounded-2xl shadow-xs">
+            <div className="bg-white/5 border border-white/10 px-4 py-2.5 rounded-2xl backdrop-blur-md">
               <span className="text-slate-400 block text-[10px] font-bold uppercase tracking-wider">Active Conclaves</span>
-              <span className="text-lg font-black text-slate-800">{publishedEvents.length} Events</span>
+              <span className="text-lg font-black text-white">{publishedEvents.length} Events</span>
             </div>
-            <div className="bg-white border border-slate-200 px-4 py-2.5 rounded-2xl shadow-xs">
+            <div className="bg-white/5 border border-white/10 px-4 py-2.5 rounded-2xl backdrop-blur-md">
               <span className="text-slate-400 block text-[10px] font-bold uppercase tracking-wider">Tech Hubs</span>
               <span className="text-lg font-black text-teal-300">6 Metro Cities</span>
             </div>
@@ -133,23 +133,23 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
       <main className="container mx-auto px-4 md:px-8 py-10 flex-1">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
-          <aside className="w-full lg:w-64 space-y-6 bg-white p-6 rounded-xl border border-[#E2E8F0] h-fit shadow-sm">
-            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-4">
-              <div className="flex items-center gap-2 font-bold text-[#111827]">
-                <Filter className="h-4 w-4 text-[#059669]" />
+          <aside className="w-full lg:w-64 space-y-6 bg-white p-6 rounded-xl border border-[#E7E5E4] h-fit shadow-sm">
+            <div className="flex items-center justify-between border-b border-[#E7E5E4] pb-4">
+              <div className="flex items-center gap-2 font-bold text-[#1C1917]">
+                <Filter className="h-4 w-4 text-[#0F766E]" />
                 <span>Filters</span>
               </div>
-              <Link href="/events" className="text-xs text-[#059669] hover:underline font-semibold">Reset</Link>
+              <Link href="/events" className="text-xs text-[#0F766E] hover:underline font-semibold">Reset</Link>
             </div>
 
             {/* Category Filter - Compact with Quick Search & Scroll Box */}
             <div>
               <div className="flex items-center justify-between mb-2.5">
-                <label className="text-xs font-bold text-[#111827] uppercase tracking-wider flex items-center gap-1.5">
-                  <Sparkles className="h-3.5 w-3.5 text-[#F59E0B]" />
+                <label className="text-xs font-bold text-[#1C1917] uppercase tracking-wider flex items-center gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5 text-[#F97316]" />
                   <span>Category</span>
                 </label>
-                <span className="text-[11px] font-bold text-[#059669] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                <span className="text-[11px] font-bold text-[#0F766E] bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
                   {mockCategories.length} Categories
                 </span>
               </div>
@@ -159,8 +159,8 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
                 href={`/events?category=all&query=${query}&price=${price}&location=${location}&eventType=${eventType}&view=${view}${tab ? `&tab=${tab}` : ''}`}
                 className={`flex items-center justify-between text-xs px-3 py-2 rounded-xl font-bold transition mb-2 ${
                   category === 'all'
-                    ? 'bg-gradient-to-r from-[#059669] to-teal-600 text-white shadow-sm'
-                    : 'bg-[#F9FAFB] text-[#64748B] hover:bg-slate-100 hover:text-[#111827] border border-[#E2E8F0]'
+                    ? 'bg-gradient-to-r from-[#0F766E] to-teal-700 text-white shadow-sm'
+                    : 'bg-[#FAFAF9] text-[#78716C] hover:bg-slate-100 hover:text-[#1C1917] border border-[#E7E5E4]'
                 }`}
               >
                 <span>🌟 All Categories</span>
@@ -170,7 +170,7 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
               </Link>
 
               {/* Scrollable Compact Category List with Custom Scrollbar */}
-              <div className="max-h-[220px] overflow-y-auto pr-1.5 space-y-1 rounded-xl border border-slate-200/70 p-1.5 bg-[#F9FAFB]/60 scrollbar-thin scrollbar-thumb-slate-300">
+              <div className="max-h-[220px] overflow-y-auto pr-1.5 space-y-1 rounded-xl border border-slate-200/70 p-1.5 bg-[#FAFAF9]/60 scrollbar-thin scrollbar-thumb-slate-300">
                 {mockCategories.map(cat => {
                   const isSelected = category === cat.slug;
                   return (
@@ -179,12 +179,12 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
                       href={`/events?category=${cat.slug}&query=${query}&price=${price}&location=${location}&eventType=${eventType}&view=${view}${tab ? `&tab=${tab}` : ''}`}
                       className={`flex items-center justify-between text-xs px-2.5 py-1.5 rounded-lg transition-all ${
                         isSelected
-                          ? 'bg-[#FFEDD5] text-[#F59E0B] font-bold shadow-xs'
-                          : 'text-[#57534E] hover:bg-white hover:text-[#111827]'
+                          ? 'bg-[#FFEDD5] text-[#F97316] font-bold shadow-xs'
+                          : 'text-[#57534E] hover:bg-white hover:text-[#1C1917]'
                       }`}
                     >
                       <span className="truncate pr-1">{cat.name}</span>
-                      <span className={`text-[10px] shrink-0 font-medium ${isSelected ? 'text-[#F59E0B]' : 'text-slate-400'}`}>
+                      <span className={`text-[10px] shrink-0 font-medium ${isSelected ? 'text-[#F97316]' : 'text-slate-400'}`}>
                         {cat.count || 0}
                       </span>
                     </Link>
@@ -194,8 +194,8 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
             </div>
 
             {/* City / Location Filter */}
-            <div className="border-t border-[#E2E8F0] pt-5">
-              <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wider mb-3">City / Hub</label>
+            <div className="border-t border-[#E7E5E4] pt-5">
+              <label className="block text-xs font-semibold text-[#78716C] uppercase tracking-wider mb-3">City / Hub</label>
               <div className="space-y-1.5">
                 {[
                   { name: 'All Cities', val: 'all' },
@@ -210,8 +210,8 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
                     href={`/events?location=${c.val}&category=${category}&query=${query}&price=${price}&view=${view}${tab ? `&tab=${tab}` : ''}`}
                     className={`block text-sm px-3 py-1.5 rounded-lg font-medium transition ${
                       (location === c.val || (c.val === 'all' && (!location || location === 'all')))
-                        ? 'bg-[#FFEDD5] text-[#F59E0B] font-semibold'
-                        : 'text-[#64748B] hover:bg-[#F9FAFB] hover:text-[#111827]'
+                        ? 'bg-[#FFEDD5] text-[#F97316] font-semibold'
+                        : 'text-[#78716C] hover:bg-[#FAFAF9] hover:text-[#1C1917]'
                     }`}
                   >
                     {c.name}
@@ -221,14 +221,14 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
             </div>
 
             {/* Event Type Filter */}
-            <div className="border-t border-[#E2E8F0] pt-5">
-              <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wider mb-3">Format</label>
+            <div className="border-t border-[#E7E5E4] pt-5">
+              <label className="block text-xs font-semibold text-[#78716C] uppercase tracking-wider mb-3">Format</label>
               <div className="space-y-2">
                 {['all', 'physical', 'online', 'hybrid'].map(type => (
                   <Link
                     key={type}
                     href={`/events?eventType=${type}&category=${category}&location=${location}&query=${query}&view=${view}${tab ? `&tab=${tab}` : ''}`}
-                    className={`block text-sm px-3 py-1.5 rounded-lg font-medium capitalize transition ${eventType === type ? 'bg-[#FFEDD5] text-[#F59E0B] font-semibold' : 'text-[#64748B] hover:bg-[#F9FAFB] hover:text-[#111827]'}`}
+                    className={`block text-sm px-3 py-1.5 rounded-lg font-medium capitalize transition ${eventType === type ? 'bg-[#FFEDD5] text-[#F97316] font-semibold' : 'text-[#78716C] hover:bg-[#FAFAF9] hover:text-[#1C1917]'}`}
                   >
                     {type === 'all' ? 'All Formats' : type}
                   </Link>
@@ -237,8 +237,8 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
             </div>
 
             {/* Price Filter */}
-            <div className="border-t border-[#E2E8F0] pt-5">
-              <label className="block text-xs font-semibold text-[#64748B] uppercase tracking-wider mb-3">Price</label>
+            <div className="border-t border-[#E7E5E4] pt-5">
+              <label className="block text-xs font-semibold text-[#78716C] uppercase tracking-wider mb-3">Price</label>
               <div className="space-y-2">
                 {[
                   { label: 'All Prices', val: 'all' },
@@ -248,7 +248,7 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
                   <Link
                     key={p.val}
                     href={`/events?price=${p.val}&category=${category}&location=${location}&query=${query}&view=${view}${tab ? `&tab=${tab}` : ''}`}
-                    className={`block text-sm px-3 py-1.5 rounded-lg font-medium transition ${price === p.val ? 'bg-[#FFEDD5] text-[#F59E0B] font-semibold' : 'text-[#64748B] hover:bg-[#F9FAFB] hover:text-[#111827]'}`}
+                    className={`block text-sm px-3 py-1.5 rounded-lg font-medium transition ${price === p.val ? 'bg-[#FFEDD5] text-[#F97316] font-semibold' : 'text-[#78716C] hover:bg-[#FAFAF9] hover:text-[#1C1917]'}`}
                   >
                     {p.label}
                   </Link>
@@ -260,31 +260,31 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
           {/* Listing Section */}
           <div className="flex-1 space-y-6">
             <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-              <form action="/events" method="GET" className="flex-1 bg-white p-2.5 rounded-xl border border-[#E2E8F0] flex gap-3 shadow-sm">
+              <form action="/events" method="GET" className="flex-1 bg-white p-2.5 rounded-xl border border-[#E7E5E4] flex gap-3 shadow-sm">
                 <div className="flex-1 flex items-center gap-2 px-3">
-                  <Search className="h-4 w-4 text-[#64748B]" />
+                  <Search className="h-4 w-4 text-[#78716C]" />
                   <input
                     type="text"
                     name="query"
                     defaultValue={query}
                     placeholder="Filter by keywords, name, venue, city..."
-                    className="w-full text-sm bg-transparent focus:outline-none text-[#111827]"
+                    className="w-full text-sm bg-transparent focus:outline-none text-[#1C1917]"
                   />
                   {location !== 'all' && <input type="hidden" name="location" value={location} />}
                   {category !== 'all' && <input type="hidden" name="category" value={category} />}
                   {tab && <input type="hidden" name="tab" value={tab} />}
                 </div>
-                <button type="submit" className="rounded-lg bg-[#059669] px-4 py-2 text-sm font-semibold text-white hover:bg-[#047857] transition">
+                <button type="submit" className="rounded-lg bg-[#0F766E] px-4 py-2 text-sm font-semibold text-white hover:bg-[#115E59] transition">
                   Search
                 </button>
               </form>
 
               {/* View Toggle */}
-              <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-[#E2E8F0] shadow-sm shrink-0">
+              <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-[#E7E5E4] shadow-sm shrink-0">
                 <Link
                   href={`/events?view=grid&location=${location}&category=${category}&query=${query}&price=${price}${tab ? `&tab=${tab}` : ''}`}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
-                    view === 'grid' ? 'bg-[#059669] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
+                    view === 'grid' ? 'bg-[#0F766E] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   <LayoutGrid className="h-3.5 w-3.5" />
@@ -293,7 +293,7 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
                 <Link
                   href={`/events?view=both&location=${location}&category=${category}&query=${query}&price=${price}${tab ? `&tab=${tab}` : ''}`}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
-                    view === 'both' ? 'bg-[#059669] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
+                    view === 'both' ? 'bg-[#0F766E] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   <MapPin className="h-3.5 w-3.5" />
@@ -302,7 +302,7 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
                 <Link
                   href={`/events?view=map&location=${location}&category=${category}&query=${query}&price=${price}${tab ? `&tab=${tab}` : ''}`}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
-                    view === 'map' ? 'bg-[#059669] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
+                    view === 'map' ? 'bg-[#0F766E] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   <Compass className="h-3.5 w-3.5" />
@@ -312,12 +312,12 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
             </div>
 
             {/* Event Status Tabs: All | Live | Upcoming | Past */}
-            <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-2.5 rounded-2xl border border-[#E2E8F0] shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-2.5 rounded-2xl border border-[#E7E5E4] shadow-sm">
               <div className="flex flex-wrap items-center gap-1.5">
                 {[
                   { id: 'all', label: 'All Active (Live + Upcoming)', queryVal: undefined, count: eventsWithComputedStatus.filter(e => e.computedStatus === 'live' || e.computedStatus === 'upcoming').length },
                   { id: 'live', label: 'Live Now', queryVal: 'live', count: eventsWithComputedStatus.filter(e => e.computedStatus === 'live').length, badgeColor: 'bg-emerald-500' },
-                  { id: 'upcoming', label: 'Upcoming', queryVal: 'upcoming', count: eventsWithComputedStatus.filter(e => e.computedStatus === 'upcoming').length, badgeColor: 'bg-[#059669]' },
+                  { id: 'upcoming', label: 'Upcoming', queryVal: 'upcoming', count: eventsWithComputedStatus.filter(e => e.computedStatus === 'upcoming').length, badgeColor: 'bg-[#0F766E]' },
                   { id: 'past', label: 'Past Conclaves', queryVal: 'past', count: eventsWithComputedStatus.filter(e => e.computedStatus === 'past').length, badgeColor: 'bg-slate-500' },
                 ].map(item => {
                   const isActive = (!tab && item.id === 'all') || (tab === item.id);
@@ -335,7 +335,7 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
                             ? 'bg-slate-800 text-white shadow-sm'
                             : item.id === 'live'
                             ? 'bg-emerald-600 text-white shadow-sm'
-                            : 'bg-[#059669] text-white shadow-sm'
+                            : 'bg-[#0F766E] text-white shadow-sm'
                           : 'bg-slate-50 text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200/80'
                       }`}
                     >
@@ -353,7 +353,7 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
                 })}
               </div>
 
-              <div className="text-xs text-[#64748B] font-medium pr-2">
+              <div className="text-xs text-[#78716C] font-medium pr-2">
                 <span>Sorted by nearest date</span>
               </div>
             </div>
@@ -366,19 +366,19 @@ export default async function EventsPage({ searchParams }: SearchParamsProps) {
             {/* Results count */}
             {view !== 'map' && (
               <>
-                <div className="flex items-center justify-between text-sm text-[#64748B]">
-                  <span>Showing <strong className="text-[#111827]">{publishedEvents.length}</strong> published events</span>
+                <div className="flex items-center justify-between text-sm text-[#78716C]">
+                  <span>Showing <strong className="text-[#1C1917]">{publishedEvents.length}</strong> published events</span>
                   {location !== 'all' && (
-                    <span className="text-xs bg-emerald-50 text-teal-600 font-semibold px-2.5 py-1 rounded-full border border-emerald-200">
+                    <span className="text-xs bg-teal-50 text-teal-700 font-semibold px-2.5 py-1 rounded-full border border-teal-200">
                       Filtered by city: {location}
                     </span>
                   )}
                 </div>
 
                 {publishedEvents.length === 0 ? (
-                  <div className="bg-white border border-[#E2E8F0] rounded-xl p-12 text-center">
-                    <p className="text-[#64748B]">No events matched your search criteria.</p>
-                    <Link href="/events" className="mt-4 inline-block text-sm font-semibold text-[#059669] hover:underline">
+                  <div className="bg-white border border-[#E7E5E4] rounded-xl p-12 text-center">
+                    <p className="text-[#78716C]">No events matched your search criteria.</p>
+                    <Link href="/events" className="mt-4 inline-block text-sm font-semibold text-[#0F766E] hover:underline">
                       Clear search filters
                     </Link>
                   </div>

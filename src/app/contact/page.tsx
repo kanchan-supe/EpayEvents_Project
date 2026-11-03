@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Navbar, Footer } from '@/components/NavbarFooter';
 import { 
-  Mail, Phone, MapPin, Send, CheckCircle2, Clock, 
+  Mail, Phone, MapPin, Send, CheckCircle2, Clock,
   Radio, Terminal, Zap
 } from 'lucide-react';
 

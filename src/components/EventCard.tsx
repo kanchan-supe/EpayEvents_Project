@@ -281,69 +281,74 @@ export function EventCard(props: EventCardProps) {
               }`}
             />
 
-          {/* Badges: Category & Badges */}
-          <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">
-            {isFeatured && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#F59E0B] text-white px-2.5 py-0.5 text-[10px] font-bold shadow-sm">
-                <Sparkles className="h-3 w-3" />
-                Featured
-              </span>
-            )}
-            <span
-              className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm ${
-                isOnline ? 'bg-purple-600' : 'bg-[#059669]'
-              }`}
-            >
-              {isOnline ? (
-                <>
-                  <Globe className="h-3 w-3" /> Online Event
-                </>
+          {/* Top Floating Badge Bar with Zero Overlap */}
+          <div className="absolute top-3 inset-x-3 flex items-center justify-between gap-1.5 z-10 pointer-events-none">
+            {/* Top-Left: Primary Highlight (Featured or Live or Status) */}
+            <div className="flex items-center gap-1.5 min-w-0">
+              {isFeatured ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-white px-2.5 py-0.5 text-[10px] font-extrabold shadow-sm shrink-0">
+                  <Sparkles className="h-3 w-3" />
+                  Featured
+                </span>
+              ) : autoStatus === "live" ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600 text-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider shadow-sm shrink-0">
+                  <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                  Live Now
+                </span>
               ) : (
-                'Offline'
+                <span className="inline-flex items-center gap-1 rounded-full bg-slate-900/75 backdrop-blur-xs text-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider shadow-sm shrink-0">
+                  {autoStatus === "past" ? "Past" : "Upcoming"}
+                </span>
               )}
-            </span>
-          </div>
+            </div>
 
-          {/* Top Right: Status Badge (Live: Green, Upcoming: Teal, Past: Gray) & Seats */}
-          <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5">
-            <span
-              className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider shadow text-white flex items-center gap-1 ${
-                autoStatus === 'live'
-                  ? 'bg-emerald-600'
-                  : autoStatus === 'upcoming'
-                  ? 'bg-[#059669]'
-                  : 'bg-slate-600'
-              }`}
-            >
-              {autoStatus === 'live' && <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse"></span>}
-              {autoStatus === 'live' ? 'Live' : autoStatus === 'upcoming' ? 'Upcoming' : 'Past'}
-            </span>
-
-            {availableSeats > 0 && autoStatus !== 'past' && (
-              <span className="hidden sm:inline-flex rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider shadow bg-black/60 backdrop-blur-md text-white">
-                {availableSeats} Seats
-              </span>
-            )}
-            {availableSeats <= 0 && autoStatus !== 'past' && (
-              <span className="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider shadow bg-rose-600 text-white">
-                Sold Out
-              </span>
-            )}
+            {/* Top-Right: Seats Availability */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              {availableSeats > 0 && autoStatus !== "past" && (
+                <span className="rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider shadow bg-black/60 backdrop-blur-md text-white">
+                  {availableSeats} Seats
+                </span>
+              )}
+              {availableSeats <= 0 && autoStatus !== "past" && (
+                <span className="rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider shadow bg-rose-600 text-white">
+                  Sold Out
+                </span>
+              )}
+            </div>
           </div>
         </Link>
 
         {/* Card Body */}
         <div className="p-5 space-y-3">
-          {/* Category Badge & Review Rating */}
-          <div className="flex items-center justify-between text-xs">
-            {category ? (
-              <span className="font-bold text-[#059669] bg-[#CCFBF1]/50 px-2.5 py-0.5 rounded-md border border-[#059669]/20">
-                {category}
+          {/* Category Badge, Format Tag & Review Rating */}
+          <div className="flex items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+              {category && (
+                <span className="font-bold text-[#059669] bg-[#CCFBF1]/50 px-2.5 py-0.5 rounded-md border border-[#059669]/20 text-[11px] truncate">
+                  {category}
+                </span>
+              )}
+              <span
+                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border ${
+                  isOnline
+                    ? "bg-purple-50 text-purple-700 border-purple-200"
+                    : "bg-emerald-50 text-emerald-800 border-emerald-200"
+                }`}
+              >
+                {isOnline ? (
+                  <>
+                    <Globe className="h-3 w-3 text-purple-600" /> Online
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="h-3 w-3 text-[#059669]" /> In-Person
+                  </>
+                )}
               </span>
-            ) : <span />}
+            </div>
 
             {/* Social Proof Rating */}
-            <div className="flex items-center gap-1 font-bold text-slate-800 text-[11px] bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/60">
+            <div className="flex items-center gap-1 font-bold text-slate-800 text-[11px] bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/60 shrink-0">
               <Star className="h-3.5 w-3.5 fill-[#F59E0B] text-[#F59E0B]" />
               <span>4.9</span>
               <span className="text-slate-400 font-normal text-[10px]">(verified)</span>

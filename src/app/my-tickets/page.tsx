@@ -921,91 +921,102 @@ export default function MyTicketsPage() {
                     </div>
                   </div>
 
-                  {/* Actions Footer */}
-                  <div className="p-4 pt-0 flex flex-wrap items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedTicket(tkt)}
-                      className="flex-1 rounded-xl bg-[#059669] hover:bg-[#047857] text-white py-2.5 px-3 text-xs font-bold shadow-sm transition flex items-center justify-center gap-2"
-                    >
-                      <QrCode className="h-4 w-4" />
-                      <span>View Gate QR Pass</span>
-                    </button>
-
-                    <a
-                      href={'/api/admin/tickets/' + encodeURIComponent(tkt.ticketCode || tkt.bookingId || tkt.orderId || tkt.id) + '/download'}
-                      download={'ePayEvents-Pass-' + tkt.ticketCode + '.pdf'}
-                      className="rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 py-2.5 px-3 text-xs font-bold transition flex items-center justify-center gap-1.5"
-                      title="Download Official PDF Pass with QR Scanner"
-                    >
-                      <Download className="h-4 w-4 text-[#059669]" />
-                      <span className="hidden sm:inline">Download PDF</span>
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => handlePrintTicket(tkt)}
-                      className="rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 py-2.5 px-3 text-xs font-bold transition flex items-center justify-center gap-1.5"
-                      title="Print or Save as PDF"
-                    >
-                      <Printer className="h-4 w-4 text-slate-500" />
-                      <span className="hidden sm:inline">Print</span>
-                    </button>
-
-                    {/* Digital Certificate of Attendance Button (Visible for Checked-In attendees) */}
-                    {isCheckedIn && (
+                  {/* Actions Footer: Clean Structured 2-Tier Layout */}
+                  <div className="p-4 pt-0 space-y-2.5">
+                    {/* Primary Actions Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <button
                         type="button"
-                        onClick={() => setActiveCertificate({
-                          ticketCode: tkt.ticketCode,
-                          attendeeName: tkt.attendeeName,
-                          eventTitle: tkt.eventTitle,
-                          eventDate: tkt.eventDate,
-                          venueName: tkt.venueName,
-                          venueCity: tkt.venueCity,
-                          ticketTierName: tkt.ticketTierName,
-                          checkedInAt: tkt.checkedInAt,
-                        })}
-                        className="rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 text-amber-900 py-2.5 px-3.5 text-xs font-extrabold shadow-xs transition flex items-center justify-center gap-1.5"
-                        title="View & Download Official Digital Certificate of Attendance"
+                        onClick={() => setSelectedTicket(tkt)}
+                        className="w-full rounded-xl bg-[#059669] hover:bg-[#047857] text-white py-2.5 px-4 text-xs font-bold shadow-sm transition flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
                       >
-                        <Award className="h-4 w-4 text-amber-600" />
-                        <span>Get Certificate</span>
+                        <QrCode className="h-4 w-4" />
+                        <span>View Gate QR Pass</span>
                       </button>
-                    )}
 
-                    {/* Cancel & Refund Button (Only for valid passes) */}
-                    {!isCancelled && !isCheckedIn && (
-                      <button
-                        type="button"
-                        onClick={() => setCancellingTicket(tkt)}
-                        className="rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 py-2.5 px-3 text-xs font-bold transition flex items-center justify-center gap-1.5"
-                        title="Cancel this ticket pass and request refund"
+                      <a
+                        href={'/api/admin/tickets/' + encodeURIComponent(tkt.ticketCode || tkt.bookingId || tkt.orderId || tkt.id) + '/download'}
+                        download={'ePayEvents-Pass-' + tkt.ticketCode + '.pdf'}
+                        className="w-full rounded-xl border border-emerald-300/80 bg-emerald-50/70 hover:bg-emerald-100 text-[#059669] py-2.5 px-4 text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer"
+                        title="Download Official PDF Pass with QR Scanner"
                       >
-                        <X className="h-3.5 w-3.5" />
-                        <span className="hidden sm:inline">Cancel & Refund</span>
-                      </button>
-                    )}
+                        <Download className="h-4 w-4 text-[#059669]" />
+                        <span>Download PDF Pass</span>
+                      </a>
+                    </div>
 
-                    {tkt.eventSlug && (
-                      <Link
-                        href={`/events/${tkt.eventSlug}#reviews-section`}
-                        className="rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100/80 text-amber-800 py-2.5 px-3 text-xs font-bold transition flex items-center justify-center gap-1.5"
-                        title="Rate & Review this Event"
-                      >
-                        <Star className="h-3.5 w-3.5 fill-[#F59E0B] text-[#F59E0B]" />
-                        <span className="hidden sm:inline">Review</span>
-                      </Link>
-                    )}
+                    {/* Secondary Quick Utility Toolbar */}
+                    <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100 text-xs">
+                      {/* Left Tools: Print, Certificate, Review, Details */}
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <button
+                          type="button"
+                          onClick={() => handlePrintTicket(tkt)}
+                          className="px-2.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-900 font-semibold transition flex items-center gap-1.5 text-xs cursor-pointer"
+                          title="Print or Save as PDF"
+                        >
+                          <Printer className="h-3.5 w-3.5 text-slate-500" />
+                          <span>Print</span>
+                        </button>
 
-                    {tkt.eventSlug && (
-                      <Link
-                        href={`/events/${tkt.eventSlug}`}
-                        className="rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 py-2.5 px-3 text-xs font-bold transition flex items-center justify-center"
-                        title="View Event Details"
-                      >
-                        <ExternalLink className="h-4 w-4 text-slate-500" />
-                      </Link>
-                    )}
+                        {/* Digital Certificate of Attendance Button */}
+                        {isCheckedIn && (
+                          <button
+                            type="button"
+                            onClick={() => setActiveCertificate({
+                              ticketCode: tkt.ticketCode,
+                              attendeeName: tkt.attendeeName,
+                              eventTitle: tkt.eventTitle,
+                              eventDate: tkt.eventDate,
+                              venueName: tkt.venueName,
+                              venueCity: tkt.venueCity,
+                              ticketTierName: tkt.ticketTierName,
+                              checkedInAt: tkt.checkedInAt,
+                            })}
+                            className="px-2.5 py-1.5 rounded-lg border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold transition flex items-center gap-1.5 text-xs cursor-pointer shadow-2xs"
+                            title="View & Download Official Digital Certificate of Attendance"
+                          >
+                            <Award className="h-3.5 w-3.5 text-amber-600" />
+                            <span>Certificate</span>
+                          </button>
+                        )}
+
+                        {tkt.eventSlug && (
+                          <Link
+                            href={`/events/${tkt.eventSlug}#reviews-section`}
+                            className="px-2.5 py-1.5 rounded-lg border border-amber-200/80 bg-amber-50/60 hover:bg-amber-100 text-amber-800 font-semibold transition flex items-center gap-1.5 text-xs"
+                            title="Rate & Review this Event"
+                          >
+                            <Star className="h-3.5 w-3.5 fill-[#F59E0B] text-[#F59E0B]" />
+                            <span>Review</span>
+                          </Link>
+                        )}
+
+                        {tkt.eventSlug && (
+                          <Link
+                            href={`/events/${tkt.eventSlug}`}
+                            className="px-2.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-900 font-semibold transition flex items-center gap-1 text-xs"
+                            title="View Event Details"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5 text-slate-500" />
+                            <span>Event</span>
+                          </Link>
+                        )}
+                      </div>
+
+                      {/* Right Action: Cancel & Refund */}
+                      {!isCancelled && !isCheckedIn && (
+                        <button
+                          type="button"
+                          onClick={() => setCancellingTicket(tkt)}
+                          className="px-2.5 py-1.5 rounded-lg border border-rose-200 bg-rose-50/70 hover:bg-rose-100 text-rose-700 font-semibold transition flex items-center gap-1 text-xs shrink-0 cursor-pointer"
+                          title="Cancel this ticket pass and request refund"
+                        >
+                          <X className="h-3.5 w-3.5 text-rose-600" />
+                          <span>Cancel</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </motion.div>
               );

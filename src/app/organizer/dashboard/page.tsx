@@ -350,9 +350,9 @@ export default function OrganizerDashboardPage() {
       case 'Checked In':
         return 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20';
       case 'Transferred':
-        return 'bg-emerald-500/10 text-emerald-700 border border-blue-500/20';
+        return 'bg-blue-500/10 text-blue-600 border border-blue-500/20';
       case 'Approved':
-        return 'bg-emerald-500/10 text-teal-600 border border-teal-500/20';
+        return 'bg-teal-500/10 text-teal-600 border border-teal-500/20';
       case 'Waitlist':
         return 'bg-amber-500/10 text-amber-600 border border-amber-500/20';
       case 'Refunded':
@@ -364,11 +364,11 @@ export default function OrganizerDashboardPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
+      <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
         <Navbar />
         <main className="flex-1 flex items-center justify-center p-6">
           <div className="bg-white rounded-3xl border border-slate-200 p-8 text-center max-w-sm w-full space-y-4">
-            <div className="h-8 w-8 border-3 border-[#F59E0B] border-t-transparent rounded-full animate-spin mx-auto" />
+            <div className="h-8 w-8 border-3 border-[#F97316] border-t-transparent rounded-full animate-spin mx-auto" />
             <p className="text-xs font-bold text-slate-700">Loading Organizer Command Center...</p>
           </div>
         </main>
@@ -379,7 +379,7 @@ export default function OrganizerDashboardPage() {
 
   if (user && role === 'attendee') {
     return (
-      <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
+      <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
         <Navbar />
         <main className="flex-1 flex items-center justify-center p-6">
           <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-10 text-center max-w-md w-full space-y-5">
@@ -401,7 +401,7 @@ export default function OrganizerDashboardPage() {
                   setUpgradingRole(false);
                 }}
                 disabled={upgradingRole}
-                className="flex-1 rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-white py-3 px-4 text-xs font-bold transition shadow disabled:opacity-60"
+                className="flex-1 rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white py-3 px-4 text-xs font-bold transition shadow disabled:opacity-60"
               >
                 {upgradingRole ? 'Upgrading...' : 'Upgrade to Organizer'}
               </button>
@@ -420,13 +420,13 @@ export default function OrganizerDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F9FAFB]">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
       <Navbar />
 
       {/* Hero Header with Glow Orbs & Framer Motion */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-emerald-50/70 via-white to-amber-50/50 text-slate-800 py-12 md:py-16">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#059669]/20 rounded-full blur-[130px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#F59E0B]/15 rounded-full blur-[130px] pointer-events-none" />
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#0B0F19] via-[#0F172A] to-[#0B0F19] text-white py-12 md:py-16">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#0F766E]/20 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#F97316]/15 rounded-full blur-[130px] pointer-events-none" />
 
         <div className="container mx-auto px-4 md:px-8 relative z-10">
           <motion.div 
@@ -437,12 +437,12 @@ export default function OrganizerDashboardPage() {
           >
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-bold text-[#FFEDD5] uppercase tracking-wider mb-2">
-                <Sparkles className="h-3.5 w-3.5 text-[#F59E0B]" /> Organizer Command Center
+                <Sparkles className="h-3.5 w-3.5 text-[#F97316]" /> Organizer Command Center
               </div>
-              <h1 className="text-3xl md:text-4xl font-black tracking-tight text-slate-800">
-                Dashboard & <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-emerald-300 to-[#F59E0B]">Event Intelligence</span>
+              <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white">
+                Dashboard & <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-emerald-300 to-[#F97316]">Event Intelligence</span>
               </h1>
-              <p className="text-slate-600 text-sm mt-1 max-w-xl">
+              <p className="text-slate-400 text-sm mt-1 max-w-xl">
                 Real-time gate scan operations, revenue tracking, ticketing tiers, and attendee validation.
               </p>
             </div>
@@ -456,7 +456,7 @@ export default function OrganizerDashboardPage() {
             >
               <Link
                 href="/organizer/scanner"
-                className="group relative inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#059669] to-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg hover:shadow-emerald-500/25 transition-all overflow-hidden whitespace-nowrap"
+                className="group relative inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#0F766E] to-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg hover:shadow-emerald-500/25 transition-all overflow-hidden whitespace-nowrap"
               >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                 <QrCode className="h-4 w-4 relative z-10" />
@@ -464,7 +464,7 @@ export default function OrganizerDashboardPage() {
               </Link>
               <Link
                 href="/create-event"
-                className="group relative inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#F59E0B] to-amber-500 px-4 py-2.5 text-xs font-bold text-white shadow-lg hover:shadow-orange-500/25 transition-all overflow-hidden whitespace-nowrap"
+                className="group relative inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#F97316] to-amber-500 px-4 py-2.5 text-xs font-bold text-white shadow-lg hover:shadow-orange-500/25 transition-all overflow-hidden whitespace-nowrap"
               >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                 <PlusCircle className="h-4 w-4 relative z-10" />
@@ -490,7 +490,7 @@ export default function OrganizerDashboardPage() {
                 onClick={() => setSelectedTimeframe(tf)}
                 className={`px-3 py-1 rounded-lg transition-all ${
                   selectedTimeframe === tf 
-                    ? 'bg-[#059669] text-white shadow-sm font-bold' 
+                    ? 'bg-[#0F766E] text-white shadow-sm font-bold' 
                     : 'bg-white/5 hover:bg-white/10 text-slate-300'
                 }`}
               >
@@ -513,12 +513,12 @@ export default function OrganizerDashboardPage() {
           <motion.div 
             variants={itemVariants}
             whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            className="group relative bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-[#059669]/40 transition-all flex flex-col justify-between overflow-hidden"
+            className="group relative bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-[#0F766E]/40 transition-all flex flex-col justify-between overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-teal-500/10 to-transparent rounded-bl-full pointer-events-none" />
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Hosted Events</span>
-              <div className="p-3 bg-[#CCFBF1]/60 text-[#059669] rounded-2xl group-hover:scale-110 transition-transform">
+              <div className="p-3 bg-[#CCFBF1]/60 text-[#0F766E] rounded-2xl group-hover:scale-110 transition-transform">
                 <Calendar className="h-5 w-5" />
               </div>
             </div>
@@ -540,7 +540,7 @@ export default function OrganizerDashboardPage() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-indigo-500/10 to-transparent rounded-bl-full pointer-events-none" />
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Attendees</span>
-              <div className="p-3 bg-emerald-50 text-emerald-700 rounded-2xl group-hover:scale-110 transition-transform">
+              <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl group-hover:scale-110 transition-transform">
                 <Users className="h-5 w-5" />
               </div>
             </div>
@@ -561,12 +561,12 @@ export default function OrganizerDashboardPage() {
           <motion.div 
             variants={itemVariants}
             whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            className="group relative bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-[#F59E0B]/40 transition-all flex flex-col justify-between overflow-hidden"
+            className="group relative bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-[#F97316]/40 transition-all flex flex-col justify-between overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-orange-500/10 to-transparent rounded-bl-full pointer-events-none" />
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Gross Revenue</span>
-              <div className="p-3 bg-[#FFEDD5] text-[#F59E0B] rounded-2xl group-hover:scale-110 transition-transform">
+              <div className="p-3 bg-[#FFEDD5] text-[#F97316] rounded-2xl group-hover:scale-110 transition-transform">
                 <Wallet className="h-5 w-5" />
               </div>
             </div>
@@ -576,7 +576,7 @@ export default function OrganizerDashboardPage() {
                   ? `₹${(totalRevenue / 100000).toFixed(2)} Lakhs` 
                   : `₹${totalRevenue.toLocaleString()}`}
               </h3>
-              <div className="flex items-center gap-1.5 text-xs text-[#059669] font-bold mt-1">
+              <div className="flex items-center gap-1.5 text-xs text-[#0F766E] font-bold mt-1">
                 <ShieldCheck className="h-3.5 w-3.5" />
                 <span>
                   {totalRevenue > 0
@@ -628,12 +628,12 @@ export default function OrganizerDashboardPage() {
         >
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-5">
             <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#059669] uppercase tracking-wider bg-[#CCFBF1]/40 px-2.5 py-0.5 rounded-full mb-1">
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0F766E] uppercase tracking-wider bg-[#CCFBF1]/40 px-2.5 py-0.5 rounded-full mb-1">
                 <Layers className="h-3 w-3" /> Event Catalog
               </div>
               <div className="flex items-center gap-3">
                 <h2 className="text-xl font-black text-slate-900">Your Active & Published Events</h2>
-                <span className="text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                <span className="text-xs font-bold bg-teal-50 text-teal-800 border border-teal-200 px-2.5 py-0.5 rounded-full">
                   {publishedEvents.length} Total
                 </span>
               </div>
@@ -643,7 +643,7 @@ export default function OrganizerDashboardPage() {
             <div className="flex items-center gap-3">
               <Link
                 href="/create-event"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-[#059669] text-white px-4 py-2 text-xs font-bold hover:bg-[#047857] transition shadow-sm"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#0F766E] text-white px-4 py-2 text-xs font-bold hover:bg-[#115E59] transition shadow-sm"
               >
                 <PlusCircle className="h-3.5 w-3.5" /> New Event
               </Link>
@@ -652,8 +652,8 @@ export default function OrganizerDashboardPage() {
 
           {publishedEvents.length === 0 ? (
             <div className="py-16 px-6 text-center bg-slate-50/70 rounded-2xl border-2 border-dashed border-slate-200 space-y-4">
-              <div className="w-16 h-16 rounded-2xl bg-emerald-50 text-[#059669] border border-emerald-100 flex items-center justify-center mx-auto shadow-sm">
-                <Calendar className="h-8 w-8 text-[#059669]" />
+              <div className="w-16 h-16 rounded-2xl bg-teal-50 text-[#0F766E] border border-teal-100 flex items-center justify-center mx-auto shadow-sm">
+                <Calendar className="h-8 w-8 text-[#0F766E]" />
               </div>
               <div className="max-w-md mx-auto space-y-1">
                 <h3 className="text-base font-black text-slate-900">No Events Created Yet</h3>
@@ -664,7 +664,7 @@ export default function OrganizerDashboardPage() {
               <div className="pt-2">
                 <Link
                   href="/create-event"
-                  className="inline-flex items-center gap-2 rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-white px-5 py-2.5 text-xs font-bold transition shadow-md"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[#F97316] hover:bg-[#ea580c] text-white px-5 py-2.5 text-xs font-bold transition shadow-md"
                 >
                   <PlusCircle className="h-4 w-4" />
                   <span>Create Your First Event</span>
@@ -718,7 +718,7 @@ export default function OrganizerDashboardPage() {
                   <motion.div
                     key={evt.id || idx}
                     whileHover={{ y: -4 }}
-                    className="rounded-2xl border border-slate-200 bg-[#F9FAFB] p-4 flex flex-col justify-between hover:border-[#059669]/40 hover:shadow-md transition-all group"
+                    className="rounded-2xl border border-slate-200 bg-[#FAFAF9] p-4 flex flex-col justify-between hover:border-[#0F766E]/40 hover:shadow-md transition-all group"
                   >
                     <div className="space-y-3">
                       <div className="relative h-32 w-full rounded-xl overflow-hidden bg-slate-200">
@@ -734,15 +734,15 @@ export default function OrganizerDashboardPage() {
                       </div>
 
                       <div>
-                        <span className="text-[10px] font-bold text-[#059669] uppercase tracking-wider">
+                        <span className="text-[10px] font-bold text-[#0F766E] uppercase tracking-wider">
                           {catName}
                         </span>
-                        <h4 className="font-bold text-slate-900 text-sm line-clamp-1 group-hover:text-[#059669] transition-colors">
+                        <h4 className="font-bold text-slate-900 text-sm line-clamp-1 group-hover:text-[#0F766E] transition-colors">
                           {evt.title}
                         </h4>
                         <div className="space-y-1 mt-2 text-xs">
                           <p className="flex items-center gap-1.5 font-medium text-slate-700">
-                            <Calendar className="h-3.5 w-3.5 text-[#059669] shrink-0" />
+                            <Calendar className="h-3.5 w-3.5 text-[#0F766E] shrink-0" />
                             <span>{dateRangeDisplay}</span>
                           </p>
                           <p className="flex items-center gap-1.5 text-slate-500 text-[11px]">
@@ -761,14 +761,14 @@ export default function OrganizerDashboardPage() {
                       <div className="flex items-center gap-2">
                         <Link
                           href={`/create-event?edit=${evt.slug || evt.id}`}
-                          className="inline-flex items-center gap-1 font-bold text-[#059669] hover:text-[#047857] bg-[#CCFBF1]/50 hover:bg-[#CCFBF1] transition text-xs px-2.5 py-1.5 rounded-lg border border-[#059669]/20"
+                          className="inline-flex items-center gap-1 font-bold text-[#0F766E] hover:text-[#115E59] bg-[#CCFBF1]/50 hover:bg-[#CCFBF1] transition text-xs px-2.5 py-1.5 rounded-lg border border-[#0F766E]/20"
                         >
                           <Edit className="h-3 w-3" />
                           <span>Edit</span>
                         </Link>
                         <Link
                           href={`/events/${evt.slug || evt.id}`}
-                          className="inline-flex items-center gap-1 font-bold text-[#F59E0B] hover:text-[#D97706] transition text-xs"
+                          className="inline-flex items-center gap-1 font-bold text-[#F97316] hover:text-[#ea580c] transition text-xs"
                         >
                           <span>Manage Event</span>
                           <ChevronRight className="h-3.5 w-3.5" />
@@ -812,7 +812,7 @@ export default function OrganizerDashboardPage() {
                     onClick={() => setActiveTab('inquiries')}
                     className={`text-xs font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 ${
                       activeTab === 'inquiries'
-                        ? 'bg-[#F59E0B] text-white shadow-sm'
+                        ? 'bg-[#F97316] text-white shadow-sm'
                         : 'bg-orange-50 text-orange-700 hover:bg-orange-100 border border-orange-200'
                     }`}
                   >
@@ -836,16 +836,16 @@ export default function OrganizerDashboardPage() {
               <div className="flex items-center gap-2">
                 <Link
                   href="/organizer/analytics"
-                  className="rounded-xl border border-emerald-200 bg-emerald-50/70 hover:bg-emerald-50 px-3.5 py-2 text-xs font-bold text-[#059669] flex items-center gap-1.5 shadow-sm transition"
+                  className="rounded-xl border border-teal-200 bg-teal-50/70 hover:bg-teal-50 px-3.5 py-2 text-xs font-bold text-[#0F766E] flex items-center gap-1.5 shadow-sm transition"
                 >
-                  <BarChart3 className="h-3.5 w-3.5 text-[#059669]" />
+                  <BarChart3 className="h-3.5 w-3.5 text-[#0F766E]" />
                   <span>Deep Analytics</span>
                 </Link>
                 <Link
                   href="/organizer/analytics"
                   className="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-1.5 shadow-sm transition"
                 >
-                  <Download className="h-3.5 w-3.5 text-[#059669]" />
+                  <Download className="h-3.5 w-3.5 text-[#0F766E]" />
                   <span>Export CSV</span>
                 </Link>
               </div>
@@ -863,14 +863,14 @@ export default function OrganizerDashboardPage() {
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       placeholder="Filter attendees by name, email, or pass ID..."
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#059669]"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#0F766E]"
                     />
                   </div>
 
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-[#059669]"
+                    className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-[#0F766E]"
                   >
                     <option value="all">All Statuses</option>
                     <option value="checked in">Checked In</option>
@@ -884,7 +884,7 @@ export default function OrganizerDashboardPage() {
                 {/* Attendees Table */}
                 <div className="overflow-x-auto rounded-2xl border border-slate-100">
                   <table className="w-full text-left text-xs text-slate-600">
-                    <thead className="bg-[#F9FAFB] text-slate-700 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
+                    <thead className="bg-[#FAFAF9] text-slate-700 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
                       <tr>
                         <th className="p-3.5">Ticket ID</th>
                         <th className="p-3.5">Attendee</th>
@@ -912,7 +912,7 @@ export default function OrganizerDashboardPage() {
                               exit={{ opacity: 0 }}
                               className="hover:bg-slate-50/80 transition"
                             >
-                              <td className="p-3.5 font-mono font-bold text-[#059669] text-[11px]">
+                              <td className="p-3.5 font-mono font-bold text-[#0F766E] text-[11px]">
                                 <div className="flex items-center gap-1.5">
                                   <span>{reg.id}</span>
                                   {reg.isLive && (
@@ -958,14 +958,14 @@ export default function OrganizerDashboardPage() {
                       value={inquirySearch}
                       onChange={(e) => setInquirySearch(e.target.value)}
                       placeholder="Search inquiries by attendee name, email, subject, or message..."
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#F59E0B]"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#F97316]"
                     />
                   </div>
 
                   <select
                     value={inquiryStatusFilter}
                     onChange={(e) => setInquiryStatusFilter(e.target.value)}
-                    className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-[#F59E0B]"
+                    className="rounded-xl border border-slate-200 px-3 py-2.5 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-[#F97316]"
                   >
                     <option value="all">All Queries ({myFilteredInquiries.length})</option>
                     <option value="unread">Unread Only</option>
@@ -1010,7 +1010,7 @@ export default function OrganizerDashboardPage() {
                                 </span>
                               ) : null}
                             </div>
-                            <div className="text-[11px] text-[#059669] font-semibold mt-0.5 flex items-center gap-1.5">
+                            <div className="text-[11px] text-[#0F766E] font-semibold mt-0.5 flex items-center gap-1.5">
                               <span>Event: {inq.eventTitle}</span>
                               {inq.senderPhone && (
                                 <span className="text-slate-400">· Tel: {inq.senderPhone}</span>
@@ -1042,8 +1042,8 @@ export default function OrganizerDashboardPage() {
 
                         {/* Previous reply if exists */}
                         {inq.replyContent && (
-                          <div className="mt-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1">
-                            <div className="text-[11px] font-bold text-emerald-700 flex items-center gap-1.5">
+                          <div className="mt-3 p-3 bg-teal-50 border border-teal-200 rounded-xl space-y-1">
+                            <div className="text-[11px] font-bold text-teal-800 flex items-center gap-1.5">
                               <CornerDownRight className="h-3.5 w-3.5 text-teal-600" />
                               <span>Your Reply (Sent to {inq.senderEmail})</span>
                               {inq.repliedAt && (
@@ -1068,7 +1068,7 @@ export default function OrganizerDashboardPage() {
                                 setReplyText('');
                               }
                             }}
-                            className="text-xs font-bold text-[#F59E0B] hover:text-[#D97706] flex items-center gap-1.5 transition"
+                            className="text-xs font-bold text-[#F97316] hover:text-[#ea580c] flex items-center gap-1.5 transition"
                           >
                             <Reply className="h-3.5 w-3.5" />
                             <span>{replyingInquiryId === inq.id ? 'Cancel Reply' : inq.replyContent ? 'Send Another Reply' : 'Reply to Attendee'}</span>
@@ -1091,7 +1091,7 @@ export default function OrganizerDashboardPage() {
                               value={replyText}
                               onChange={(e) => setReplyText(e.target.value)}
                               placeholder={`Type your response to ${inq.senderName}...`}
-                              className="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:border-[#F59E0B]"
+                              className="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:border-[#F97316]"
                             ></textarea>
                             <div className="flex justify-end gap-2">
                               <button
@@ -1105,7 +1105,7 @@ export default function OrganizerDashboardPage() {
                                 type="button"
                                 disabled={isSubmittingReply || !replyText.trim()}
                                 onClick={() => handleSendReply(inq.id)}
-                                className="px-4 py-1.5 text-xs font-bold bg-[#F59E0B] hover:bg-[#D97706] text-white rounded-lg shadow-sm flex items-center gap-1.5 disabled:opacity-50"
+                                className="px-4 py-1.5 text-xs font-bold bg-[#F97316] hover:bg-[#ea580c] text-white rounded-lg shadow-sm flex items-center gap-1.5 disabled:opacity-50"
                               >
                                 {isSubmittingReply ? (
                                   <span>Sending...</span>
@@ -1145,7 +1145,7 @@ export default function OrganizerDashboardPage() {
             <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-5">
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-                  <Wallet className="h-5 w-5 text-[#059669]" />
+                  <Wallet className="h-5 w-5 text-[#0F766E]" />
                   <span>Settlement & Payouts</span>
                 </h3>
                 <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px] border border-emerald-200 uppercase">
@@ -1173,15 +1173,15 @@ export default function OrganizerDashboardPage() {
                     </div>
                     <div className="pt-4 border-t border-slate-200 flex justify-between items-center text-sm font-black text-slate-900">
                       <span>Net Payout Ready</span>
-                      <span className="text-[#059669] text-lg font-black">₹{netPayout.toLocaleString()}</span>
+                      <span className="text-[#0F766E] text-lg font-black">₹{netPayout.toLocaleString()}</span>
                     </div>
                   </div>
                 );
               })()}
 
               {/* Direct bank settlement card */}
-              <div className="rounded-2xl bg-gradient-to-br from-[#059669]/10 via-[#059669]/5 to-transparent p-4 border border-[#059669]/20 space-y-2">
-                <div className="flex items-center gap-2 text-xs font-bold text-[#059669]">
+              <div className="rounded-2xl bg-gradient-to-br from-[#0F766E]/10 via-[#0F766E]/5 to-transparent p-4 border border-[#0F766E]/20 space-y-2">
+                <div className="flex items-center gap-2 text-xs font-bold text-[#0F766E]">
                   <Check className="h-4 w-4" />
                   <span>Instant UPI / NEFT Payout Active</span>
                 </div>
@@ -1193,7 +1193,7 @@ export default function OrganizerDashboardPage() {
               {/* Action scanner shortcut */}
               <Link
                 href="/organizer/scanner"
-                className="w-full rounded-2xl bg-[#111827] hover:bg-slate-800 text-white p-4 font-bold text-xs flex items-center justify-between transition shadow-md group"
+                className="w-full rounded-2xl bg-[#0F172A] hover:bg-slate-800 text-white p-4 font-bold text-xs flex items-center justify-between transition shadow-md group"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-xl bg-white/10 group-hover:scale-110 transition-transform">

@@ -102,14 +102,6 @@ export default function QRScannerPage() {
   const animationFrameRef = useRef<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Persistent deduplication and cooldown refs (prevents camera frame spam)
-  const isProcessingRef = useRef(false);
-  const lastScannedCodeRef = useRef<string | null>(null);
-  const lastScanTimeRef = useRef<number>(0);
-  const scanCooldownUntilRef = useRef<number>(0);
-  const processTicketVerificationRef = useRef<((code: string) => Promise<void>) | null>(null);
-  const [isScanPaused, setIsScanPaused] = useState(false);
-
   // Verification result banner state
   const [scanResult, setScanResult] = useState<{
     status: 'success' | 'already_checked_in' | 'cancelled' | 'error';
@@ -211,19 +203,8 @@ export default function QRScannerPage() {
   // Execute verification against /api/checkin
   const processTicketVerification = useCallback(async (codeToVerify: string) => {
     const raw = codeToVerify.trim();
-    if (!raw || isVerifying || isProcessingRef.current) return;
+    if (!raw || isVerifying) return;
 
-    const now = Date.now();
-    // Silently ignore if this exact pass was already scanned within the last 7 seconds
-    if (raw === lastScannedCodeRef.current && (now - lastScanTimeRef.current < 7000)) {
-      return;
-    }
-
-    isProcessingRef.current = true;
-    lastScannedCodeRef.current = raw;
-    lastScanTimeRef.current = now;
-    scanCooldownUntilRef.current = now + 2500;
-    setIsScanPaused(true);
     setIsVerifying(true);
 
     try {
@@ -251,7 +232,7 @@ export default function QRScannerPage() {
         setGateStats(prev => ({ ...prev, totalScanned: prev.totalScanned + 1, approved: prev.approved + 1 }));
         setRecentScans(prev => [
           {
-            id: 'scan-' + Date.now(),
+            id: `scan-${Date.now()}`,
             code: data.ticketCode || raw.slice(0, 20),
             attendeeName: data.attendeeName,
             ticketTier: data.ticketTierName,
@@ -277,13 +258,13 @@ export default function QRScannerPage() {
         setGateStats(prev => ({ ...prev, totalScanned: prev.totalScanned + 1, duplicates: prev.duplicates + 1 }));
         setRecentScans(prev => [
           {
-            id: 'scan-' + Date.now(),
+            id: `scan-${Date.now()}`,
             code: data.ticketCode || raw.slice(0, 20),
             attendeeName: data.attendeeName,
             ticketTier: data.ticketTierName,
             eventTitle: data.eventTitle,
             status: 'duplicate',
-            message: 'Duplicate: already scanned at ' + (data.checkedInAt || 'Gate'),
+            message: `Duplicate: already scanned at ${data.checkedInAt || 'Gate'}`,
             time: currentTime,
           },
           ...prev.slice(0, 9),
@@ -303,13 +284,13 @@ export default function QRScannerPage() {
         setGateStats(prev => ({ ...prev, totalScanned: prev.totalScanned + 1, rejected: prev.rejected + 1 }));
         setRecentScans(prev => [
           {
-            id: 'scan-' + Date.now(),
+            id: `scan-${Date.now()}`,
             code: data.ticketCode || raw.slice(0, 20),
             attendeeName: data.attendeeName,
             ticketTier: data.ticketTierName,
             eventTitle: data.eventTitle,
             status: 'invalid',
-            message: 'Wrong Event Pass: ' + (data.eventTitle || 'Different Event'),
+            message: `Wrong Event Pass: ${data.eventTitle || 'Different Event'}`,
             time: currentTime,
           },
           ...prev.slice(0, 9),
@@ -329,7 +310,7 @@ export default function QRScannerPage() {
         setGateStats(prev => ({ ...prev, totalScanned: prev.totalScanned + 1, rejected: prev.rejected + 1 }));
         setRecentScans(prev => [
           {
-            id: 'scan-' + Date.now(),
+            id: `scan-${Date.now()}`,
             code: data.ticketCode || raw.slice(0, 20),
             attendeeName: data.attendeeName,
             ticketTier: data.ticketTierName,
@@ -351,7 +332,7 @@ export default function QRScannerPage() {
         setGateStats(prev => ({ ...prev, totalScanned: prev.totalScanned + 1, rejected: prev.rejected + 1 }));
         setRecentScans(prev => [
           {
-            id: 'scan-' + Date.now(),
+            id: `scan-${Date.now()}`,
             code: raw.slice(0, 25),
             status: 'invalid',
             message: 'Unrecognized Pass',
@@ -368,15 +349,8 @@ export default function QRScannerPage() {
     } finally {
       setIsVerifying(false);
       setTicketInput('');
-      // Hold cooldown lock for 2.2s before accepting next scan
-      setTimeout(() => {
-        isProcessingRef.current = false;
-        setIsScanPaused(false);
-      }, 2200);
     }
-  }, [isVerifying, soundEnabled, selectedEventId]);
-
-  processTicketVerificationRef.current = processTicketVerification;
+  }, [isVerifying, soundEnabled]);
 
   // Stop active camera
   const stopCamera = async () => {
@@ -452,6 +426,7 @@ export default function QRScannerPage() {
   useEffect(() => {
     if (!isCameraActive || typeof window === 'undefined') return;
 
+    let isScanningFrame = false;
     const BarcodeDetectorClass = (window as any).BarcodeDetector;
     const nativeDetector = BarcodeDetectorClass ? new BarcodeDetectorClass({ formats: ['qr_code'] }) : null;
 
@@ -463,81 +438,61 @@ export default function QRScannerPage() {
         return;
       }
 
-      const now = Date.now();
+      if (!isScanningFrame && !isVerifying) {
+        isScanningFrame = true;
+        try {
+          let detectedCode: string | null = null;
 
-      // Skip frame processing if locked, verifying, or in global cooldown
-      if (isProcessingRef.current || now < scanCooldownUntilRef.current) {
-        animationFrameRef.current = requestAnimationFrame(scanFrame);
-        return;
-      }
-
-      try {
-        let detectedCode: string | null = null;
-
-        // Attempt 1: Native BarcodeDetector (Chrome/Edge Android hardware acceleration)
-        if (nativeDetector) {
-          try {
-            const barcodes = await nativeDetector.detect(activeVideo);
-            if (barcodes && barcodes.length > 0 && barcodes[0].rawValue) {
-              detectedCode = barcodes[0].rawValue;
-            }
-          } catch {}
-        }
-
-        // Attempt 2: jsQR Software Decoder (Universal fallback)
-        if (!detectedCode && activeVideo.videoWidth > 0 && activeVideo.videoHeight > 0) {
-          if (!canvasRef.current) {
-            canvasRef.current = document.createElement('canvas');
+          // Attempt 1: Native BarcodeDetector (Chrome/Edge Android hardware acceleration)
+          if (nativeDetector) {
+            try {
+              const barcodes = await nativeDetector.detect(activeVideo);
+              if (barcodes && barcodes.length > 0 && barcodes[0].rawValue) {
+                detectedCode = barcodes[0].rawValue;
+              }
+            } catch {}
           }
-          const canvas = canvasRef.current;
-          const ctx = canvas.getContext('2d', { willReadFrequently: true });
-          if (ctx) {
-            const maxDim = 640;
-            let w = activeVideo.videoWidth;
-            let h = activeVideo.videoHeight;
-            if (w > maxDim || h > maxDim) {
-              const ratio = Math.min(maxDim / w, maxDim / h);
-              w = Math.round(w * ratio);
-              h = Math.round(h * ratio);
+
+          // Attempt 2: jsQR Software Decoder (Universal fallback for all desktop & mobile browsers)
+          if (!detectedCode && activeVideo.videoWidth > 0 && activeVideo.videoHeight > 0) {
+            if (!canvasRef.current) {
+              canvasRef.current = document.createElement('canvas');
             }
-            canvas.width = w;
-            canvas.height = h;
-            ctx.drawImage(activeVideo, 0, 0, w, h);
-            const imageData = ctx.getImageData(0, 0, w, h);
-            const code = jsQR(imageData.data, imageData.width, imageData.height, {
-              inversionAttempts: 'attemptBoth',
-            });
-            if (code && code.data) {
-              detectedCode = code.data;
+            const canvas = canvasRef.current;
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            if (ctx) {
+              // Optimized processing resolution (640px max) for ultra-fast frame rates
+              const maxDim = 640;
+              let w = activeVideo.videoWidth;
+              let h = activeVideo.videoHeight;
+              if (w > maxDim || h > maxDim) {
+                const ratio = Math.min(maxDim / w, maxDim / h);
+                w = Math.round(w * ratio);
+                h = Math.round(h * ratio);
+              }
+              canvas.width = w;
+              canvas.height = h;
+              ctx.drawImage(activeVideo, 0, 0, w, h);
+              const imageData = ctx.getImageData(0, 0, w, h);
+              const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                inversionAttempts: 'attemptBoth',
+              });
+              if (code && code.data) {
+                detectedCode = code.data;
+              }
             }
           }
+
+          if (detectedCode) {
+            await processTicketVerification(detectedCode);
+            // Brief cooldown to avoid firing duplicate alerts on the same pass
+            await new Promise(r => setTimeout(r, 2000));
+          }
+        } catch {
+          // Frame read error, continue scanning
+        } finally {
+          isScanningFrame = false;
         }
-
-        if (detectedCode) {
-          const cleanCode = detectedCode.trim();
-
-          // CRITICAL CAMERA DEDUPLICATION:
-          // If this pass is identical to the one just scanned within the last 7 seconds, SILENTLY IGNORE IT
-          const isSameCode = cleanCode === lastScannedCodeRef.current;
-          const timeSinceLastScan = now - lastScanTimeRef.current;
-
-          if (isSameCode && timeSinceLastScan < 7000) {
-            // Still pointing at the same ticket, silently ignore duplicate frames
-            animationFrameRef.current = requestAnimationFrame(scanFrame);
-            return;
-          }
-
-          if (isProcessingRef.current || now < scanCooldownUntilRef.current) {
-            animationFrameRef.current = requestAnimationFrame(scanFrame);
-            return;
-          }
-
-          if (processTicketVerificationRef.current) {
-            await processTicketVerificationRef.current(cleanCode);
-          }
-        }
-      } catch (err) {
-        console.warn('Frame scan error:', err);
       }
 
       animationFrameRef.current = requestAnimationFrame(scanFrame);
@@ -551,7 +506,7 @@ export default function QRScannerPage() {
         animationFrameRef.current = null;
       }
     };
-  }, [isCameraActive]);
+  }, [isCameraActive, isVerifying, processTicketVerification]);
 
   // Handle uploaded QR image / screenshot / PDF document with multi-pass scanning
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -833,16 +788,9 @@ export default function QRScannerPage() {
                       {/* Animated laser line */}
                       <div className="absolute left-2 right-2 h-0.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_8px_#34d399] animate-pulse" style={{ top: '48%' }} />
                     </div>
-                    {isScanPaused ? (
-                      <div className="mt-2 flex items-center gap-1.5 text-[10px] font-bold text-amber-300 bg-amber-950/80 px-3 py-1 rounded-full border border-amber-500/50 shadow-md">
-                        <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-                        <span>TICKET CAPTURED · READY FOR NEXT PASS</span>
-                      </div>
-                    ) : (
-                      <span className="mt-2 text-[10px] font-bold text-emerald-400 bg-slate-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800/60">
-                        Align QR inside frame
-                      </span>
-                    )}
+                    <span className="mt-2 text-[10px] font-bold text-emerald-400 bg-slate-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800/60">
+                      Align QR inside frame
+                    </span>
                   </div>
                 )}
 

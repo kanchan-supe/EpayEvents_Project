@@ -20,7 +20,7 @@ const categoryIconMap: Record<string, React.ReactNode> = {
   BookOpen: <BookOpen className="h-5 w-5 text-emerald-600" />,
   HeartPulse: <HeartPulse className="h-5 w-5 text-rose-500" />,
   Palette: <Palette className="h-5 w-5 text-purple-600" />,
-  Users: <Users className="h-5 w-5 text-emerald-700" />,
+  Users: <Users className="h-5 w-5 text-indigo-600" />,
   PartyPopper: <PartyPopper className="h-5 w-5 text-purple-500" />,
   Sparkles: <Sparkles className="h-5 w-5 text-fuchsia-500" />,
   Heart: <Heart className="h-5 w-5 text-rose-500" />,
@@ -29,7 +29,7 @@ const categoryIconMap: Record<string, React.ReactNode> = {
   Trophy: <Trophy className="h-5 w-5 text-yellow-600" />,
   UtensilsCrossed: <UtensilsCrossed className="h-5 w-5 text-emerald-600" />,
   HandHeart: <HandHeart className="h-5 w-5 text-teal-600" />,
-  ShoppingBag: <ShoppingBag className="h-5 w-5 text-emerald-700" />,
+  ShoppingBag: <ShoppingBag className="h-5 w-5 text-blue-600" />,
   Smile: <Smile className="h-5 w-5 text-cyan-600" />,
   Gem: <Gem className="h-5 w-5 text-pink-500" />,
 };
@@ -57,18 +57,18 @@ const itemVariants: Variants = {
 
 export default function AboutUsPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F9FAFB] text-[#111827] overflow-x-hidden font-sans">
+    <div className="min-h-screen flex flex-col bg-[#FAFAF9] text-[#1C1917] overflow-x-hidden font-sans">
       <Navbar />
 
       {/* 1. GAMING HERO SECTION - Matched to Event Details page size */}
-      <section className="relative w-full min-h-[85vh] lg:min-h-[90vh] bg-gradient-to-b from-[#0B0F19] via-[#111827] to-[#0B0F19] text-white overflow-hidden flex items-center justify-center">
+      <section className="relative w-full min-h-[85vh] lg:min-h-[90vh] bg-gradient-to-b from-[#0B0F19] via-[#0F172A] to-[#0B0F19] text-white overflow-hidden flex items-center justify-center">
         
         {/* Gaming Grid Line Overlay */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30 pointer-events-none" />
 
         {/* Ambient Glowing Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#059669]/20 blur-[130px] rounded-full pointer-events-none animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#F59E0B]/15 blur-[130px] rounded-full pointer-events-none animate-pulse" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#0F766E]/20 blur-[130px] rounded-full pointer-events-none animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#F97316]/15 blur-[130px] rounded-full pointer-events-none animate-pulse" />
 
         <div className="container mx-auto px-4 md:px-8 py-16 lg:py-24 max-w-6xl relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -87,13 +87,13 @@ export default function AboutUsPage() {
                 transition={{ delay: 0.2, duration: 0.5 }}
                 className="inline-flex items-center gap-2 rounded-full bg-slate-900/90 border border-cyan-500/40 px-3.5 py-1 text-xs font-mono font-bold text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.25)] backdrop-blur-md"
               >
-                <Gamepad2 className="h-3.5 w-3.5 text-[#F59E0B] animate-bounce" /> 
+                <Gamepad2 className="h-3.5 w-3.5 text-[#F97316] animate-bounce" /> 
                 <span>LEVEL UP YOUR EVENT ARCHITECTURE</span>
               </motion.div>
 
               <h1 className="text-3xl sm:text-5xl lg:text-5xl font-black leading-tight tracking-tight text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
                 Game-Changing <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-[#059669] to-[#F59E0B]">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-[#0F766E] to-[#F97316]">
                   Live Events
                 </span> Ecosystem
               </h1>
@@ -113,8 +113,8 @@ export default function AboutUsPage() {
                   <h3 className="text-xl sm:text-2xl font-black text-cyan-400 font-mono">500+</h3>
                   <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mt-0.5">Events Hosted</p>
                 </motion.div>
-                <motion.div variants={itemVariants} className="bg-slate-900/80 border border-[#F59E0B]/30 p-4 rounded-xl shadow-[0_0_8px_rgba(249,115,22,0.15)]">
-                  <h3 className="text-xl sm:text-2xl font-black text-[#F59E0B] font-mono">50K+</h3>
+                <motion.div variants={itemVariants} className="bg-slate-900/80 border border-[#F97316]/30 p-4 rounded-xl shadow-[0_0_8px_rgba(249,115,22,0.15)]">
+                  <h3 className="text-xl sm:text-2xl font-black text-[#F97316] font-mono">50K+</h3>
                   <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mt-0.5">Happy Attendees</p>
                 </motion.div>
                 <motion.div variants={itemVariants} className="bg-slate-900/80 border border-emerald-500/30 p-3 rounded-xl shadow-[0_0_8px_rgba(16,185,129,0.15)]">
@@ -126,7 +126,7 @@ export default function AboutUsPage() {
               <div className="pt-1 flex flex-wrap gap-3">
                 <Link
                   href="/events"
-                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#F59E0B] to-orange-500 px-6 py-2.5 font-bold text-xs sm:text-sm text-white hover:opacity-95 transition shadow-[0_0_15px_rgba(249,115,22,0.3)]"
+                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#F97316] to-orange-500 px-6 py-2.5 font-bold text-xs sm:text-sm text-white hover:opacity-95 transition shadow-[0_0_15px_rgba(249,115,22,0.3)]"
                 >
                   <span>Explore Live Events</span>
                   <ArrowRight className="h-4 w-4" />
@@ -149,13 +149,13 @@ export default function AboutUsPage() {
             >
               <div className="flex items-center justify-between pb-2.5 border-b border-slate-800">
                 <span className="font-mono text-xs text-cyan-400 font-bold uppercase tracking-wider flex items-center gap-2">
-                  <Flame className="h-3.5 w-3.5 text-[#F59E0B]" /> SYSTEM ARCHITECTURE
+                  <Flame className="h-3.5 w-3.5 text-[#F97316]" /> SYSTEM ARCHITECTURE
                 </span>
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
               </div>
 
               <motion.div whileHover={{ scale: 1.01 }} className="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700/80 flex items-start gap-3.5 transition">
-                <div className="p-2.5 rounded-lg bg-gradient-to-br from-[#059669] to-cyan-600 text-white shrink-0 shadow-md">
+                <div className="p-2.5 rounded-lg bg-gradient-to-br from-[#0F766E] to-cyan-600 text-white shrink-0 shadow-md">
                   <Calendar className="h-4 w-4" />
                 </div>
                 <div>
@@ -167,7 +167,7 @@ export default function AboutUsPage() {
               </motion.div>
 
               <motion.div whileHover={{ scale: 1.01 }} className="p-3.5 rounded-xl bg-slate-800/80 border border-slate-700/80 flex items-start gap-3.5 transition">
-                <div className="p-2.5 rounded-lg bg-gradient-to-br from-[#F59E0B] to-amber-500 text-white shrink-0 shadow-md">
+                <div className="p-2.5 rounded-lg bg-gradient-to-br from-[#F97316] to-amber-500 text-white shrink-0 shadow-md">
                   <Ticket className="h-4 w-4" />
                 </div>
                 <div>
@@ -209,15 +209,15 @@ export default function AboutUsPage() {
               className="lg:col-span-7 space-y-6"
             >
               <div>
-                <span className="text-xs font-bold text-[#059669] uppercase tracking-widest bg-[#059669]/10 px-3.5 py-1.5 rounded-full border border-[#059669]/20 inline-block mb-1">
+                <span className="text-xs font-bold text-[#0F766E] uppercase tracking-widest bg-[#0F766E]/10 px-3.5 py-1.5 rounded-full border border-[#0F766E]/20 inline-block mb-1">
                   OUR MISSION
                 </span>
-                <h2 className="text-3xl sm:text-4xl font-black text-[#111827] tracking-tight mt-1">
-                  Empowering Memorable <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#059669] to-[#F59E0B]">Live Experiences</span>
+                <h2 className="text-3xl sm:text-4xl font-black text-[#1C1917] tracking-tight mt-1">
+                  Empowering Memorable <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] to-[#F97316]">Live Experiences</span>
                 </h2>
               </div>
 
-              <div className="space-y-4 text-sm sm:text-base text-[#64748B] leading-relaxed">
+              <div className="space-y-4 text-sm sm:text-base text-[#78716C] leading-relaxed">
                 <p>
                   At ePayEvents, we believe that memorable live experiences bring people together. Our mission is to democratize event discovery and ticketing, making it easier than ever for people to find and attend events that inspire, educate, and entertain.
                 </p>
@@ -234,22 +234,22 @@ export default function AboutUsPage() {
                 viewport={{ once: true }}
                 className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4"
               >
-                <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="p-5 rounded-2xl bg-[#F9FAFB] border border-[#E2E8F0] space-y-2 shadow-2xs">
-                  <div className="w-9 h-9 rounded-xl bg-[#059669]/10 text-[#059669] flex items-center justify-center font-bold">
+                <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="p-5 rounded-2xl bg-[#FAFAF9] border border-[#E7E5E4] space-y-2 shadow-2xs">
+                  <div className="w-9 h-9 rounded-xl bg-[#0F766E]/10 text-[#0F766E] flex items-center justify-center font-bold">
                     <Target className="h-5 w-5" />
                   </div>
-                  <h4 className="font-bold text-[#111827] text-base">Targeted Discovery</h4>
-                  <p className="text-xs text-[#64748B] leading-relaxed">
+                  <h4 className="font-bold text-[#1C1917] text-base">Targeted Discovery</h4>
+                  <p className="text-xs text-[#78716C] leading-relaxed">
                     Find events that match your exact professional interests, tech stacks, and hobbies.
                   </p>
                 </motion.div>
 
-                <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="p-5 rounded-2xl bg-[#F9FAFB] border border-[#E2E8F0] space-y-2 shadow-2xs">
-                  <div className="w-9 h-9 rounded-xl bg-[#F59E0B]/10 text-[#F59E0B] flex items-center justify-center font-bold">
+                <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="p-5 rounded-2xl bg-[#FAFAF9] border border-[#E7E5E4] space-y-2 shadow-2xs">
+                  <div className="w-9 h-9 rounded-xl bg-[#F97316]/10 text-[#F97316] flex items-center justify-center font-bold">
                     <Users className="h-5 w-5" />
                   </div>
-                  <h4 className="font-bold text-[#111827] text-base">Community Building</h4>
-                  <p className="text-xs text-[#64748B] leading-relaxed">
+                  <h4 className="font-bold text-[#1C1917] text-base">Community Building</h4>
+                  <p className="text-xs text-[#78716C] leading-relaxed">
                     Connect with like-minded developers, creators, and professionals at every event.
                   </p>
                 </motion.div>
@@ -262,14 +262,14 @@ export default function AboutUsPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="lg:col-span-5 bg-[#F9FAFB] p-5 sm:p-6 rounded-3xl border border-[#E2E8F0] shadow-sm space-y-4"
+              className="lg:col-span-5 bg-[#FAFAF9] p-5 sm:p-6 rounded-3xl border border-[#E7E5E4] shadow-sm space-y-4"
             >
-              <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0]">
+              <div className="flex items-center justify-between pb-2 border-b border-[#E7E5E4]">
                 <div>
-                  <h3 className="text-xl font-extrabold text-[#111827]">What We Offer</h3>
-                  <p className="text-[11px] text-[#64748B]">Explore all categories on ePayEvents</p>
+                  <h3 className="text-xl font-extrabold text-[#1C1917]">What We Offer</h3>
+                  <p className="text-[11px] text-[#78716C]">Explore all categories on ePayEvents</p>
                 </div>
-                <span className="text-[11px] font-bold text-[#059669] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                <span className="text-[11px] font-bold text-[#0F766E] bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200">
                   {mockCategories.length} Categories
                 </span>
               </div>
@@ -280,16 +280,16 @@ export default function AboutUsPage() {
                   <Link
                     key={cat.id}
                     href={`/events?category=${cat.slug}`}
-                    className="p-2.5 rounded-xl bg-white border border-[#E2E8F0] flex items-center gap-2.5 hover:border-[#059669] hover:shadow-xs transition group"
+                    className="p-2.5 rounded-xl bg-white border border-[#E7E5E4] flex items-center gap-2.5 hover:border-[#0F766E] hover:shadow-xs transition group"
                   >
-                    <div className="p-2 rounded-lg bg-[#F9FAFB] group-hover:bg-[#059669]/10 shrink-0 transition">
-                      {categoryIconMap[cat.icon] || <Calendar className="h-4 w-4 text-[#059669]" />}
+                    <div className="p-2 rounded-lg bg-[#FAFAF9] group-hover:bg-[#0F766E]/10 shrink-0 transition">
+                      {categoryIconMap[cat.icon] || <Calendar className="h-4 w-4 text-[#0F766E]" />}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="font-bold text-[#111827] text-xs group-hover:text-[#059669] truncate transition">
+                      <h4 className="font-bold text-[#1C1917] text-xs group-hover:text-[#0F766E] truncate transition">
                         {cat.name}
                       </h4>
-                      <span className="text-[10px] text-[#64748B] font-medium block">
+                      <span className="text-[10px] text-[#78716C] font-medium block">
                         {cat.count} events
                       </span>
                     </div>
@@ -297,10 +297,10 @@ export default function AboutUsPage() {
                 ))}
               </div>
 
-              <div className="pt-2 text-center border-t border-[#E2E8F0]">
+              <div className="pt-2 text-center border-t border-[#E7E5E4]">
                 <Link 
                   href="/events" 
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#059669] hover:text-[#047857] hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0F766E] hover:text-[#115E59] hover:underline"
                 >
                   <span>Explore Live Events Catalog</span>
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -313,10 +313,10 @@ export default function AboutUsPage() {
       </section>
 
       {/* 2.5 COMPARISON SECTION: FROM CHAOS TO CONTROL (Compact Gaming-Style "VS" Battle Matrix) */}
-      <section className="py-12 sm:py-16 bg-gradient-to-b from-[#0B0F19] via-[#111827] to-[#0B0F19] text-white relative overflow-hidden font-sans">
+      <section className="py-12 sm:py-16 bg-gradient-to-b from-[#0B0F19] via-[#0F172A] to-[#0B0F19] text-white relative overflow-hidden font-sans">
         {/* Compact Glow Ambient Orbs */}
         <div className="absolute top-1/2 left-10 -translate-y-1/2 w-64 h-64 bg-rose-900/15 rounded-full blur-[90px] pointer-events-none" />
-        <div className="absolute top-1/2 right-10 -translate-y-1/2 w-72 h-72 bg-[#059669]/20 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-1/2 right-10 -translate-y-1/2 w-72 h-72 bg-[#0F766E]/20 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="container mx-auto px-4 md:px-8 max-w-5xl relative z-10">
           {/* Header (Compact) */}
@@ -328,11 +328,11 @@ export default function AboutUsPage() {
             className="text-center max-w-xl mx-auto mb-10 space-y-2"
           >
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-mono font-bold tracking-wider uppercase text-[#FFEDD5]">
-              <Flame className="h-3.5 w-3.5 text-[#F59E0B]" />
+              <Flame className="h-3.5 w-3.5 text-[#F97316]" />
               <span>HEAD-TO-HEAD SHOWDOWN</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-white">
-              From <span className="text-rose-400">Chaos</span> to <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-emerald-300 to-[#F59E0B]">Control</span>
+              From <span className="text-rose-400">Chaos</span> to <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-emerald-300 to-[#F97316]">Control</span>
             </h2>
             <p className="text-xs sm:text-sm text-slate-300">
               See the difference between the old way of managing events and the ePayEvents way.
@@ -364,23 +364,23 @@ export default function AboutUsPage() {
               </div>
 
               {/* Center VS Badge */}
-              <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-[#111827] border-2 border-[#059669] text-white font-mono font-black text-xs items-center justify-center shadow-lg z-20">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-[#F59E0B]">VS</span>
+              <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-[#0F172A] border-2 border-[#0F766E] text-white font-mono font-black text-xs items-center justify-center shadow-lg z-20">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-[#F97316]">VS</span>
               </div>
 
               {/* Right Column Header */}
-              <div className="p-4 sm:p-5 bg-gradient-to-r from-[#059669]/15 to-[#F59E0B]/10 flex items-center justify-between">
+              <div className="p-4 sm:p-5 bg-gradient-to-r from-[#0F766E]/15 to-[#F97316]/10 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
                   <div>
                     <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold block">NEXT-GEN OPS</span>
                     <h3 className="text-base font-extrabold text-white flex items-center gap-1.5">
                       <span>With ePayEvents</span>
-                      <Trophy className="h-4 w-4 text-[#F59E0B]" />
+                      <Trophy className="h-4 w-4 text-[#F97316]" />
                     </h3>
                   </div>
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#059669] to-emerald-600 text-white text-[10px] font-extrabold uppercase tracking-wide shadow-sm">
+                <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#0F766E] to-emerald-600 text-white text-[10px] font-extrabold uppercase tracking-wide shadow-sm">
                   Powered Win
                 </span>
               </div>
@@ -437,9 +437,9 @@ export default function AboutUsPage() {
                     </div>
 
                     {/* After Item */}
-                    <div className="p-3.5 sm:px-6 flex items-center justify-between gap-3 bg-[#059669]/5 group-hover:bg-[#059669]/10 transition-colors">
+                    <div className="p-3.5 sm:px-6 flex items-center justify-between gap-3 bg-[#0F766E]/5 group-hover:bg-[#0F766E]/10 transition-colors">
                       <div className="flex items-center gap-3">
-                        <div className="p-1.5 rounded-lg bg-gradient-to-br from-[#059669] to-teal-500 text-white shrink-0 shadow-sm">
+                        <div className="p-1.5 rounded-lg bg-gradient-to-br from-[#0F766E] to-teal-500 text-white shrink-0 shadow-sm">
                           <AfterIcon className="h-3.5 w-3.5" />
                         </div>
                         <span className="text-white font-bold group-hover:text-cyan-300 transition-colors">
@@ -463,7 +463,7 @@ export default function AboutUsPage() {
               </div>
               <Link
                 href="/create-event"
-                className="inline-flex items-center gap-1.5 text-xs font-bold bg-[#F59E0B] hover:bg-[#D97706] text-white px-4 py-2 rounded-xl transition shadow-md"
+                className="inline-flex items-center gap-1.5 text-xs font-bold bg-[#F97316] hover:bg-[#ea580c] text-white px-4 py-2 rounded-xl transition shadow-md"
               >
                 <span>Switch to ePayEvents</span>
                 <ArrowRight className="h-3.5 w-3.5" />
@@ -474,7 +474,7 @@ export default function AboutUsPage() {
       </section>
 
       {/* 3. GAMING STYLE: COMPLETE EVENT MANAGEMENT SUITE - Clean Light Theme with Gaming Accent Cards */}
-      <section className="py-16 sm:py-20 bg-[#F9FAFB]">
+      <section className="py-16 sm:py-20 bg-[#FAFAF9]">
         <div className="container mx-auto px-4 md:px-8 max-w-6xl">
           
           <motion.div 
@@ -485,12 +485,12 @@ export default function AboutUsPage() {
             className="text-center max-w-2xl mx-auto mb-12"
           >
             <span className="text-xs font-mono font-extrabold text-[#059669] uppercase tracking-widest bg-[#059669]/10 px-3.5 py-1.5 rounded-full border border-[#059669]/20 inline-flex items-center gap-2 mb-2">
-              <Crosshair className="h-3.5 w-3.5 text-[#F59E0B]" /> CREATOR BATTLEKIT
+              <Crosshair className="h-3.5 w-3.5 text-[#F97316]" /> CREATOR BATTLEKIT
             </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-[#111827] tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-black text-[#1C1917] tracking-tight">
               Complete Event <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#059669] to-emerald-600">Management Suite</span>
             </h2>
-            <p className="text-xs sm:text-sm text-[#64748B] mt-2">
+            <p className="text-xs sm:text-sm text-[#78716C] mt-2">
               Powerful platform capabilities built to replace manual spreadsheets and WhatsApp groups.
             </p>
           </motion.div>
@@ -506,13 +506,13 @@ export default function AboutUsPage() {
             <motion.div 
               variants={itemVariants} 
               whileHover={{ y: -6, scale: 1.02 }} 
-              className="relative group p-6 rounded-2xl bg-white border border-emerald-200/80 hover:border-[#059669] shadow-sm hover:shadow-md transition-all duration-300"
+              className="relative group p-6 rounded-2xl bg-white border border-teal-200/80 hover:border-[#0F766E] shadow-sm hover:shadow-md transition-all duration-300"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#059669] to-teal-600 text-white flex items-center justify-center font-bold mb-4 shadow-md">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0F766E] to-teal-600 text-white flex items-center justify-center font-bold mb-4 shadow-md">
                 <QrCode className="h-6 w-6" />
               </div>
-              <h3 className="font-bold text-[#111827] text-base mb-1.5 group-hover:text-[#059669] transition">QR Gate Scanner</h3>
-              <p className="text-xs text-[#64748B] leading-relaxed">
+              <h3 className="font-bold text-[#1C1917] text-base mb-1.5 group-hover:text-[#0F766E] transition">QR Gate Scanner</h3>
+              <p className="text-xs text-[#78716C] leading-relaxed">
                 Scan attendee ticket badges at venue entrance gates in milliseconds with zero lag. Mobile-friendly scanner web app built for peak crowds.
               </p>
             </motion.div>
@@ -521,13 +521,13 @@ export default function AboutUsPage() {
             <motion.div 
               variants={itemVariants} 
               whileHover={{ y: -6, scale: 1.02 }} 
-              className="relative group p-6 rounded-2xl bg-white border border-orange-200/80 hover:border-[#F59E0B] shadow-sm hover:shadow-md transition-all duration-300"
+              className="relative group p-6 rounded-2xl bg-white border border-orange-200/80 hover:border-[#F97316] shadow-sm hover:shadow-md transition-all duration-300"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#F59E0B] to-amber-500 text-white flex items-center justify-center font-bold mb-4 shadow-md">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#F97316] to-amber-500 text-white flex items-center justify-center font-bold mb-4 shadow-md">
                 <LayoutDashboard className="h-6 w-6" />
               </div>
-              <h3 className="font-bold text-[#111827] text-base mb-1.5 group-hover:text-[#F59E0B] transition">Live Analytics Dashboard</h3>
-              <p className="text-xs text-[#64748B] leading-relaxed">
+              <h3 className="font-bold text-[#1C1917] text-base mb-1.5 group-hover:text-[#F97316] transition">Live Analytics Dashboard</h3>
+              <p className="text-xs text-[#78716C] leading-relaxed">
                 Monitor real-time ticket sales revenue, entry count telemetry, category breakdown, and seat availability from your organizer console HUD.
               </p>
             </motion.div>
@@ -541,8 +541,8 @@ export default function AboutUsPage() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white flex items-center justify-center font-bold mb-4 shadow-md">
                 <FileSpreadsheet className="h-6 w-6" />
               </div>
-              <h3 className="font-bold text-[#111827] text-base mb-1.5 group-hover:text-emerald-600 transition">Automated Payout Engine</h3>
-              <p className="text-xs text-[#64748B] leading-relaxed">
+              <h3 className="font-bold text-[#1C1917] text-base mb-1.5 group-hover:text-emerald-600 transition">Automated Payout Engine</h3>
+              <p className="text-xs text-[#78716C] leading-relaxed">
                 Automated bank settlement workflows with exportable CSV/Excel reports for attendee check-in logs and financial records.
               </p>
             </motion.div>
@@ -561,13 +561,13 @@ export default function AboutUsPage() {
             transition={{ duration: 0.5 }}
             className="text-center max-w-2xl mx-auto mb-12"
           >
-            <span className="text-xs font-mono font-extrabold text-[#F59E0B] uppercase tracking-widest bg-[#F59E0B]/10 px-3.5 py-1.5 rounded-full border border-[#F59E0B]/20 inline-flex items-center gap-2 mb-2">
-              <Shield className="h-3.5 w-3.5 text-[#059669]" /> GUILD PRINCIPLES
+            <span className="text-xs font-mono font-extrabold text-[#F97316] uppercase tracking-widest bg-[#F97316]/10 px-3.5 py-1.5 rounded-full border border-[#F97316]/20 inline-flex items-center gap-2 mb-2">
+              <Shield className="h-3.5 w-3.5 text-[#0F766E]" /> GUILD PRINCIPLES
             </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-[#111827] tracking-tight">
-              What We <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F59E0B] to-amber-500">Stand For</span>
+            <h2 className="text-2xl sm:text-4xl font-black text-[#1C1917] tracking-tight">
+              What We <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F97316] to-amber-500">Stand For</span>
             </h2>
-            <p className="text-xs sm:text-sm text-[#64748B] mt-2">
+            <p className="text-xs sm:text-sm text-[#78716C] mt-2">
               Our core values guiding every feature we build.
             </p>
           </motion.div>
@@ -579,42 +579,42 @@ export default function AboutUsPage() {
             viewport={{ once: true, margin: '-50px' }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           >
-            <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="bg-[#F9FAFB] p-6 rounded-2xl border border-[#E2E8F0] space-y-2 shadow-2xs">
-              <div className="w-10 h-10 rounded-xl bg-[#059669]/10 text-[#059669] flex items-center justify-center font-bold mb-3">
+            <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="bg-[#FAFAF9] p-6 rounded-2xl border border-[#E7E5E4] space-y-2 shadow-2xs">
+              <div className="w-10 h-10 rounded-xl bg-[#0F766E]/10 text-[#0F766E] flex items-center justify-center font-bold mb-3">
                 <Zap className="h-5 w-5" />
               </div>
-              <h3 className="font-bold text-[#111827] text-base">Pure Simplicity</h3>
-              <p className="text-xs text-[#64748B] leading-relaxed">
+              <h3 className="font-bold text-[#1C1917] text-base">Pure Simplicity</h3>
+              <p className="text-xs text-[#78716C] leading-relaxed">
                 Clean software designed for non-technical event hosts to set up and manage events without complex training.
               </p>
             </motion.div>
 
-            <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="bg-[#F9FAFB] p-6 rounded-2xl border border-[#E2E8F0] space-y-2 shadow-2xs">
+            <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="bg-[#FAFAF9] p-6 rounded-2xl border border-[#E7E5E4] space-y-2 shadow-2xs">
               <div className="w-10 h-10 rounded-xl bg-[#059669]/10 text-[#059669] flex items-center justify-center font-bold mb-3">
                 <ShieldCheck className="h-5 w-5" />
               </div>
-              <h3 className="font-bold text-[#111827] text-base">Unshakable Reliability</h3>
-              <p className="text-xs text-[#64748B] leading-relaxed">
+              <h3 className="font-bold text-[#1C1917] text-base">Unshakable Reliability</h3>
+              <p className="text-xs text-[#78716C] leading-relaxed">
                 Fast payment processing and gate scanning systems that perform smoothly even during peak arrival hours.
               </p>
             </motion.div>
 
-            <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="bg-[#F9FAFB] p-6 rounded-2xl border border-[#E2E8F0] space-y-2 shadow-2xs">
-              <div className="w-10 h-10 rounded-xl bg-[#F59E0B]/10 text-[#F59E0B] flex items-center justify-center font-bold mb-3">
+            <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="bg-[#FAFAF9] p-6 rounded-2xl border border-[#E7E5E4] space-y-2 shadow-2xs">
+              <div className="w-10 h-10 rounded-xl bg-[#F97316]/10 text-[#F97316] flex items-center justify-center font-bold mb-3">
                 <Eye className="h-5 w-5" />
               </div>
-              <h3 className="font-bold text-[#111827] text-base">100% Transparency</h3>
-              <p className="text-xs text-[#64748B] leading-relaxed">
+              <h3 className="font-bold text-[#1C1917] text-base">100% Transparency</h3>
+              <p className="text-xs text-[#78716C] leading-relaxed">
                 No hidden pricing or surprise fees. Clear revenue reporting and automated bank account payouts for organizers.
               </p>
             </motion.div>
 
-            <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="bg-[#F9FAFB] p-6 rounded-2xl border border-[#E2E8F0] space-y-2 shadow-2xs">
+            <motion.div variants={itemVariants} whileHover={{ y: -4 }} className="bg-[#FAFAF9] p-6 rounded-2xl border border-[#E7E5E4] space-y-2 shadow-2xs">
               <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold mb-3">
                 <Headphones className="h-5 w-5" />
               </div>
-              <h3 className="font-bold text-[#111827] text-base">24/7 Creator Guild</h3>
-              <p className="text-xs text-[#64748B] leading-relaxed">
+              <h3 className="font-bold text-[#1C1917] text-base">24/7 Creator Guild</h3>
+              <p className="text-xs text-[#78716C] leading-relaxed">
                 Dedicated customer assistance for event creators before, during, and after event execution.
               </p>
             </motion.div>
@@ -623,7 +623,7 @@ export default function AboutUsPage() {
       </section>
 
       {/* 5. MEET OUR TEAM SECTION - Clean Light Theme */}
-      <section className="py-16 sm:py-20 bg-[#F9FAFB]">
+      <section className="py-16 sm:py-20 bg-[#FAFAF9]">
         <div className="container mx-auto px-4 md:px-8 max-w-5xl">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -632,13 +632,13 @@ export default function AboutUsPage() {
             transition={{ duration: 0.5 }}
             className="text-center max-w-2xl mx-auto mb-12"
           >
-            <span className="text-xs font-bold text-[#059669] uppercase tracking-widest bg-[#059669]/10 px-3.5 py-1.5 rounded-full border border-[#059669]/20 inline-block mb-2">
+            <span className="text-xs font-bold text-[#0F766E] uppercase tracking-widest bg-[#0F766E]/10 px-3.5 py-1.5 rounded-full border border-[#0F766E]/20 inline-block mb-2">
               PEOPLE BEHIND EPAYEVENTS
             </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-[#111827] tracking-tight">
-              Meet Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#059669] to-teal-500">Team</span>
+            <h2 className="text-2xl sm:text-4xl font-black text-[#1C1917] tracking-tight">
+              Meet Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] to-teal-500">Team</span>
             </h2>
-            <p className="text-xs sm:text-sm text-[#64748B] mt-2">
+            <p className="text-xs sm:text-sm text-[#78716C] mt-2">
               The team building and supporting ePayEvents every day.
             </p>
           </motion.div>
@@ -650,7 +650,7 @@ export default function AboutUsPage() {
             viewport={{ once: true, margin: '-50px' }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           >
-            <motion.div variants={itemVariants} whileHover={{ y: -6 }} className="bg-white p-5 rounded-2xl border border-[#E2E8F0] text-center space-y-3 shadow-sm hover:shadow-md transition">
+            <motion.div variants={itemVariants} whileHover={{ y: -6 }} className="bg-white p-5 rounded-2xl border border-[#E7E5E4] text-center space-y-3 shadow-sm hover:shadow-md transition">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src="/team/rahul.jpg" 
@@ -658,12 +658,12 @@ export default function AboutUsPage() {
                 className="w-24 h-24 rounded-full object-cover mx-auto ring-4 ring-[#FFEDD5] shadow-sm"
               />
               <div>
-                <h3 className="font-bold text-[#111827] text-base">Rahul Mehta</h3>
-                <span className="text-xs font-semibold text-[#059669] block mt-0.5">Founder & CEO</span>
+                <h3 className="font-bold text-[#1C1917] text-base">Rahul Mehta</h3>
+                <span className="text-xs font-semibold text-[#0F766E] block mt-0.5">Founder & CEO</span>
               </div>
             </motion.div>
 
-            <motion.div variants={itemVariants} whileHover={{ y: -6 }} className="bg-white p-5 rounded-2xl border border-[#E2E8F0] text-center space-y-3 shadow-sm hover:shadow-md transition">
+            <motion.div variants={itemVariants} whileHover={{ y: -6 }} className="bg-white p-5 rounded-2xl border border-[#E7E5E4] text-center space-y-3 shadow-sm hover:shadow-md transition">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src="/team/priya.jpg" 
@@ -671,12 +671,12 @@ export default function AboutUsPage() {
                 className="w-24 h-24 rounded-full object-cover mx-auto ring-4 ring-[#FFEDD5] shadow-sm"
               />
               <div>
-                <h3 className="font-bold text-[#111827] text-base">Priya Sharma</h3>
-                <span className="text-xs font-semibold text-[#059669] block mt-0.5">Head of Product</span>
+                <h3 className="font-bold text-[#1C1917] text-base">Priya Sharma</h3>
+                <span className="text-xs font-semibold text-[#0F766E] block mt-0.5">Head of Product</span>
               </div>
             </motion.div>
 
-            <motion.div variants={itemVariants} whileHover={{ y: -6 }} className="bg-white p-5 rounded-2xl border border-[#E2E8F0] text-center space-y-3 shadow-sm hover:shadow-md transition">
+            <motion.div variants={itemVariants} whileHover={{ y: -6 }} className="bg-white p-5 rounded-2xl border border-[#E7E5E4] text-center space-y-3 shadow-sm hover:shadow-md transition">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src="/team/amit.jpg" 
@@ -684,12 +684,12 @@ export default function AboutUsPage() {
                 className="w-24 h-24 rounded-full object-cover mx-auto ring-4 ring-[#FFEDD5] shadow-sm"
               />
               <div>
-                <h3 className="font-bold text-[#111827] text-base">Amit Patel</h3>
-                <span className="text-xs font-semibold text-[#059669] block mt-0.5">Lead Developer</span>
+                <h3 className="font-bold text-[#1C1917] text-base">Amit Patel</h3>
+                <span className="text-xs font-semibold text-[#0F766E] block mt-0.5">Lead Developer</span>
               </div>
             </motion.div>
 
-            <motion.div variants={itemVariants} whileHover={{ y: -6 }} className="bg-white p-5 rounded-2xl border border-[#E2E8F0] text-center space-y-3 shadow-sm hover:shadow-md transition">
+            <motion.div variants={itemVariants} whileHover={{ y: -6 }} className="bg-white p-5 rounded-2xl border border-[#E7E5E4] text-center space-y-3 shadow-sm hover:shadow-md transition">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src="/team/sneha.jpg" 
@@ -697,8 +697,8 @@ export default function AboutUsPage() {
                 className="w-24 h-24 rounded-full object-cover mx-auto ring-4 ring-[#FFEDD5] shadow-sm"
               />
               <div>
-                <h3 className="font-bold text-[#111827] text-base">Sneha Reddy</h3>
-                <span className="text-xs font-semibold text-[#059669] block mt-0.5">Customer Success</span>
+                <h3 className="font-bold text-[#1C1917] text-base">Sneha Reddy</h3>
+                <span className="text-xs font-semibold text-[#0F766E] block mt-0.5">Customer Success</span>
               </div>
             </motion.div>
           </motion.div>
@@ -721,7 +721,7 @@ export default function AboutUsPage() {
           <div className="pt-2">
             <Link
               href="/create-event"
-              className="inline-flex items-center gap-2 rounded-xl bg-[#F59E0B] px-6 py-3 font-semibold text-xs sm:text-sm text-white hover:bg-[#D97706] transition shadow-md"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#F97316] px-6 py-3 font-semibold text-xs sm:text-sm text-white hover:bg-[#ea580c] transition shadow-md"
             >
               <span>Create Your Event</span>
               <ArrowRight className="h-4 w-4" />

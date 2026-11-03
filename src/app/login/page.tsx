@@ -104,10 +104,10 @@ function LoginForm() {
         <div className="inline-flex justify-center mb-1">
           <Logo variant="default" size="lg" />
         </div>
-        <h1 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight">
-          Welcome back to <span className="text-[#059669]">ePayEvents</span>
+        <h1 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight">
+          Welcome back to <span className="text-[#0F766E]">ePayEvents</span>
         </h1>
-        <p className="text-xs sm:text-sm text-[#64748B]">
+        <p className="text-xs sm:text-sm text-[#78716C]">
           Access your QR tickets, summits, bookings, or host dashboard
         </p>
 
@@ -129,18 +129,18 @@ function LoginForm() {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xl p-6 sm:p-8 space-y-6 relative"
+        className="bg-white rounded-3xl border border-[#E7E5E4] shadow-xl p-6 sm:p-8 space-y-6 relative"
       >
         {redirectTarget && (
-          <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-teal-900 text-xs font-semibold flex items-start gap-2.5 shadow-sm">
-            <Ticket className="h-4 w-4 text-[#059669] shrink-0 mt-0.5" />
+          <div className="p-3.5 rounded-2xl bg-teal-50 border border-teal-200 text-teal-900 text-xs font-semibold flex items-start gap-2.5 shadow-sm">
+            <Ticket className="h-4 w-4 text-[#0F766E] shrink-0 mt-0.5" />
             <div>
-              <p className="font-extrabold text-[#059669]">
+              <p className="font-extrabold text-[#0F766E]">
                 {redirectTarget.startsWith('/checkout')
                   ? 'Sign in to Complete Your Ticket Booking'
                   : 'Sign in to View Event Details & Book Tickets'}
               </p>
-              <p className="text-[11px] text-emerald-700 font-normal mt-0.5">
+              <p className="text-[11px] text-teal-800 font-normal mt-0.5">
                 Sign in with your account or create a new one to access passes and schedule information.
               </p>
             </div>
@@ -165,7 +165,7 @@ function LoginForm() {
         {/* Email / Password Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-[#111827] mb-1.5">
+            <label className="block text-xs font-bold text-[#1C1917] mb-1.5">
               Email Address
             </label>
             <div className="relative">
@@ -176,19 +176,19 @@ function LoginForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="yourname@gmail.com"
-                className="w-full rounded-xl border border-[#E2E8F0] pl-10 pr-4 py-2.5 text-xs text-[#111827] placeholder-slate-400 focus:outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/20 transition"
+                className="w-full rounded-xl border border-[#E7E5E4] pl-10 pr-4 py-2.5 text-xs text-[#1C1917] placeholder-slate-400 focus:outline-none focus:border-[#0F766E] focus:ring-2 focus:ring-[#0F766E]/20 transition"
               />
             </div>
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-bold text-[#111827]">
+              <label className="block text-xs font-bold text-[#1C1917]">
                 Password
               </label>
               <Link
                 href="/forgot-password"
-                className="text-[11px] font-bold text-[#059669] hover:underline"
+                className="text-[11px] font-bold text-[#0F766E] hover:underline"
               >
                 Forgot Password?
               </Link>
@@ -201,7 +201,7 @@ function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full rounded-xl border border-[#E2E8F0] pl-10 pr-10 py-2.5 text-xs text-[#111827] placeholder-slate-400 focus:outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/20 transition"
+                className="w-full rounded-xl border border-[#E7E5E4] pl-10 pr-10 py-2.5 text-xs text-[#1C1917] placeholder-slate-400 focus:outline-none focus:border-[#0F766E] focus:ring-2 focus:ring-[#0F766E]/20 transition"
               />
               <button
                 type="button"
@@ -215,12 +215,12 @@ function LoginForm() {
           </div>
 
           <div className="flex items-center justify-between text-xs">
-            <label className="flex items-center gap-2 cursor-pointer text-[#64748B] font-medium">
+            <label className="flex items-center gap-2 cursor-pointer text-[#78716C] font-medium">
               <input
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="rounded border-slate-300 text-[#059669] focus:ring-[#059669] h-4 w-4"
+                className="rounded border-slate-300 text-[#0F766E] focus:ring-[#0F766E] h-4 w-4"
               />
               <span>Remember me</span>
             </label>
@@ -229,7 +229,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-[#059669] hover:bg-[#047857] text-white py-3 px-4 font-bold text-xs shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-60"
+            className="w-full rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white py-3 px-4 font-bold text-xs shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-60"
           >
             {loading ? (
               <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -243,15 +243,15 @@ function LoginForm() {
         </form>
 
         {/* Quick Demo Fill Buttons for all 3 supported roles */}
-        <div className="pt-1 border-t border-[#E2E8F0]">
-          <span className="text-[10px] uppercase tracking-wider text-[#64748B] font-extrabold block text-center mb-2">
+        <div className="pt-1 border-t border-[#E7E5E4]">
+          <span className="text-[10px] uppercase tracking-wider text-[#78716C] font-extrabold block text-center mb-2">
             Quick Demo Autofill
           </span>
           <div className="grid grid-cols-3 gap-2 text-[11px]">
             <button
               type="button"
               onClick={() => fillDemoAccount('attendee')}
-              className="py-1.5 px-1.5 rounded-lg bg-emerald-50 hover:bg-teal-100 text-[#059669] font-bold border border-emerald-200 transition text-center flex items-center justify-center gap-1"
+              className="py-1.5 px-1.5 rounded-lg bg-teal-50 hover:bg-teal-100 text-[#0F766E] font-bold border border-teal-200 transition text-center flex items-center justify-center gap-1"
             >
               <User className="h-3 w-3" />
               <span>Attendee</span>
@@ -259,7 +259,7 @@ function LoginForm() {
             <button
               type="button"
               onClick={() => fillDemoAccount('organizer')}
-              className="py-1.5 px-1.5 rounded-lg bg-orange-50 hover:bg-orange-100 text-[#F59E0B] font-bold border border-orange-200 transition text-center flex items-center justify-center gap-1"
+              className="py-1.5 px-1.5 rounded-lg bg-orange-50 hover:bg-orange-100 text-[#F97316] font-bold border border-orange-200 transition text-center flex items-center justify-center gap-1"
             >
               <Building2 className="h-3 w-3" />
               <span>Organizer</span>
@@ -277,7 +277,7 @@ function LoginForm() {
 
         {/* Divider */}
         <div className="relative flex items-center justify-center">
-          <div className="border-t border-[#E2E8F0] w-full" />
+          <div className="border-t border-[#E7E5E4] w-full" />
           <span className="bg-white px-3 text-[10px] text-slate-400 font-bold uppercase tracking-wider absolute">
             Or Continue With
           </span>
@@ -289,10 +289,10 @@ function LoginForm() {
             type="button"
             onClick={() => handleOAuth('google')}
             disabled={Boolean(oauthLoading)}
-            className="rounded-xl border border-[#E2E8F0] hover:bg-slate-50 py-2.5 px-3 text-xs font-bold text-[#111827] transition flex items-center justify-center gap-2 shadow-sm"
+            className="rounded-xl border border-[#E7E5E4] hover:bg-slate-50 py-2.5 px-3 text-xs font-bold text-[#1C1917] transition flex items-center justify-center gap-2 shadow-sm"
           >
             {oauthLoading === 'google' ? (
-              <div className="h-3.5 w-3.5 border-2 border-[#111827] border-t-transparent rounded-full animate-spin" />
+              <div className="h-3.5 w-3.5 border-2 border-[#1C1917] border-t-transparent rounded-full animate-spin" />
             ) : (
               <svg className="h-4 w-4" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -308,10 +308,10 @@ function LoginForm() {
             type="button"
             onClick={() => handleOAuth('github')}
             disabled={Boolean(oauthLoading)}
-            className="rounded-xl border border-[#E2E8F0] hover:bg-slate-50 py-2.5 px-3 text-xs font-bold text-[#111827] transition flex items-center justify-center gap-2 shadow-sm"
+            className="rounded-xl border border-[#E7E5E4] hover:bg-slate-50 py-2.5 px-3 text-xs font-bold text-[#1C1917] transition flex items-center justify-center gap-2 shadow-sm"
           >
             {oauthLoading === 'github' ? (
-              <div className="h-3.5 w-3.5 border-2 border-[#111827] border-t-transparent rounded-full animate-spin" />
+              <div className="h-3.5 w-3.5 border-2 border-[#1C1917] border-t-transparent rounded-full animate-spin" />
             ) : (
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                 <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
@@ -322,11 +322,11 @@ function LoginForm() {
         </div>
 
         {/* Footer link to Register */}
-        <div className="pt-2 text-center text-xs text-[#64748B]">
+        <div className="pt-2 text-center text-xs text-[#78716C]">
           Don&apos;t have an account yet?{' '}
           <Link
             href={redirectTarget ? `/signup?redirect=${encodeURIComponent(redirectTarget)}` : '/signup'}
-            className="font-extrabold text-[#059669] hover:underline"
+            className="font-extrabold text-[#0F766E] hover:underline"
           >
             Create an account
           </Link>
@@ -334,7 +334,7 @@ function LoginForm() {
       </motion.div>
 
       {/* Security Guarantee Note */}
-      <div className="flex items-center justify-center gap-2 text-[11px] text-[#64748B]">
+      <div className="flex items-center justify-center gap-2 text-[11px] text-[#78716C]">
         <ShieldCheck className="h-3.5 w-3.5 text-[#059669]" />
         <span>256-bit SSL encrypted • Supabase Auth Session Security</span>
       </div>
@@ -344,17 +344,17 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F9FAFB] text-[#111827] font-sans">
+    <div className="min-h-screen flex flex-col bg-[#FAFAF9] text-[#1C1917] font-sans">
       <Navbar />
 
       <main className="flex-1 relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Ambient Gradient Background Glow */}
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#059669]/15 rounded-full blur-[130px] pointer-events-none" />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-[#F59E0B]/15 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#0F766E]/15 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-[#F97316]/15 rounded-full blur-[130px] pointer-events-none" />
 
         <Suspense fallback={
           <div className="w-full max-w-md p-8 bg-white rounded-3xl border border-slate-200 text-center">
-            <div className="h-6 w-6 border-2 border-[#059669] border-t-transparent rounded-full animate-spin mx-auto" />
+            <div className="h-6 w-6 border-2 border-[#0F766E] border-t-transparent rounded-full animate-spin mx-auto" />
             <p className="mt-3 text-xs text-slate-500 font-bold">Loading ePayEvents Login...</p>
           </div>
         }>

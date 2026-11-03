@@ -203,7 +203,7 @@ export default function AdminBookingsPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F9FAFB] text-slate-900 font-sans">
+    <div className="min-h-screen flex flex-col bg-[#FAFAF9] text-slate-900 font-sans">
       <Navbar />
 
       {/* Top Banner */}
@@ -219,13 +219,13 @@ export default function AdminBookingsPage() {
                   <ArrowLeft className="h-3.5 w-3.5" /> Back to Admin Overview
                 </Link>
                 <span className="text-slate-600">•</span>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-teal-300 border border-teal-500/30 text-[10px] font-bold uppercase tracking-wider">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30 text-[10px] font-bold uppercase tracking-wider">
                   <ShieldCheck className="h-3 w-3" /> Master Governance
                 </span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center gap-3">
                 <span>Attendee & Booking Intelligence</span>
-                <span className="text-xs font-bold bg-[#F59E0B] text-white px-2.5 py-0.5 rounded-full">
+                <span className="text-xs font-bold bg-[#F97316] text-white px-2.5 py-0.5 rounded-full">
                   {summary.totalBookings} Total
                 </span>
               </h1>
@@ -248,7 +248,7 @@ export default function AdminBookingsPage() {
               <button
                 type="button"
                 onClick={() => fetchBookings(currentPage)}
-                className="rounded-xl bg-[#059669] hover:bg-[#047857] text-white px-4 py-2.5 text-xs font-bold transition flex items-center gap-2 shadow-md cursor-pointer"
+                className="rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white px-4 py-2.5 text-xs font-bold transition flex items-center gap-2 shadow-md cursor-pointer"
               >
                 <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
                 <span>Refresh Feed</span>
@@ -270,7 +270,7 @@ export default function AdminBookingsPage() {
 
             <div className="bg-white/5 border border-white/10 p-4 rounded-2xl">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Gross Pass Revenue</span>
-              <span className="text-2xl font-black text-[#F59E0B] mt-1 block">₹{summary.totalRevenue.toLocaleString()}</span>
+              <span className="text-2xl font-black text-[#F97316] mt-1 block">₹{summary.totalRevenue.toLocaleString()}</span>
             </div>
           </div>
         </div>
@@ -285,7 +285,7 @@ export default function AdminBookingsPage() {
             onClick={() => setViewTab('attendees')}
             className={`pb-3 text-sm font-black flex items-center gap-2 border-b-2 transition cursor-pointer ${
               viewTab === 'attendees'
-                ? 'border-[#059669] text-[#059669]'
+                ? 'border-[#0F766E] text-[#0F766E]'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -297,7 +297,7 @@ export default function AdminBookingsPage() {
             onClick={() => setViewTab('referrals')}
             className={`pb-3 text-sm font-black flex items-center gap-2 border-b-2 transition cursor-pointer ${
               viewTab === 'referrals'
-                ? 'border-[#F59E0B] text-[#F59E0B]'
+                ? 'border-[#F97316] text-[#F97316]'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -308,7 +308,7 @@ export default function AdminBookingsPage() {
 
         {viewTab === 'referrals' ? (
           <div className="space-y-6">
-            <div className="bg-white p-6 rounded-3xl border border-[#E2E8F0] shadow-xs space-y-4">
+            <div className="bg-white p-6 rounded-3xl border border-[#E7E5E4] shadow-xs space-y-4">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <div>
                   <h3 className="text-base font-extrabold text-slate-900">All Organizer Affiliate & Referral Programs</h3>
@@ -330,7 +330,7 @@ export default function AdminBookingsPage() {
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs text-slate-600">
-                    <thead className="bg-[#F9FAFB] border-b border-[#E2E8F0] text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <thead className="bg-[#FAFAF9] border-b border-[#E7E5E4] text-[11px] font-bold uppercase tracking-wider text-slate-500">
                       <tr>
                         <th className="py-3 px-4">Affiliate / Partner</th>
                         <th className="py-3 px-4">Event</th>
@@ -364,7 +364,7 @@ export default function AdminBookingsPage() {
                           <td className="py-3.5 px-4 font-bold text-slate-700">
                             {ref.clickCount || 0}
                           </td>
-                          <td className="py-3.5 px-4 font-bold text-[#059669]">
+                          <td className="py-3.5 px-4 font-bold text-[#0F766E]">
                             {ref.conversionsCount || 0} bookings
                           </td>
                           <td className="py-3.5 px-4 font-bold text-slate-900">
@@ -391,7 +391,7 @@ export default function AdminBookingsPage() {
         ) : (
           <>
             {/* Filters & Search Control Bar */}
-            <div className="bg-white p-4 rounded-2xl border border-[#E2E8F0] shadow-xs mb-6 space-y-3">
+            <div className="bg-white p-4 rounded-2xl border border-[#E7E5E4] shadow-xs mb-6 space-y-3">
               <div className="flex flex-col md:flex-row gap-3">
                 {/* Search Input */}
                 <div className="flex-1 relative">
@@ -401,7 +401,7 @@ export default function AdminBookingsPage() {
                     placeholder="Search by attendee name, email, phone, ticket ID, or event..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#059669] bg-slate-50/60"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#0F766E] bg-slate-50/60"
                   />
                 </div>
 
@@ -410,7 +410,7 @@ export default function AdminBookingsPage() {
                   <select
                     value={selectedEvent}
                     onChange={(e) => setSelectedEvent(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#059669] bg-slate-50/60 font-medium"
+                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#0F766E] bg-slate-50/60 font-medium"
                   >
                     <option value="all">All Events ({distinctEvents.length})</option>
                     {distinctEvents.map((evt, idx) => (
@@ -426,7 +426,7 @@ export default function AdminBookingsPage() {
                   <select
                     value={selectedStatus}
                     onChange={(e) => setSelectedStatus(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#059669] bg-slate-50/60 font-medium"
+                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#0F766E] bg-slate-50/60 font-medium"
                   >
                     <option value="all">All Statuses</option>
                     <option value="completed">Completed / Valid</option>
@@ -439,10 +439,10 @@ export default function AdminBookingsPage() {
             </div>
 
         {/* Data Table */}
-        <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xs overflow-hidden">
+        <div className="bg-white rounded-3xl border border-[#E7E5E4] shadow-xs overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-slate-600">
-              <thead className="bg-[#F9FAFB] border-b border-[#E2E8F0] text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              <thead className="bg-[#FAFAF9] border-b border-[#E7E5E4] text-[11px] font-bold uppercase tracking-wider text-slate-500">
                 <tr>
                   <th className="py-4 px-4">Attendee</th>
                   <th className="py-4 px-4">Contact</th>
@@ -454,11 +454,11 @@ export default function AdminBookingsPage() {
                   <th className="py-4 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E2E8F0]">
+              <tbody className="divide-y divide-[#E7E5E4]">
                 {loading ? (
                   <tr>
                     <td colSpan={8} className="py-12 text-center text-slate-400">
-                      <div className="animate-spin h-6 w-6 border-2 border-[#059669] border-t-transparent rounded-full mx-auto mb-2" />
+                      <div className="animate-spin h-6 w-6 border-2 border-[#0F766E] border-t-transparent rounded-full mx-auto mb-2" />
                       Loading bookings directory...
                     </td>
                   </tr>
@@ -478,7 +478,7 @@ export default function AdminBookingsPage() {
                         {/* Attendee Name */}
                         <td className="py-3.5 px-4 font-bold text-slate-900">
                           <div className="flex items-center gap-2">
-                            <div className="h-7 w-7 rounded-full bg-emerald-50 border border-emerald-200 text-[#059669] flex items-center justify-center font-bold text-xs uppercase">
+                            <div className="h-7 w-7 rounded-full bg-teal-50 border border-teal-200 text-[#0F766E] flex items-center justify-center font-bold text-xs uppercase">
                               {b.attendeeName.charAt(0)}
                             </div>
                             <span>{b.attendeeName}</span>
@@ -542,7 +542,7 @@ export default function AdminBookingsPage() {
                         </td>
 
                         {/* Booking ID / Ticket Code */}
-                        <td className="py-3.5 px-4 font-mono font-bold text-[11px] text-[#059669]">
+                        <td className="py-3.5 px-4 font-mono font-bold text-[11px] text-[#0F766E]">
                           {b.ticketCode || b.bookingId}
                         </td>
 
@@ -563,7 +563,7 @@ export default function AdminBookingsPage() {
                             <button
                               type="button"
                               onClick={() => setActiveTicketPreview(b)}
-                              className="p-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-[#059669] hover:bg-teal-100 transition cursor-pointer"
+                              className="p-1.5 rounded-lg border border-teal-200 bg-teal-50 text-[#0F766E] hover:bg-teal-100 transition cursor-pointer"
                               title="Preview Gate QR Code"
                             >
                               <QrCode className="h-4 w-4" />
@@ -574,7 +574,7 @@ export default function AdminBookingsPage() {
                               type="button"
                               onClick={() => handleDownloadTicketPdf(b)}
                               disabled={downloadingId === b.bookingId}
-                              className="p-1.5 rounded-lg border border-[#F59E0B]/30 bg-orange-50 text-[#F59E0B] hover:bg-orange-100 transition cursor-pointer"
+                              className="p-1.5 rounded-lg border border-[#F97316]/30 bg-orange-50 text-[#F97316] hover:bg-orange-100 transition cursor-pointer"
                               title="Download Official Ticket Pass PDF"
                             >
                               <Download className={`h-4 w-4 ${downloadingId === b.bookingId ? 'animate-bounce' : ''}`} />
@@ -590,7 +590,7 @@ export default function AdminBookingsPage() {
           </div>
 
           {/* Pagination Bottom Footer */}
-          <div className="p-4 bg-[#F9FAFB] border-t border-[#E2E8F0] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-medium">
+          <div className="p-4 bg-[#FAFAF9] border-t border-[#E7E5E4] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-medium">
             <span>
               Showing {bookings.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{' '}
               {Math.min(currentPage * pageSize, totalCount)} of {totalCount} total entries
@@ -635,7 +635,7 @@ export default function AdminBookingsPage() {
               exit={{ scale: 0.95, opacity: 0 }}
               className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full overflow-hidden text-slate-900 my-8"
             >
-              <div className="bg-gradient-to-r from-slate-900 to-[#059669] p-5 text-white flex items-center justify-between">
+              <div className="bg-gradient-to-r from-slate-900 to-[#0F766E] p-5 text-white flex items-center justify-between">
                 <div>
                   <h4 className="font-extrabold text-base">Booking & Registration Record</h4>
                   <span className="text-[10px] text-teal-300 font-mono">{activeDetailsBooking.ticketCode}</span>
@@ -706,7 +706,7 @@ export default function AdminBookingsPage() {
                 <button
                   type="button"
                   onClick={() => handleDownloadTicketPdf(activeDetailsBooking)}
-                  className="rounded-xl bg-[#059669] hover:bg-[#047857] text-white px-4 py-2 text-xs font-bold transition flex items-center gap-1.5 shadow-sm"
+                  className="rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white px-4 py-2 text-xs font-bold transition flex items-center gap-1.5 shadow-sm"
                 >
                   <Download className="h-3.5 w-3.5" />
                   <span>Download PDF Pass</span>
@@ -736,7 +736,7 @@ export default function AdminBookingsPage() {
               className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-sm w-full p-6 text-center text-slate-900 space-y-4"
             >
               <div className="flex justify-between items-center border-b border-slate-100 pb-3">
-                <span className="text-xs font-extrabold text-[#059669] uppercase">Official Gate Pass QR</span>
+                <span className="text-xs font-extrabold text-[#0F766E] uppercase">Official Gate Pass QR</span>
                 <button
                   onClick={() => setActiveTicketPreview(null)}
                   className="text-slate-400 hover:text-slate-700 font-bold text-xs"
@@ -760,7 +760,7 @@ export default function AdminBookingsPage() {
                 />
               </div>
 
-              <div className="font-mono text-xs font-bold text-[#059669] bg-slate-100 p-2 rounded-xl">
+              <div className="font-mono text-xs font-bold text-[#0F766E] bg-slate-100 p-2 rounded-xl">
                 {activeTicketPreview.ticketCode}
               </div>
 
@@ -768,7 +768,7 @@ export default function AdminBookingsPage() {
                 <button
                   type="button"
                   onClick={() => handleDownloadTicketPdf(activeTicketPreview)}
-                  className="flex-1 py-2.5 rounded-xl bg-[#059669] hover:bg-[#047857] text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm"
+                  className="flex-1 py-2.5 rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm"
                 >
                   <Download className="h-3.5 w-3.5" />
                   <span>Download PDF</span>

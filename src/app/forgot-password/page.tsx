@@ -49,13 +49,13 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F9FAFB] text-[#111827] font-sans">
+    <div className="min-h-screen flex flex-col bg-[#FAFAF9] text-[#1C1917] font-sans">
       <Navbar />
 
       <main className="flex-1 relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Ambient Gradient Background Glow */}
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#059669]/15 rounded-full blur-[130px] pointer-events-none" />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-[#F59E0B]/15 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#0F766E]/15 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-[#F97316]/15 rounded-full blur-[130px] pointer-events-none" />
 
         <div className="w-full max-w-md relative z-10 space-y-6">
           {/* Header */}
@@ -63,10 +63,10 @@ export default function ForgotPasswordPage() {
             <div className="inline-flex justify-center mb-1">
               <Logo variant="default" size="lg" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight">
-              Reset Your <span className="text-[#059669]">Password</span>
+            <h1 className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight">
+              Reset Your <span className="text-[#0F766E]">Password</span>
             </h1>
-            <p className="text-xs sm:text-sm text-[#64748B]">
+            <p className="text-xs sm:text-sm text-[#78716C]">
               We&apos;ll send a secure password recovery link to your registered email
             </p>
 
@@ -87,7 +87,7 @@ export default function ForgotPasswordPage() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xl p-6 sm:p-8 space-y-6 relative"
+            className="bg-white rounded-3xl border border-[#E7E5E4] shadow-xl p-6 sm:p-8 space-y-6 relative"
           >
             {submitted ? (
               <div className="text-center space-y-4">
@@ -95,8 +95,8 @@ export default function ForgotPasswordPage() {
                   <CheckCircle2 className="h-7 w-7" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-lg font-bold text-[#111827]">Password Reset Email Dispatched</h3>
-                  <p className="text-xs text-[#64748B] leading-relaxed">
+                  <h3 className="text-lg font-bold text-[#1C1917]">Password Reset Email Dispatched</h3>
+                  <p className="text-xs text-[#78716C] leading-relaxed">
                     If an account exists for <strong>{email}</strong>, we have sent instructions to reset your password.
                   </p>
                 </div>
@@ -106,14 +106,14 @@ export default function ForgotPasswordPage() {
                     type="button"
                     disabled={resendCooldown > 0}
                     onClick={handleSubmit}
-                    className="w-full rounded-xl border border-[#E2E8F0] hover:bg-slate-50 text-[#111827] py-2.5 px-4 font-bold text-xs transition disabled:opacity-50"
+                    className="w-full rounded-xl border border-[#E7E5E4] hover:bg-slate-50 text-[#1C1917] py-2.5 px-4 font-bold text-xs transition disabled:opacity-50"
                   >
                     {resendCooldown > 0 ? `Resend email in ${resendCooldown}s` : 'Resend Recovery Email'}
                   </button>
 
                   <Link
                     href="/login"
-                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#059669] hover:bg-[#047857] text-white py-2.5 px-4 font-bold text-xs transition shadow"
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white py-2.5 px-4 font-bold text-xs transition shadow"
                   >
                     <ArrowLeft className="h-4 w-4" />
                     <span>Return to Sign In</span>
@@ -122,8 +122,8 @@ export default function ForgotPasswordPage() {
               </div>
             ) : (
               <>
-                <div className="flex items-center gap-3 p-3 bg-emerald-50 rounded-2xl border border-emerald-100 text-xs text-[#059669]">
-                  <KeyRound className="h-5 w-5 shrink-0 text-[#059669]" />
+                <div className="flex items-center gap-3 p-3 bg-teal-50 rounded-2xl border border-teal-100 text-xs text-[#0F766E]">
+                  <KeyRound className="h-5 w-5 shrink-0 text-[#0F766E]" />
                   <p>
                     Enter your email below and we will send you a one-time link to create a new password.
                   </p>
@@ -138,7 +138,7 @@ export default function ForgotPasswordPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold text-[#111827] mb-1.5">
+                    <label className="block text-xs font-bold text-[#1C1917] mb-1.5">
                       Account Email Address
                     </label>
                     <div className="relative">
@@ -149,7 +149,7 @@ export default function ForgotPasswordPage() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@example.com"
-                        className="w-full rounded-xl border border-[#E2E8F0] pl-10 pr-4 py-2.5 text-xs text-[#111827] placeholder-slate-400 focus:outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/20 transition"
+                        className="w-full rounded-xl border border-[#E7E5E4] pl-10 pr-4 py-2.5 text-xs text-[#1C1917] placeholder-slate-400 focus:outline-none focus:border-[#0F766E] focus:ring-2 focus:ring-[#0F766E]/20 transition"
                       />
                     </div>
                   </div>
@@ -157,7 +157,7 @@ export default function ForgotPasswordPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full rounded-xl bg-[#059669] hover:bg-[#047857] text-white py-3 px-4 font-bold text-xs shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-60"
+                    className="w-full rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white py-3 px-4 font-bold text-xs shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 disabled:opacity-60"
                   >
                     {loading ? (
                       <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -170,9 +170,9 @@ export default function ForgotPasswordPage() {
                   </button>
                 </form>
 
-                <div className="pt-2 text-center text-xs text-[#64748B]">
+                <div className="pt-2 text-center text-xs text-[#78716C]">
                   Remembered your password?{' '}
-                  <Link href="/login" className="font-extrabold text-[#059669] hover:underline">
+                  <Link href="/login" className="font-extrabold text-[#0F766E] hover:underline">
                     Back to Sign In
                   </Link>
                 </div>
@@ -180,7 +180,7 @@ export default function ForgotPasswordPage() {
             )}
           </motion.div>
 
-          <div className="flex items-center justify-center gap-2 text-[11px] text-[#64748B]">
+          <div className="flex items-center justify-center gap-2 text-[11px] text-[#78716C]">
             <ShieldCheck className="h-3.5 w-3.5 text-[#059669]" />
             <span>Secure tokens expired after 60 minutes for account safety</span>
           </div>

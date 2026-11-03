@@ -251,7 +251,7 @@ export function EventCard(props: EventCardProps) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-40px' }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className={`group font-sans rounded-2xl border border-[#E7E5E4] bg-white shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between overflow-hidden h-full relative ${
+        className={`group font-sans rounded-2xl border border-[#E2E8F0] bg-white shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between overflow-hidden h-full relative ${
           props.className || ''
         }`}
       >
@@ -281,70 +281,75 @@ export function EventCard(props: EventCardProps) {
               }`}
             />
 
-          {/* Badges: Category & Badges */}
-          <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">
-            {isFeatured && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#F97316] text-white px-2.5 py-0.5 text-[10px] font-bold shadow-sm">
-                <Sparkles className="h-3 w-3" />
-                Featured
-              </span>
-            )}
-            <span
-              className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm ${
-                isOnline ? 'bg-purple-600' : 'bg-[#0F766E]'
-              }`}
-            >
-              {isOnline ? (
-                <>
-                  <Globe className="h-3 w-3" /> Online Event
-                </>
+          {/* Top Floating Badge Bar with Zero Overlap */}
+          <div className="absolute top-3 inset-x-3 flex items-center justify-between gap-1.5 z-10 pointer-events-none">
+            {/* Top-Left: Primary Highlight (Featured or Live or Status) */}
+            <div className="flex items-center gap-1.5 min-w-0">
+              {isFeatured ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-white px-2.5 py-0.5 text-[10px] font-extrabold shadow-sm shrink-0">
+                  <Sparkles className="h-3 w-3" />
+                  Featured
+                </span>
+              ) : autoStatus === "live" ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600 text-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider shadow-sm shrink-0">
+                  <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                  Live Now
+                </span>
               ) : (
-                'Offline'
+                <span className="inline-flex items-center gap-1 rounded-full bg-slate-900/75 backdrop-blur-xs text-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider shadow-sm shrink-0">
+                  {autoStatus === "past" ? "Past" : "Upcoming"}
+                </span>
               )}
-            </span>
-          </div>
+            </div>
 
-          {/* Top Right: Status Badge (Live: Green, Upcoming: Teal, Past: Gray) & Seats */}
-          <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5">
-            <span
-              className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider shadow text-white flex items-center gap-1 ${
-                autoStatus === 'live'
-                  ? 'bg-emerald-600'
-                  : autoStatus === 'upcoming'
-                  ? 'bg-[#0F766E]'
-                  : 'bg-slate-600'
-              }`}
-            >
-              {autoStatus === 'live' && <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse"></span>}
-              {autoStatus === 'live' ? 'Live' : autoStatus === 'upcoming' ? 'Upcoming' : 'Past'}
-            </span>
-
-            {availableSeats > 0 && autoStatus !== 'past' && (
-              <span className="hidden sm:inline-flex rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider shadow bg-black/60 backdrop-blur-md text-white">
-                {availableSeats} Seats
-              </span>
-            )}
-            {availableSeats <= 0 && autoStatus !== 'past' && (
-              <span className="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider shadow bg-rose-600 text-white">
-                Sold Out
-              </span>
-            )}
+            {/* Top-Right: Seats Availability */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              {availableSeats > 0 && autoStatus !== "past" && (
+                <span className="rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider shadow bg-black/60 backdrop-blur-md text-white">
+                  {availableSeats} Seats
+                </span>
+              )}
+              {availableSeats <= 0 && autoStatus !== "past" && (
+                <span className="rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider shadow bg-rose-600 text-white">
+                  Sold Out
+                </span>
+              )}
+            </div>
           </div>
         </Link>
 
         {/* Card Body */}
         <div className="p-5 space-y-3">
-          {/* Category Badge & Review Rating */}
-          <div className="flex items-center justify-between text-xs">
-            {category ? (
-              <span className="font-bold text-[#0F766E] bg-[#CCFBF1]/50 px-2.5 py-0.5 rounded-md border border-[#0F766E]/20">
-                {category}
+          {/* Category Badge, Format Tag & Review Rating */}
+          <div className="flex items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+              {category && (
+                <span className="font-bold text-[#059669] bg-[#CCFBF1]/50 px-2.5 py-0.5 rounded-md border border-[#059669]/20 text-[11px] truncate">
+                  {category}
+                </span>
+              )}
+              <span
+                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border ${
+                  isOnline
+                    ? "bg-purple-50 text-purple-700 border-purple-200"
+                    : "bg-emerald-50 text-emerald-800 border-emerald-200"
+                }`}
+              >
+                {isOnline ? (
+                  <>
+                    <Globe className="h-3 w-3 text-purple-600" /> Online
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="h-3 w-3 text-[#059669]" /> In-Person
+                  </>
+                )}
               </span>
-            ) : <span />}
+            </div>
 
             {/* Social Proof Rating */}
-            <div className="flex items-center gap-1 font-bold text-slate-800 text-[11px] bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/60">
-              <Star className="h-3.5 w-3.5 fill-[#F97316] text-[#F97316]" />
+            <div className="flex items-center gap-1 font-bold text-slate-800 text-[11px] bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/60 shrink-0">
+              <Star className="h-3.5 w-3.5 fill-[#F59E0B] text-[#F59E0B]" />
               <span>4.9</span>
               <span className="text-slate-400 font-normal text-[10px]">(verified)</span>
             </div>
@@ -352,21 +357,21 @@ export function EventCard(props: EventCardProps) {
 
           {/* Event Title (max 2 lines) */}
           <Link href={eventLink} className="block">
-            <h3 className="font-bold text-[#1C1917] text-base group-hover:text-[#0F766E] transition-colors line-clamp-2 leading-snug">
+            <h3 className="font-bold text-[#111827] text-base group-hover:text-[#059669] transition-colors line-clamp-2 leading-snug">
               {title}
             </h3>
           </Link>
 
           {/* Organizer Name */}
-          <div className="flex items-center gap-1.5 text-xs text-[#78716C]">
-            <User className="h-3.5 w-3.5 text-[#0F766E] shrink-0" />
+          <div className="flex items-center gap-1.5 text-xs text-[#64748B]">
+            <User className="h-3.5 w-3.5 text-[#059669] shrink-0" />
             <span className="line-clamp-1 font-medium text-slate-700">
               By {organizerName}
             </span>
           </div>
 
           {/* Date and Time */}
-          <div className="flex flex-wrap items-center gap-3 text-xs text-[#78716C]">
+          <div className="flex flex-wrap items-center gap-3 text-xs text-[#64748B]">
             {finalDisplayDate && (
               <div className="flex items-center gap-1">
                 <Calendar className="h-3.5 w-3.5 text-slate-400 shrink-0" />
@@ -382,7 +387,7 @@ export function EventCard(props: EventCardProps) {
           </div>
 
           {/* Venue + City (or "Online Event") */}
-          <div className="flex items-center gap-1.5 text-xs text-[#78716C]">
+          <div className="flex items-center gap-1.5 text-xs text-[#64748B]">
             {isOnline ? (
               <>
                 <Globe className="h-3.5 w-3.5 text-purple-600 shrink-0" />
@@ -399,9 +404,9 @@ export function EventCard(props: EventCardProps) {
           </div>
 
           {/* Starting Price (e.g. ₹1499 onwards) */}
-          <div className="text-xs pt-2 border-t border-[#E7E5E4] flex items-center justify-between">
-            <span className="text-[#78716C] font-medium">Starting Price</span>
-            <span className="font-black text-[#1C1917] text-sm">
+          <div className="text-xs pt-2 border-t border-[#E2E8F0] flex items-center justify-between">
+            <span className="text-[#64748B] font-medium">Starting Price</span>
+            <span className="font-black text-[#111827] text-sm">
               {isFree ? 'FREE' : `₹${startingPrice.toLocaleString()} onwards`}
             </span>
           </div>
@@ -412,7 +417,7 @@ export function EventCard(props: EventCardProps) {
       <div className="p-5 pt-0 flex items-center justify-between gap-3 mt-2">
         <Link
           href={eventLink}
-          className="flex-1 rounded-xl border border-[#0F766E] text-[#0F766E] bg-white hover:bg-[#0F766E]/5 py-2.5 px-3 text-xs font-bold text-center transition-colors flex items-center justify-center gap-1.5"
+          className="flex-1 rounded-xl border border-[#059669] text-[#059669] bg-white hover:bg-[#059669]/5 py-2.5 px-3 text-xs font-bold text-center transition-colors flex items-center justify-center gap-1.5"
         >
           <Eye className="h-3.5 w-3.5" />
           <span>View Details</span>
@@ -421,14 +426,14 @@ export function EventCard(props: EventCardProps) {
         {isEnded ? (
           <Link
             href={eventLink}
-            className="flex-1 rounded-xl bg-slate-100 py-2.5 px-3 text-xs font-bold text-[#1C1917] hover:bg-slate-200 text-center transition-colors flex items-center justify-center gap-1.5"
+            className="flex-1 rounded-xl bg-slate-100 py-2.5 px-3 text-xs font-bold text-[#111827] hover:bg-slate-200 text-center transition-colors flex items-center justify-center gap-1.5"
           >
             <span>View Details</span>
           </Link>
         ) : (
           <Link
             href={eventLink}
-            className="flex-1 rounded-xl bg-[#F97316] hover:bg-[#ea580c] text-white py-2.5 px-3 text-xs font-bold text-center transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+            className="flex-1 rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-white py-2.5 px-3 text-xs font-bold text-center transition-colors flex items-center justify-center gap-1.5 shadow-sm"
           >
             <Ticket className="h-3.5 w-3.5" />
             <span>Book Now</span>

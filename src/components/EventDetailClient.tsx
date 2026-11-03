@@ -738,53 +738,53 @@ export function EventDetailClient({ event: initialEvent }: EventDetailClientProp
                 )}
               </div>
               
-              <div className="rounded-2xl bg-gradient-to-br from-emerald-50/70 via-white to-amber-50/50 p-6 sm:p-7 text-white shadow-md relative overflow-hidden">
+              <div className="rounded-3xl bg-gradient-to-br from-emerald-50/70 via-white to-slate-50 border border-emerald-100/90 p-6 sm:p-7 text-slate-800 shadow-sm relative overflow-hidden">
                 {/* Subtle decorative glow */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
 
                 <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={event.organization.avatar || '/team/rahul.jpg'}
                     alt={event.organization.name}
-                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover ring-4 ring-emerald-500/30 shadow-xl shrink-0"
+                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover ring-4 ring-emerald-500/20 shadow-md shrink-0"
                   />
 
                   <div className="space-y-3 flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2.5">
-                      <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                      <h3 className="text-xl sm:text-2xl font-black text-[#111827] tracking-tight">
                         {event.organization.name}
                       </h3>
                       {event.organization.verified && (
-                        <span className="inline-flex sm:hidden items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold">
-                          <CheckCircle2 className="h-3 w-3" /> Verified
+                        <span className="inline-flex sm:hidden items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-[11px] font-bold">
+                          <CheckCircle2 className="h-3 w-3 text-emerald-600" /> Verified
                         </span>
                       )}
-                      <span className="text-[11px] font-bold bg-white/10 text-slate-300 px-2.5 py-0.5 rounded-full border border-white/10">
+                      <span className="text-[11px] font-bold bg-emerald-50 text-[#059669] px-2.5 py-0.5 rounded-full border border-emerald-200/80">
                         Official Partner
                       </span>
                     </div>
 
-                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl">
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl font-normal">
                       {event.organization.bio || 'Official verified event organizer hosting summits, conferences, and masterclasses with guaranteed gate entry.'}
                     </p>
 
                     {/* Host Trust Metrics */}
-                    <div className="pt-2 flex flex-wrap items-center gap-3 sm:gap-6 text-xs text-slate-300">
-                      <div className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl">
-                        <Mail className="h-3.5 w-3.5 text-teal-400" />
-                        <span className="font-medium text-slate-200">{event.organization.contactEmail || 'contact@organizer.com'}</span>
+                    <div className="pt-2 flex flex-wrap items-center gap-3 sm:gap-4 text-xs">
+                      <div className="flex items-center gap-1.5 bg-white border border-slate-200/90 shadow-2xs px-3 py-1.5 rounded-xl">
+                        <Mail className="h-3.5 w-3.5 text-[#059669]" />
+                        <span className="font-semibold text-slate-700">{event.organization.contactEmail || 'contact@organizer.com'}</span>
                       </div>
 
-                      <div className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl">
-                        <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-                        <span className="text-slate-200 font-medium">100% Verified Organizer</span>
+                      <div className="flex items-center gap-1.5 bg-white border border-slate-200/90 shadow-2xs px-3 py-1.5 rounded-xl">
+                        <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+                        <span className="text-slate-700 font-semibold">100% Verified Organizer</span>
                       </div>
 
-                      <div className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl">
-                        <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-                        <span className="text-slate-200 font-medium">Fast Gate QR Check-in</span>
+                      <div className="flex items-center gap-1.5 bg-white border border-slate-200/90 shadow-2xs px-3 py-1.5 rounded-xl">
+                        <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                        <span className="text-slate-700 font-semibold">Fast Gate QR Check-in</span>
                       </div>
                     </div>
                   </div>
